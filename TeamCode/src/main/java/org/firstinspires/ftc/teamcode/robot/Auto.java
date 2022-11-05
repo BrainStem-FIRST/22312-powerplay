@@ -6,21 +6,17 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.ServoImplEx;
 
-import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import java.util.HashMap;
 import java.util.Map;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.opMode;
+
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_VEL;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TRACK_WIDTH;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 @Config
 @Autonomous(name="Robot: Test Auto Synchronous", group="Robot")
@@ -28,13 +24,14 @@ public class Auto extends LinearOpMode {
 
     // Test different trajectories by changing TEST_NUM from the dashboard
     // 1: Synchronous
-    public static int TEST_NUMBER = 1;
+    // 2: Speed set
+    public static int TEST_NUMBER = 2;
     public static double SPEED = 15.0;    // slower speed, in/sec
 
     @Override
     public void runOpMode() {
 
-        Boolean runTest = true;
+        boolean runTest = false;
 
         //may or may not put state maps here
         Map<String, String> stateMap = new HashMap<String, String>() {};
@@ -43,7 +40,7 @@ public class Auto extends LinearOpMode {
 
         // Initialize the robot
 
-        // TODO: drive is alrady an object within BrainStemRobot
+        // TODO: drive is already an object within BrainStemRobot
         // SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         robot.drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -58,6 +55,8 @@ public class Auto extends LinearOpMode {
         //
         // Need a variable to determine the association with alliance and
         // adjust the coordinate system accordingly.
+        Trajectory trajectory1, trajectory2;
+
         Pose2d startingPose = new Pose2d(0,0,Math.toRadians(90)); // On Red Wall facing Blue Wall
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
 
@@ -65,7 +64,7 @@ public class Auto extends LinearOpMode {
         switch(TEST_NUMBER) {
             case 1: // Regular speed
                 // From starting position of RED-LEFT; relative movements to starting position
-                Trajectory trajectory1 = robot.drive.trajectoryBuilder(startingPose)
+                trajectory1 = robot.drive.trajectoryBuilder(startingPose)
                         //moves forward in a line by 40 in and faces 90 degrees away by end
                         .lineToLinearHeading(new Pose2d(0, 40, Math.toRadians(90)))
                         //turns left and ends up 40 inches to the right, heading facing cones
@@ -73,20 +72,20 @@ public class Auto extends LinearOpMode {
                         .build();
 
                 // starting from where trajectory1 ended up, assume cone is grabbed, move back to depositing position
-                Trajectory trajectory2 = robot.drive.trajectoryBuilder(trajectory1.end(), true)
+                trajectory2 = robot.drive.trajectoryBuilder(trajectory1.end(), true)
                         //moves backwards in a line by 40 inches on x-axis; still faces the cones
                         .lineToLinearHeading(new Pose2d(0, 40, Math.toRadians(0)))
                         .build();
 
                 runTest = true;
-                telemetry.addData("Test #2");
+                telemetry.addData("Test #", "%d", TEST_NUMBER);
                 telemetry.update();
 
                 break;
 
             case 2: // Same as 1 with slower speed set at Dashboard
                 // From starting position of RED-LEFT; relative movements to starting position
-                Trajectory trajectory1 = robot.drive.trajectoryBuilder(startingPose)
+                trajectory1 = robot.drive.trajectoryBuilder(startingPose)
                         //moves forward in a line by 40 in and faces 90 degrees away by end
                         .lineToLinearHeading(new Pose2d(0, 40, Math.toRadians(90)),
                                 SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
@@ -98,7 +97,7 @@ public class Auto extends LinearOpMode {
                         .build();
 
                 // starting from where trajectory1 ended up, assume cone is grabbed, move back to depositing position
-                Trajectory trajectory2 = robot.drive.trajectoryBuilder(trajectory1.end(), true)
+                trajectory2 = robot.drive.trajectoryBuilder(trajectory1.end(), true)
                         //moves backwards in a line by 40 inches on x-axis; still faces the cones
                         .lineToLinearHeading(new Pose2d(0, 40, Math.toRadians(0)),
                                 SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
@@ -106,13 +105,18 @@ public class Auto extends LinearOpMode {
                         .build();
 
                 runTest = true;
-                telemetry.addData("Test #2");
+                telemetry.addData("Test #", "%d", TEST_NUMBER);
                 telemetry.update();
                 break;
 
             default:
+                trajectory1 = robot.drive.trajectoryBuilder(startingPose)
+                        .build();
+                trajectory2 = robot.drive.trajectoryBuilder(startingPose)
+                        .build();
+
                 runTest = false;
-                telemetry.addData("Invalid TEST");
+                telemetry.addData("Test #", "INVALID");
                 telemetry.update();
         }
 
