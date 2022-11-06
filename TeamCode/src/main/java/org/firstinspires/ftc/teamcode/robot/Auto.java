@@ -66,7 +66,7 @@ public class Auto extends LinearOpMode {
         // Need a variable to determine the association with alliance and
         // adjust the coordinate system accordingly.
 
-        Pose2d      startingPose, pickupPose, deliverPose, parkingPose;
+        Pose2d      startingPose, pickupPose, deliverPose, parkingPose = null;
         Trajectory  trajectory1, trajectory2, trajectory3, trajectoryPark;
 
         // Determine waypoints based on Alliance and Orientation
@@ -106,23 +106,29 @@ public class Auto extends LinearOpMode {
                 switch (PARKING_NUMBER) {
                     case 1:
                         parkingPose = new Pose2d (-60, -36, Math.toRadians(0));
+                        break;
 
                     case 2:
                         parkingPose = new Pose2d (-36, -36, Math.toRadians(0));
+                        break;
 
                     case 3:
                         parkingPose = new Pose2d (-12, -36, Math.toRadians(0));
+                        break;
                 }
             else                    // RED-RIGHT
                 switch (PARKING_NUMBER) {   // TODO: Determine positions
                     case 1:
                         parkingPose = new Pose2d (-60, -36, Math.toRadians(0));
+                        break;
 
                     case 2:
                         parkingPose = new Pose2d (-36, -36, Math.toRadians(0));
+                        break;
 
                     case 3:
                         parkingPose = new Pose2d (-12, -36, Math.toRadians(0));
+                        break;
                 }
         }
         else {
@@ -130,23 +136,29 @@ public class Auto extends LinearOpMode {
                 switch (PARKING_NUMBER) {   // TODO: Determine positions
                     case 1:
                         parkingPose = new Pose2d (-60, -36, Math.toRadians(0));
+                        break;
 
                     case 2:
                         parkingPose = new Pose2d (-36, -36, Math.toRadians(0));
+                        break;
 
                     case 3:
                         parkingPose = new Pose2d (-12, -36, Math.toRadians(0));
+                        break;
                 }
             else                    // BLUE-RIGHT
                 switch (PARKING_NUMBER) {   // TODO: Determine positions
                     case 1:
                         parkingPose = new Pose2d (-60, -36, Math.toRadians(0));
+                        break;
 
                     case 2:
                         parkingPose = new Pose2d (-36, -36, Math.toRadians(0));
+                        break;
 
                     case 3:
                         parkingPose = new Pose2d (-12, -36, Math.toRadians(0));
+                        break;
                 }
         }
 
@@ -155,7 +167,7 @@ public class Auto extends LinearOpMode {
         // From starting position, move forward and spline to pickup position
         trajectory1 = robot.drive.trajectoryBuilder(startingPose)
                 //moves forward in a line by 54 in and faces 90 degrees away by end
-                .forward(43.25,SPEED)
+                .forward(43.25)
                 .splineTo(new Vector2d(pickupPose.getX(), pickupPose.getY()), pickupPose.getHeading(),
                         SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
@@ -172,13 +184,10 @@ public class Auto extends LinearOpMode {
         // starting from where trajectory2 ended up, assume cone was delivered, move back to pickup position
         trajectory3 = robot.drive.trajectoryBuilder(trajectory2.end(), false)
                 //moves forwards to the pickup position
-                .splineTo(new Vector2d(pickupPose.getX(), pickupPose.getY()), pickupPose.getHeading(),,
+                .splineTo(new Vector2d(pickupPose.getX(), pickupPose.getY()), pickupPose.getHeading(),
                         SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
                 .build();
-
-        telemetry.addData("Test #", "%d", TEST_NUMBER);
-        telemetry.update();
 
         /********************* Initialization Complete **********************/
 
@@ -208,7 +217,7 @@ public class Auto extends LinearOpMode {
                 inParkingSequence = true;
 
             numCyclesCompleted += 1;
-            telemetry.addData("Cycle:", "%d", (String) numCyclesCompleted);
+            telemetry.addData("Cycle:", "%d", numCyclesCompleted);
             telemetry.update();
         }
 
@@ -216,8 +225,8 @@ public class Auto extends LinearOpMode {
             // Build parking trajectory from where ever the robot stopped at the end of timer
             // (if things are synchronous, the starting pose of Parking trajectory is known and
             // the trajectory can be built ahead of time)
-            Trajectory trajectoryPark = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate())
-                    .splineTo(new Vector2d(parkingPose.getX(), parkingPose.getY()), parkingPose.getHeading(),,
+             trajectoryPark = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate())
+                    .splineTo(new Vector2d(parkingPose.getX(), parkingPose.getY()), parkingPose.getHeading(),
                             SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
                             SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
                     .build();
