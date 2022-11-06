@@ -102,21 +102,21 @@ public class Auto extends LinearOpMode {
             if(isOrientationLEFT)   // RED-LEFT
                 switch (PARKING_NUMBER) {
                     case 1:
-                        parkingPose = new Pose2d (-60, -12, Math.toRadians(0));
+                        parkingPose = new Pose2d (-60, -12, Math.toRadians(180));
                         break;
 
                     case 2:
-                        parkingPose = new Pose2d (-36, -12, Math.toRadians(0));
+                        parkingPose = new Pose2d (-36, -12, Math.toRadians(180));
                         break;
 
                     case 3:
-                        parkingPose = new Pose2d (-12, -12, Math.toRadians(0));
+                        parkingPose = new Pose2d (-12, -12, Math.toRadians(-90));
                         break;
                 }
             else                    // RED-RIGHT
                 switch (PARKING_NUMBER) {
                     case 1:
-                        parkingPose = new Pose2d (12, -12, Math.toRadians(0));
+                        parkingPose = new Pose2d (12, -12, Math.toRadians(-90));
                         break;
 
                     case 2:
@@ -140,21 +140,21 @@ public class Auto extends LinearOpMode {
                         break;
 
                     case 3:
-                        parkingPose = new Pose2d (12, 12, Math.toRadians(0));
+                        parkingPose = new Pose2d (12, 12, Math.toRadians(90));
                         break;
                 }
             else                    // BLUE-RIGHT
                 switch (PARKING_NUMBER) {
                     case 1:
-                        parkingPose = new Pose2d (-12, 12, Math.toRadians(0));
+                        parkingPose = new Pose2d (-12, 12, Math.toRadians(90));
                         break;
 
                     case 2:
-                        parkingPose = new Pose2d (-36, 12, Math.toRadians(0));
+                        parkingPose = new Pose2d (-36, 12, Math.toRadians(-90));
                         break;
 
                     case 3:
-                        parkingPose = new Pose2d (-60, 12, Math.toRadians(0));
+                        parkingPose = new Pose2d (-60, 12, Math.toRadians(-90));
                         break;
                 }
         }
