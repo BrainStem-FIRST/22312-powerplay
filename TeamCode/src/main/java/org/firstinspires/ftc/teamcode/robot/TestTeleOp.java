@@ -20,6 +20,7 @@ public class TestTeleOp extends LinearOpMode {
     private final String GAMEPAD_1_B_IS_PRESSED = "GAMEPAD_1_B_IS_PRESSED";
     private final String GAMEPAD_1_X_STATE = "GAMEPAD_1_X_STATE";
     private final String GAMEPAD_1_X_IS_PRESSED = "GAMEPAD_1_X_IS_PRESSED";
+    Constants constants = new Constants();
 
 
 
@@ -34,9 +35,9 @@ public class TestTeleOp extends LinearOpMode {
 
     public void runOpMode() {
 
-        Map<String, String> stateMap = new HashMap<String, String>() {{}};
+        Map<String, String> stateMap = new HashMap<String, String>() {{ }};
         BrainStemRobot robot = new BrainStemRobot(hardwareMap, telemetry, stateMap);
-        //robot.initializeRobotPosition();
+//        robot.initializeRobotPosition();
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -47,55 +48,49 @@ public class TestTeleOp extends LinearOpMode {
         stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
 
         waitForStart();
-        while (!isStopRequested()) {
-            setButtons();
+      while (opModeIsActive()) {
 
-            if (toggleMap.get(GAMEPAD_1_A_STATE)) {
-                stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_HIGH);
-            } else {
-                stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_GROUND);
-            }
+        setButtons();
 
-            if (toggleMap.get(GAMEPAD_1_B_STATE)) {
-                stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_STATE);
-            } else {
-                stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
-            }
+        if (toggleMap.get(GAMEPAD_1_A_STATE)) {
+            stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_HIGH);
+        } else {
+            stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_GROUND);
+        }
 
-            if (toggleMap.get(GAMEPAD_1_X_STATE)) {
-                stateMap.put(robot.lift.LIFT_SUBHEIGHT, robot.lift.PLACEMENT_HEIGHT);
-            } else {
-                stateMap.put(robot.lift.LIFT_SUBHEIGHT, robot.lift.APPROACH_HEIGHT);
-            }
+        if (toggleMap.get(GAMEPAD_1_B_STATE)) {
+            stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
+        } else {
+            stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
+        }
 
-            if (gamepad2.x) {
-                stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.LEFT_POSITION);
-            } else if (gamepad2.y) {
-                stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
-            } else if (gamepad2.b) {
-                stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.RIGHT_POSITION);
-            }
-            if(gamepad2.right_trigger > 0.5){
-                if(((String)stateMap.get(robot.CONE_CYCLE)).equalsIgnoreCase(robot.STATE_COMPLETE)){
-                    stateMap.put(robot.CONE_CYCLE, robot.STATE_IN_PROGRESS);
-                }
-            }
-            drive.setWeightedDrivePower(
-                    new Pose2d(
-                            -gamepad1.left_stick_y,
-                            -gamepad1.left_stick_x,
-                            -gamepad1.right_stick_x
-                    )
-            );
 
-            drive.update();
+        if (gamepad1.dpad_left) {
+            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.LEFT_POSITION);
+        } else if (gamepad1.dpad_up) {
+            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
+        } else if (gamepad1.dpad_right) {
+            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.RIGHT_POSITION);
+        }
+        if(gamepad1.right_trigger > 0.5 && stateMap.get(constants.CONE_CYCLE).equalsIgnoreCase(constants.STATE_NOT_STARTED)){
+            stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS);
+        }
 
-            robot.updateSystems();
+        drive.setWeightedDrivePower(
+                new Pose2d(
+                        -Math.pow(gamepad1.left_stick_y, 2),
+                        -Math.pow(gamepad1.left_stick_x, 2),
+                        -Math.pow(gamepad1.right_stick_x, 2)
+                )
+        );
 
-            telemetry.addData("stateMap", stateMap);
-            telemetry.addData("toggleMap", toggleMap);
+        drive.update();
 
-            telemetry.update();
+        robot.updateSystems();
+
+        telemetry.addData("toggleMap", toggleMap);
+
+        telemetry.update();
         }
     }
 
