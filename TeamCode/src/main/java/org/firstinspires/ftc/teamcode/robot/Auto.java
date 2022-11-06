@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
@@ -23,25 +24,29 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TRACK_WIDTH;
 @Autonomous(name="Robot: Test Auto Synchronous", group="Robot")
 public class Auto extends LinearOpMode {
 
-    // Test different trajectories by changing TEST_NUM from the dashboard
-    // 1: Synchronous
-    // 2: Speed set
-    public static int TEST_NUMBER = 2;
-    public static int PARKING_NUMBER = 1;
-    public static double SPEED = 50.0;    // slower speed, in/sec
-    public static int PARKING_POSITION = 1;
+    public static int PARKING_NUMBER = 1; // Controlled by the dashboard for test purposes
+    public static double SPEED = 50.0;    // Controlled by the dashboard for test purposes
+
+    // Alliance variables
+    public static boolean isAllianceRED = true;
+    public static boolean isOrientationLEFT = true;
+
+    private ElapsedTime autoTime = new ElapsedTime();
+    private double TIME_TO_PARK = 25.0;
+
 
     @Override
     public void runOpMode() {
 
-        boolean runTest = false;
+        boolean inParkingSequence = false;
+        int     numCyclesCompleted = 0;
 
         //may or may not put state maps here
         Map<String, String> stateMap = new HashMap<String, String>() {};
 
         BrainStemRobot robot = new BrainStemRobot(hardwareMap, telemetry, stateMap);
 
-        // Initialize the robot
+        /*************** Initialize the robot *****************/
 
         // TODO: drive is already an object within BrainStemRobot
         // SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -53,136 +58,170 @@ public class Auto extends LinearOpMode {
         stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
         stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
 
+        /*************** Declare variable used for Autonomous *******************/
+
         // For initial testing purposes, assume the robot is in RED ALLIANCE and
         // the starting position is on LEFT
         //
         // Need a variable to determine the association with alliance and
         // adjust the coordinate system accordingly.
-        Trajectory trajectory1, trajectory2;
 
-        Pose2d startingPose = new Pose2d(-36,-67.25,Math.toRadians(90)); // On Red Wall facing Blue Wall
+        Pose2d      startingPose, pickupPose, deliverPose, parkingPose;
+        Trajectory  trajectory1, trajectory2, trajectory3, trajectoryPark;
+
+        // Determine waypoints based on Alliance and Orientation
+        if(isAllianceRED) {
+            if(isOrientationLEFT) { // RED-LEFT
+                startingPose    = new Pose2d(-36, -67.25, Math.toRadians(90));
+                pickupPose      = new Pose2d(-64.25, -16, Math.toRadians(180));
+                deliverPose     = new Pose2d(-24, -16, Math.toRadians(180));
+            }
+            else {                  // RED-RIGHT
+                // TODO: Determine positions
+                startingPose    = new Pose2d(-36, -67.25, Math.toRadians(90));
+                pickupPose      = new Pose2d(-64.25, -16, Math.toRadians(180));
+                deliverPose     = new Pose2d(-24, -16, Math.toRadians(180));
+            }
+        }
+        else {
+            if(isOrientationLEFT) { // BLUE-LEFT
+                // TODO: Determine positions
+                startingPose    = new Pose2d(-36, -67.25, Math.toRadians(90));  // recalculate
+                pickupPose      = new Pose2d(-64.25, -16, Math.toRadians(180)); // recalculate
+                deliverPose     = new Pose2d(-24, -16, Math.toRadians(180));    // recalculate
+            }
+            else {                  // BLUE-RIGHT
+                // TODO: Determine positions
+                startingPose    = new Pose2d(-36, -67.25, Math.toRadians(90));  // recalculate
+                pickupPose      = new Pose2d(-64.25, -16, Math.toRadians(180)); // recalculate
+                deliverPose     = new Pose2d(-24, -16, Math.toRadians(180));    // recalculate
+            }
+        }
+
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
 
-        //define trajectories
-        switch(TEST_NUMBER) {
-            case 1: // Regular speed
-                // From starting position of RED-LEFT; relative movements to starting position
-                trajectory1 = robot.drive.trajectoryBuilder(startingPose)
-                        //moves forward in a line by 40 in and faces 90 degrees away by end
-                        .lineToLinearHeading(new Pose2d(0, 48, Math.toRadians(90)))
-                        //turns left and ends up 40 inches to the right, heading facing cones
-                        .splineTo(new Vector2d(-24, 48), Math.toRadians(180))
-                        .build();
+        // Determine parking position based on Alliance and Orientation
+        if(isAllianceRED) {
+            if(isOrientationLEFT)   // RED-LEFT
+                switch (PARKING_NUMBER) {
+                    case 1:
+                        parkingPose = new Pose2d (-60, -36, Math.toRadians(0));
 
-                // starting from where trajectory1 ended up, assume cone is grabbed, move back to depositing position
-                trajectory2 = robot.drive.trajectoryBuilder(trajectory1.end(), true)
-                        //moves backwards in a line by 40 inches on x-axis; still faces the cones
-                        .lineToLinearHeading(new Pose2d(0, 48, Math.toRadians(0)))
-                        .build();
+                    case 2:
+                        parkingPose = new Pose2d (-36, -36, Math.toRadians(0));
 
-                runTest = true;
-                telemetry.addData("Test #", "%d", TEST_NUMBER);
-                telemetry.update();
+                    case 3:
+                        parkingPose = new Pose2d (-12, -36, Math.toRadians(0));
+                }
+            else                    // RED-RIGHT
+                switch (PARKING_NUMBER) {   // TODO: Determine positions
+                    case 1:
+                        parkingPose = new Pose2d (-60, -36, Math.toRadians(0));
 
-                break;
+                    case 2:
+                        parkingPose = new Pose2d (-36, -36, Math.toRadians(0));
 
-            case 2: // Same as 1 with slower speed set at Dashboard
-                // From starting position of RED-LEFT; relative movements to starting position
-                trajectory1 = robot.drive.trajectoryBuilder(startingPose)
-                        //moves forward in a line by 40 in and faces 90 degrees away by end
-                        .splineTo(new Vector2d(-36, -24), Math.toRadians(90),
-                                SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
-                                SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
-                        .splineTo(new Vector2d(-54, -16), Math.toRadians(180),
-                                SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
-                                SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
-                        .splineTo(new Vector2d(-64.25, -16), Math.toRadians(180),
-                                SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
-                                SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
-                        .build();
-                        /* .lineToLinearHeading(new Pose2d(-36, -14, Math.toRadians(180)),
-                                SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
-                                SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
-                        //turns left and ends up 40 inches to the right, heading facing cones
-                        .splineTo(new Vector2d(-64.25, -14), Math.toRadians(180),
-                                SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
-                                SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL)) */
-
-                // starting from where trajectory1 ended up, assume cone is grabbed, move back to depositing position
-                trajectory2 = robot.drive.trajectoryBuilder(trajectory1.end(), true)
-                        //moves backwards in a line by 40 inches on x-axis; still faces the cones
-                        .lineToLinearHeading(new Pose2d(-24, -14, Math.toRadians(180)),
-                                SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
-                                SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
-                        .build();
-
-                runTest = true;
-                telemetry.addData("Test #", "%d", TEST_NUMBER);
-                telemetry.update();
-                break;
-
-            default:
-                trajectory1 = robot.drive.trajectoryBuilder(startingPose)
-                        .build();
-                trajectory2 = robot.drive.trajectoryBuilder(startingPose)
-                        .build();
-
-                runTest = false;
-                telemetry.addData("Test #", "INVALID");
-                telemetry.update();
+                    case 3:
+                        parkingPose = new Pose2d (-12, -36, Math.toRadians(0));
+                }
         }
+        else {
+            if(isOrientationLEFT)   // BLUE-LEFT
+                switch (PARKING_NUMBER) {   // TODO: Determine positions
+                    case 1:
+                        parkingPose = new Pose2d (-60, -36, Math.toRadians(0));
+
+                    case 2:
+                        parkingPose = new Pose2d (-36, -36, Math.toRadians(0));
+
+                    case 3:
+                        parkingPose = new Pose2d (-12, -36, Math.toRadians(0));
+                }
+            else                    // BLUE-RIGHT
+                switch (PARKING_NUMBER) {   // TODO: Determine positions
+                    case 1:
+                        parkingPose = new Pose2d (-60, -36, Math.toRadians(0));
+
+                    case 2:
+                        parkingPose = new Pose2d (-36, -36, Math.toRadians(0));
+
+                    case 3:
+                        parkingPose = new Pose2d (-12, -36, Math.toRadians(0));
+                }
+        }
+
+        /****************  define trajectories  *********************/
+
+        // From starting position, move forward and spline to pickup position
+        trajectory1 = robot.drive.trajectoryBuilder(startingPose)
+                //moves forward in a line by 54 in and faces 90 degrees away by end
+                .forward(43.25,SPEED)
+                .splineTo(new Vector2d(pickupPose.getX(), pickupPose.getY()), pickupPose.getHeading(),
+                        SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
+                .build();
+
+        // starting from where trajectory1 ended up, assume cone is grabbed, move back to depositing position
+        trajectory2 = robot.drive.trajectoryBuilder(trajectory1.end(), true)
+                //moves backwards to the delivery position
+                .lineToLinearHeading(deliverPose,
+                        SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
+                .build();
+
+        // starting from where trajectory2 ended up, assume cone was delivered, move back to pickup position
+        trajectory3 = robot.drive.trajectoryBuilder(trajectory2.end(), false)
+                //moves forwards to the pickup position
+                .splineTo(new Vector2d(pickupPose.getX(), pickupPose.getY()), pickupPose.getHeading(),,
+                        SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
+                .build();
+
+        telemetry.addData("Test #", "%d", TEST_NUMBER);
+        telemetry.update();
+
+        /********************* Initialization Complete **********************/
 
         waitForStart();
 
-        while (!isStopRequested() && runTest) {
-            robot.drive.followTrajectory(trajectory1);
+        // go to pickup location at the start of autonomous
+        // DOES THIS HAVE TO BE INSIDE THE WHILE LOOP OR BOUNDED BY isStoppedRequested()?
+        robot.drive.followTrajectory(trajectory1);
+
+        while (!isStopRequested() && !inParkingSequence) {
+            // Repeat pickup-delivery cycle as much as you can
 
             // TODO: Grab the cone, lift, etc. Need to set state and update once merged to working Main branch
-            // engage cone grabbing sequence
-            /* stateMap.put(robot.lift.LIFT_SUBHEIGHT, robot.lift.APPROACH_HEIGHT);
-            robot.updateSystems(); */
-            sleep(1000);
+            sleep(500);
 
+            // go to delivery position
             robot.drive.followTrajectory(trajectory2);
 
             // engage cone depositing sequence
-            /* stateMap.put(robot.lift.LIFT_SUBHEIGHT, robot.lift.PLACEMENT_HEIGHT);
-            robot.updateSystems(); */
             sleep (1000);
 
-            runTest = false;
+            // go back to pickup position
+            robot.drive.followTrajectory(trajectory3);
 
-            /********************************
-            if (elapsedTime > timeToPark){
-                // stop trajectory
-                // determine robot position
-                // switch statement
-                // for parking lot one, x position is between minus something to minus something
-                // for parking lot two, the same but the somethings are different values
-                // for parking lot three, same as parking lot two
-                // TODO: figure out values for parking lots
-            }
-            ********************************/
-            
-            Vector2d parkingPosition = new Vector2d();
-            Timer elapsedTime = new Timer();
-            double timeToPark = 25;
+            // Is it time to park?
+            if (autoTime.seconds() > TIME_TO_PARK)
+                inParkingSequence = true;
 
-            if (elapsedTime > timeToPark)
-                switch (PARKING_NUMBER){
-                    case 1:
-                        parkingPosition = new Vector2d (-60, -36);
+            numCyclesCompleted += 1;
+            telemetry.addData("Cycle:", "%d", (String) numCyclesCompleted);
+            telemetry.update();
+        }
 
-                    case 2:
-                        parkingPosition = new Vector2d (-36, -36);
-
-                    case 3:
-                        parkingPosition = new Vector2d (-12, -36);
-                }
-
-            Trajectory trajectory3 = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate())
-                    .splineTo(parkingPosition, Math.toRadians(90))
+        if (!isStopRequested()) {
+            // Build parking trajectory from where ever the robot stopped at the end of timer
+            // (if things are synchronous, the starting pose of Parking trajectory is known and
+            // the trajectory can be built ahead of time)
+            Trajectory trajectoryPark = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate())
+                    .splineTo(new Vector2d(parkingPose.getX(), parkingPose.getY()), parkingPose.getHeading(),,
+                            SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
+                            SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
                     .build();
+            robot.drive.followTrajectory(trajectoryPark);
         }
     }
 }
