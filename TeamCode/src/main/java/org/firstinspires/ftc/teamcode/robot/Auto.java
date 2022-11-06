@@ -34,6 +34,9 @@ public class Auto extends LinearOpMode {
     private ElapsedTime autoTime = new ElapsedTime();
     private double TIME_TO_PARK = 25.0;
 
+    Constants constants = new Constants();
+
+
 
     @Override
     public void runOpMode() {
@@ -190,21 +193,34 @@ public class Auto extends LinearOpMode {
 
         waitForStart();
 
+        stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
+        robot.updateSystems();
+
         // go to pickup location at the start of autonomous
         // DOES THIS HAVE TO BE INSIDE THE WHILE LOOP OR BOUNDED BY isStoppedRequested()?
         robot.drive.followTrajectory(trajectory1);
 
         while (!isStopRequested() && !inParkingSequence) {
-            // Repeat pickup-delivery cycle as much as you can
+            // Repeat pickup-delivery cycle as many as you can
 
             // TODO: Grab the cone, lift, etc. Need to set state and update once merged to working Main branch
-            sleep(500);
+            stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS);
+            while(!stateMap.get(constants.CONE_CYCLE).equalsIgnoreCase(constants.STATE_NOT_STARTED)) {
+                robot.updateSystems();
+            }
+
 
             // go to delivery position
             robot.drive.followTrajectory(trajectory2);
 
             // engage cone depositing sequence
-            sleep (1000);
+            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.LEFT_POSITION);
+            robot.updateSystems();
+
+            stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS);
+            while(!stateMap.get(constants.CONE_CYCLE).equalsIgnoreCase(constants.STATE_NOT_STARTED)) {
+                robot.updateSystems();
+            }
 
             // go back to pickup position
             robot.drive.followTrajectory(trajectory3);
