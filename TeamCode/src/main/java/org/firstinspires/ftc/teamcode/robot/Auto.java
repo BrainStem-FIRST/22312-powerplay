@@ -77,24 +77,21 @@ public class Auto extends LinearOpMode {
                 deliverPose     = new Pose2d(-24, -16, Math.toRadians(180));
             }
             else {                  // RED-RIGHT
-                // TODO: Determine positions
-                startingPose    = new Pose2d(-36, -67.25, Math.toRadians(90));
-                pickupPose      = new Pose2d(-64.25, -16, Math.toRadians(180));
-                deliverPose     = new Pose2d(-24, -16, Math.toRadians(180));
+                startingPose    = new Pose2d(36, -67.25, Math.toRadians(90));
+                pickupPose      = new Pose2d(64.25, -16, Math.toRadians(0));
+                deliverPose     = new Pose2d(24, -16, Math.toRadians(0));
             }
         }
         else {
             if(isOrientationLEFT) { // BLUE-LEFT
-                // TODO: Determine positions
-                startingPose    = new Pose2d(-36, -67.25, Math.toRadians(90));  // recalculate
-                pickupPose      = new Pose2d(-64.25, -16, Math.toRadians(180)); // recalculate
-                deliverPose     = new Pose2d(-24, -16, Math.toRadians(180));    // recalculate
+                startingPose    = new Pose2d(36, 67.25, Math.toRadians(-90));
+                pickupPose      = new Pose2d(64.25, 16, Math.toRadians(0));
+                deliverPose     = new Pose2d(24, 16, Math.toRadians(0));
             }
             else {                  // BLUE-RIGHT
-                // TODO: Determine positions
-                startingPose    = new Pose2d(-36, -67.25, Math.toRadians(90));  // recalculate
-                pickupPose      = new Pose2d(-64.25, -16, Math.toRadians(180)); // recalculate
-                deliverPose     = new Pose2d(-24, -16, Math.toRadians(180));    // recalculate
+                startingPose    = new Pose2d(-36, 67.25, Math.toRadians(-90));
+                pickupPose      = new Pose2d(-64.25, 16, Math.toRadians(180));
+                deliverPose     = new Pose2d(-24, 16, Math.toRadians(180));
             }
         }
 
@@ -105,59 +102,59 @@ public class Auto extends LinearOpMode {
             if(isOrientationLEFT)   // RED-LEFT
                 switch (PARKING_NUMBER) {
                     case 1:
-                        parkingPose = new Pose2d (-60, -36, Math.toRadians(0));
+                        parkingPose = new Pose2d (-60, -12, Math.toRadians(0));
                         break;
 
                     case 2:
-                        parkingPose = new Pose2d (-36, -36, Math.toRadians(0));
+                        parkingPose = new Pose2d (-36, -12, Math.toRadians(0));
                         break;
 
                     case 3:
-                        parkingPose = new Pose2d (-12, -36, Math.toRadians(0));
+                        parkingPose = new Pose2d (-12, -12, Math.toRadians(0));
                         break;
                 }
             else                    // RED-RIGHT
-                switch (PARKING_NUMBER) {   // TODO: Determine positions
+                switch (PARKING_NUMBER) {
                     case 1:
-                        parkingPose = new Pose2d (-60, -36, Math.toRadians(0));
+                        parkingPose = new Pose2d (12, -12, Math.toRadians(0));
                         break;
 
                     case 2:
-                        parkingPose = new Pose2d (-36, -36, Math.toRadians(0));
+                        parkingPose = new Pose2d (36, -12, Math.toRadians(0));
                         break;
 
                     case 3:
-                        parkingPose = new Pose2d (-12, -36, Math.toRadians(0));
+                        parkingPose = new Pose2d (60, -12, Math.toRadians(0));
                         break;
                 }
         }
         else {
             if(isOrientationLEFT)   // BLUE-LEFT
-                switch (PARKING_NUMBER) {   // TODO: Determine positions
+                switch (PARKING_NUMBER) {
                     case 1:
-                        parkingPose = new Pose2d (-60, -36, Math.toRadians(0));
+                        parkingPose = new Pose2d (60, 12, Math.toRadians(0));
                         break;
 
                     case 2:
-                        parkingPose = new Pose2d (-36, -36, Math.toRadians(0));
+                        parkingPose = new Pose2d (36, 12, Math.toRadians(0));
                         break;
 
                     case 3:
-                        parkingPose = new Pose2d (-12, -36, Math.toRadians(0));
+                        parkingPose = new Pose2d (12, 12, Math.toRadians(0));
                         break;
                 }
             else                    // BLUE-RIGHT
-                switch (PARKING_NUMBER) {   // TODO: Determine positions
+                switch (PARKING_NUMBER) {
                     case 1:
-                        parkingPose = new Pose2d (-60, -36, Math.toRadians(0));
+                        parkingPose = new Pose2d (-12, 12, Math.toRadians(0));
                         break;
 
                     case 2:
-                        parkingPose = new Pose2d (-36, -36, Math.toRadians(0));
+                        parkingPose = new Pose2d (-36, 12, Math.toRadians(0));
                         break;
 
                     case 3:
-                        parkingPose = new Pose2d (-12, -36, Math.toRadians(0));
+                        parkingPose = new Pose2d (-60, 12, Math.toRadians(0));
                         break;
                 }
         }
