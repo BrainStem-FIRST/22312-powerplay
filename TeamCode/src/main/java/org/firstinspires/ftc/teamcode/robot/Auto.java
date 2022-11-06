@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
 
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_VEL;
@@ -26,6 +27,7 @@ public class Auto extends LinearOpMode {
     // 1: Synchronous
     // 2: Speed set
     public static int TEST_NUMBER = 2;
+    public static int PARKING_NUMBER = 1;
     public static double SPEED = 50.0;    // slower speed, in/sec
     public static int PARKING_POSITION = 1;
 
@@ -161,16 +163,26 @@ public class Auto extends LinearOpMode {
                 // TODO: figure out values for parking lots
             }
             ********************************/
+            
+            Vector2d parkingPosition = new Vector2d();
+            Timer elapsedTime = new Timer();
+            double timeToPark = 25;
+
+            if (elapsedTime > timeToPark)
+                switch (PARKING_NUMBER){
+                    case 1:
+                        parkingPosition = new Vector2d (-60, -36);
+
+                    case 2:
+                        parkingPosition = new Vector2d (-36, -36);
+
+                    case 3:
+                        parkingPosition = new Vector2d (-12, -36);
+                }
+
+            Trajectory trajectory3 = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate())
+                    .splineTo(parkingPosition, Math.toRadians(90))
+                    .build();
         }
     }
 }
-
-/* FOCUSING ON THE CODE ABOVE
-    drive.setPoseEstimate(startPosition);
-    Trajectory depositPreLoad = drive.trajectoryBuilder(drive.getPoseEstimate())
-            .lineToLinearHeading()
-            .build();
-    drive.followTrajectory(depositPreLoad);
-}
-this is very basic trajectory code to get the general gist of the concept--NOT COMPLETE!
- */
