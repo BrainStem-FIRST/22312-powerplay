@@ -58,7 +58,7 @@ public class Auto extends LinearOpMode {
         stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
         stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_GROUND);
         stateMap.put(robot.lift.LIFT_SUBHEIGHT, robot.lift.APPROACH_HEIGHT);
-        stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
+        stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.LEFT_POSITION);
         stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
 
         /*************** Declare variable used for Autonomous *******************/
@@ -73,30 +73,48 @@ public class Auto extends LinearOpMode {
         Trajectory  trajectory1, trajectory2, trajectory3, trajectoryPark;
 
         // Determine waypoints based on Alliance and Orientation
+        double XFORM_X = -1;
+        double XFORM_Y = -1;
+        double startingHeading = 90;
+        double deliveryHeading = 180;
+        double pickupHeading = 0;
+
         if(isAllianceRED) {
             if(isOrientationLEFT) { // RED-LEFT
-                startingPose    = new Pose2d(-36, -67.25, Math.toRadians(90));
-                pickupPose      = new Pose2d(-64.25, -16, Math.toRadians(180));
-                deliverPose     = new Pose2d(-24, -16, Math.toRadians(180));
+                XFORM_X = -1;
+                XFORM_Y = -1;
+                startingHeading = 90;
+                pickupHeading = 180;
+                deliveryHeading = 180;
             }
             else {                  // RED-RIGHT
-                startingPose    = new Pose2d(36, -67.25, Math.toRadians(90));
-                pickupPose      = new Pose2d(64.25, -16, Math.toRadians(0));
-                deliverPose     = new Pose2d(24, -16, Math.toRadians(0));
+                XFORM_X = 1;
+                XFORM_Y = -1;
+                startingHeading = 90;
+                pickupHeading = 0;
+                deliveryHeading = 0;
             }
         }
         else {
             if(isOrientationLEFT) { // BLUE-LEFT
-                startingPose    = new Pose2d(36, 67.25, Math.toRadians(-90));
-                pickupPose      = new Pose2d(64.25, 16, Math.toRadians(0));
-                deliverPose     = new Pose2d(24, 16, Math.toRadians(0));
+                XFORM_X = 1;
+                XFORM_Y = 1;
+                startingHeading = -90;
+                pickupHeading = 0;
+                deliveryHeading = 0;
             }
             else {                  // BLUE-RIGHT
-                startingPose    = new Pose2d(-36, 67.25, Math.toRadians(-90));
-                pickupPose      = new Pose2d(-64.25, 16, Math.toRadians(180));
-                deliverPose     = new Pose2d(-24, 16, Math.toRadians(180));
+                XFORM_X = -1;
+                XFORM_Y = 1;
+                startingHeading = -90;
+                pickupHeading = 180;
+                deliveryHeading = 180;
             }
         }
+        startingPose    = new Pose2d(XFORM_X * 36, XFORM_Y * 67.25, Math.toRadians(startingHeading));
+        pickupPose      = new Pose2d(XFORM_X * 64.25, XFORM_Y * 16, Math.toRadians(pickupHeading));
+        deliverPose     = new Pose2d(XFORM_X * 24, XFORM_Y * 16, Math.toRadians(deliveryHeading));
+
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
 
@@ -193,57 +211,73 @@ public class Auto extends LinearOpMode {
 
         waitForStart();
 
-        stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
-        robot.updateSystems();
 
-        // go to pickup location at the start of autonomous
-        // DOES THIS HAVE TO BE INSIDE THE WHILE LOOP OR BOUNDED BY isStoppedRequested()?
-        robot.drive.followTrajectory(trajectory1);
+        while (opModeIsActive()) {
 
-        while (!isStopRequested() && !inParkingSequence) {
-            // Repeat pickup-delivery cycle as many as you can
-
-            // TODO: Grab the cone, lift, etc. Need to set state and update once merged to working Main branch
-            stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS);
-            while(!stateMap.get(constants.CONE_CYCLE).equalsIgnoreCase(constants.STATE_NOT_STARTED)) {
-                robot.updateSystems();
-            }
-
-
-            // go to delivery position
-            robot.drive.followTrajectory(trajectory2);
-
-            // engage cone depositing sequence
-            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.LEFT_POSITION);
+            stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_MEDIUM);
+            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
             robot.updateSystems();
 
-            stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS);
-            while(!stateMap.get(constants.CONE_CYCLE).equalsIgnoreCase(constants.STATE_NOT_STARTED)) {
-                robot.updateSystems();
+            // go to pickup location at the start of autonomous
+            // DOES THIS HAVE TO BE INSIDE THE WHILE LOOP OR BOUNDED BY isStoppedRequested()?
+            robot.drive.followTrajectory(trajectory1);
+
+            robot.updateSystems();
+
+            while (!inParkingSequence) {
+                // Repeat pickup-delivery cycle as many as you can
+
+                stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
+                stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
+                while (robot.turret.getCurrentState().equalsIgnoreCase(robot.turret.TRANSITION_STATE) ||
+                       robot.lift.getCurrentState(robot.lift.APPROACH_HEIGHT).equalsIgnoreCase(robot.lift.TRANSITION_STATE)) {
+                    robot.updateSystems();
+                }
+
+                // TODO: Grab the cone, lift, etc. Need to set state and update once merged to working Main branch
+                stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS);
+                while (stateMap.get(constants.CONE_CYCLE).equalsIgnoreCase(constants.STATE_IN_PROGRESS)) {
+                    robot.updateSystems();
+                }
+
+
+                // go to delivery position
+                robot.drive.followTrajectory(trajectory2);
+
+                // engage cone depositing sequence
+                stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_HIGH);
+                stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.LEFT_POSITION);
+                while (robot.turret.getCurrentState().equalsIgnoreCase(robot.turret.TRANSITION_STATE)) {
+                    robot.updateSystems();
+                }
+
+                stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS);
+                while (stateMap.get(constants.CONE_CYCLE).equalsIgnoreCase(constants.STATE_IN_PROGRESS)) {
+                    robot.updateSystems();
+                }
+
+                // go back to pickup position
+                robot.drive.followTrajectory(trajectory3);
+
+                // Is it time to park?
+                if (autoTime.seconds() > TIME_TO_PARK)
+                    inParkingSequence = true;
+
+                numCyclesCompleted += 1;
+                telemetry.addData("Cycle:", "%d", numCyclesCompleted);
+                telemetry.update();
             }
 
-            // go back to pickup position
-            robot.drive.followTrajectory(trajectory3);
-
-            // Is it time to park?
-            if (autoTime.seconds() > TIME_TO_PARK)
-                inParkingSequence = true;
-
-            numCyclesCompleted += 1;
-            telemetry.addData("Cycle:", "%d", numCyclesCompleted);
-            telemetry.update();
-        }
-
-        if (!isStopRequested()) {
             // Build parking trajectory from where ever the robot stopped at the end of timer
             // (if things are synchronous, the starting pose of Parking trajectory is known and
             // the trajectory can be built ahead of time)
-             trajectoryPark = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate())
+            trajectoryPark = robot.drive.trajectoryBuilder(trajectory3.end())
                     .splineTo(new Vector2d(parkingPose.getX(), parkingPose.getY()), parkingPose.getHeading(),
                             SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
                             SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
                     .build();
             robot.drive.followTrajectory(trajectoryPark);
+
         }
     }
 }

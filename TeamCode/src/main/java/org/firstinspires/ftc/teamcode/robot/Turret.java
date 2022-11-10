@@ -35,10 +35,11 @@ public class Turret {
     public Turret(HardwareMap hwMap, Telemetry telemetry) {
         this.telemetry = telemetry;
         //getting turret motor from the hardware map
+
         turretMotor = (DcMotorEx) hwMap.get("TurretMotor");
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+//      liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
