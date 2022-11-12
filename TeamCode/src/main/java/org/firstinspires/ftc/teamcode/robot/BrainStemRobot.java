@@ -80,6 +80,7 @@ public class BrainStemRobot {
             lift.setState();
             turret.setState((String) stateMap.get(turret.SYSTEM_NAME), lift);
             arm.setState((String) stateMap.get(arm.SYSTEM_NAME));
+            grabber.setState((String) stateMap.get(grabber.SYSTEM_NAME), lift);
         }
 
     }
@@ -106,6 +107,7 @@ public class BrainStemRobot {
     private void setConeCycleSystems() {
         lift.setState();
         grabber.setState((String) stateMap.get(grabber.SYSTEM_NAME), lift);
+        arm.setState((String) stateMap.get(arm.SYSTEM_NAME));
     }
 
     private boolean startLiftUp() {

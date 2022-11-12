@@ -63,6 +63,7 @@ public class Auto extends LinearOpMode {
         stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
 
 
+
         //------------------------------------------------------
         //            Variable used for trajectories
         //------------------------------------------------------
@@ -122,8 +123,8 @@ public class Auto extends LinearOpMode {
 
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 36, XFORM_Y * 67.25, Math.toRadians(startingHeading));
-        pickupPose      = new Pose2d(XFORM_X * 64.25, XFORM_Y * 16, Math.toRadians(pickupHeading));
-        deliverPose     = new Pose2d(XFORM_X * 24, XFORM_Y * 16, Math.toRadians(deliveryHeading));
+        pickupPose      = new Pose2d(XFORM_X * 64.25, XFORM_Y * 15.5, Math.toRadians(pickupHeading));
+        deliverPose     = new Pose2d(XFORM_X * 0, XFORM_Y * 15.5, Math.toRadians(deliveryHeading));
 
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
@@ -198,20 +199,23 @@ public class Auto extends LinearOpMode {
         // then perform one iteration of pickup/delivery cycle
         trajectory1 = robot.drive.trajectorySequenceBuilder(startingPose)
                 //moves forward in a line facing 90 degrees away (positioned in between two poles)
-                .forward(43.25)
+                .forward(41)
                 .addTemporalMarker(0.5,()->{    // Start positioning scaffolding half a second into trajectory
                     // Position grabber to the front of the robot
                     stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_MEDIUM);
                     stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.RIGHT_POSITION);
+                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
                 })
                 // Drop off the cone at hand on the Medium High pole on the right
                 // This action starts after .forward() is completed
                 .addTemporalMarker(()->stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS))
                 .waitSeconds(CONE_CYCLE_DURATION)   // wait for the cone cycle to complete
+                .UNSTABLE_addTemporalMarkerOffset(0.5, ()->stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE))
+                .forward(3)
 
                 .addTemporalMarker(()->{
-                    // Position grabber to the front of the robot
-                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_LOW);
+                   // Position grabber to the front of the robot
+                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_GROUND);
                     stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
                 })
                 .splineTo(new Vector2d(pickupPose.getX(), pickupPose.getY()), pickupPose.getHeading())
@@ -232,6 +236,7 @@ public class Auto extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(1.0, ()->{
                     stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_HIGH);
                     stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.LEFT_POSITION);
+                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
                 })
                 .lineToLinearHeading(deliverPose)
                 // Once at the delivery location, initiate the cone cycle again
@@ -241,9 +246,10 @@ public class Auto extends LinearOpMode {
                 .setReversed(false) // go forwards
 
                 // shift position of lift and turret while running to pickup position
-                .UNSTABLE_addTemporalMarkerOffset(0.0, ()->{
-                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_MEDIUM);
+                .UNSTABLE_addTemporalMarkerOffset(1.0, ()->{
+                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_GROUND);
                     stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
+                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
                 })
                 // Go back for a new cone
                 .splineTo(new Vector2d(pickupPose.getX(), pickupPose.getY()), pickupPose.getHeading())
@@ -259,6 +265,10 @@ public class Auto extends LinearOpMode {
 
         /********************* Initialization Complete **********************/
 
+        robot.grabber.grabberClose();
+        telemetry.addData("Grabber Position", "%f", robot.grabber.grabberPosition());
+        telemetry.update();
+
         waitForStart();
 
         // initiate first trajectory asynchronous (go to pickup location) at the start of autonomous
@@ -273,6 +283,7 @@ public class Auto extends LinearOpMode {
                     if (!robot.drive.isBusy()) {
                         currentTrajectoryState = TrajectoryState.TRAJECTORY_REPEAT_STATE;
                         robot.drive.followTrajectorySequenceAsync(trajectory2);
+                        //currentTrajectoryState = TrajectoryState.TRAJECTORY_IDLE;
                     }
                     break;
 
@@ -308,6 +319,7 @@ public class Auto extends LinearOpMode {
 
             // Execute systems based on stateMap
             robot.updateSystems();
+            telemetry.addData("Grabber Position", "%f", robot.grabber.grabberPosition());
 
             // Continue executing trajectory following
             robot.drive.update();

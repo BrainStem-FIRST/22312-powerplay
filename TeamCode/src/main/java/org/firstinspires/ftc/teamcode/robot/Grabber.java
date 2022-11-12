@@ -54,6 +54,7 @@ public class Grabber {
                 grabber.setPosition(CLOSED_VALUE);
             } else {
                 grabber.setPosition(OPEN_VALUE);
+                telemetry.addData("Open Grabber", true);
             }
 
             if (stateMap.get(constants.GRABBER_START_TIME) == null) {

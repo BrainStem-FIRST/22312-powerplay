@@ -33,7 +33,7 @@ public class Turret {
     // Turret position values when the initial position is on the CENTER
     public final int        LEFT_POSITION_VALUE = -256; // 8 -> 0 - (264-8)
     public final int        CENTER_POSITION_VALUE = 0;  // 264 -> 0
-    public final int        RIGHT_POSITION_VALUE = 236; // 500 -> 0 + (500-264)
+    public final int        RIGHT_POSITION_VALUE = 256; // 500 -> 0 + (500-264)
 
     public final int        ANGLE_TOLERANCE = 5;
     public final int        LIFT_MIN_HEIGHT_TO_MOVE_TURRET = 75;

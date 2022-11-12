@@ -21,7 +21,7 @@ public class Extension {
 
     // Servo Positions
     public final double EXTENSION_POSITION_HOME = 0;    // Fully retracted
-    public final double EXTENSION_POSITION_MAX  = 0.4;    // Fully extended
+    public final double EXTENSION_POSITION_MAX  = 0.6;    // Fully extended
 
     public final double TWOBAR_POSITION_HOME    = 0;    // vertical position
     public final double TWOBAR_POSITION_MAX     = 1;    // fully tilted
@@ -43,7 +43,7 @@ public class Extension {
         twoBar = (ServoImplEx) hwMap.servo.get("Two Bar");
 
         // Scale the operating range of Servos and set initial position
-        extension.setPwmRange(new PwmControl.PwmRange(1250,2160));
+        extension.setPwmRange(new PwmControl.PwmRange(1250,2522));
         extendHome();
 
         twoBar.setPwmRange(new PwmControl.PwmRange(1745,2400));

@@ -34,7 +34,7 @@ public class Lift {
     public final int LIFT_POSITION_RESET = 0;
     public final int LIFT_POSITION_GROUND = 97;
     public final int LIFT_POSITION_LOWPOLE = 340;
-    public final int LIFT_POSITION_MIDPOLE = 550;
+    public final int LIFT_POSITION_MIDPOLE = 630;
     public final int LIFT_POSITION_HIGHPOLE = 840;
     public final int LIFT_POSITION_PICKUP = 8;
     public final int LIFT_ADJUSTMENT = -75;
