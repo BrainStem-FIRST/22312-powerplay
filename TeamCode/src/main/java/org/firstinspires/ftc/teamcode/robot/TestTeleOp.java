@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -84,7 +85,7 @@ public class TestTeleOp extends LinearOpMode {
             stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
         }
         if(toggleMap.get(GAMEPAD_1_A_STATE)){
-            stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_LOW);
+            stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_HIGH);
 //            toggleMap.put(GAMEPAD_1_Y_STATE, false);
 //            toggleMap.put(GAMEPAD_1_X_STATE, false);
         } else {
@@ -114,6 +115,20 @@ public class TestTeleOp extends LinearOpMode {
             robot.arm.tiltUp();
         } else {
             robot.arm.tiltDown();
+        }
+
+        if (gamepad1.left_bumper) {
+            Trajectory reverseTrajectory = drive.trajectoryBuilder(drive.getPoseEstimate())
+                    .back(41)
+                    .build();
+
+            drive.followTrajectoryAsync(reverseTrajectory);
+        } else if (gamepad1.right_bumper) {
+            Trajectory reverseTrajectory = drive.trajectoryBuilder(drive.getPoseEstimate())
+                    .forward(41)
+                    .build();
+
+            drive.followTrajectoryAsync(reverseTrajectory);
         }
 
         if(toggleMap.get(GAMEPAD_1_LEFT_TRIGGER_STATE)){
