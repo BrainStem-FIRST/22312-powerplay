@@ -31,13 +31,20 @@ public class Lift {
 
     public final int MINIMUM_CLEARANCE_HEIGHT = 43;    // inches to lift to clear side panels
 
+    public final double CONE_BASE = 0.75;   //base of the cone for pickup calculations
+    public int numCyclesCompleted = 0;      //numCyclesCompleted during Auto for pickup calculations
+
+    // TODO: Pole heights might need to be recalculated because the lift starting position (encoder values reset) is now the height of single cone at hand
     public final int LIFT_POSITION_RESET = 0;
     public final int LIFT_POSITION_GROUND = 97;
     public final int LIFT_POSITION_LOWPOLE = 340;
     public final int LIFT_POSITION_MIDPOLE = 630;
     public final int LIFT_POSITION_HIGHPOLE = 840;
-    public final int LIFT_POSITION_PICKUP = 8;
     public final int LIFT_ADJUSTMENT = -75;
+    // Lift pick up position is only 4 cone bases higher than the starting position,
+    // which is reset to 0 ticks at the start of Auto when lift is positioned on top of the single cone
+    public final int LIFT_POSITION_PICKUP = (int) ((CONE_BASE * 4) * TICK_PER_INCH);
+
     Constants constants = new Constants();
 
 
@@ -141,6 +148,11 @@ public class Lift {
                 position = LIFT_POSITION_GROUND;
                 break;
             }
+            case LIFT_PICKUP:{
+                // accounts for stacked cone height
+                position = (int) (LIFT_POSITION_PICKUP - TICK_PER_INCH * (CONE_BASE * numCyclesCompleted));
+                break;
+            }
         }
             return position;
     }
@@ -186,7 +198,8 @@ public class Lift {
             state = LIFT_POLE_MEDIUM;
         } else if (inHeightTolerance(currentPosition, LIFT_POSITION_HIGHPOLE + deliveryHeight(subheight))) {
             state = LIFT_POLE_HIGH;
-        }
+        } else if (inHeightTolerance(currentPosition, LIFT_POSITION_PICKUP))
+            state = LIFT_PICKUP; //accounted for pickup
         return state;
     }
 

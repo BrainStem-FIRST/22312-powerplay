@@ -31,7 +31,6 @@ public class Auto extends LinearOpMode {
     Constants constants = new Constants();
 
     // Trajectory related variables
-    int     numCyclesCompleted = 0;
     enum    TrajectoryState {
         TRAJECTORY_START_STATE,
         TRAJECTORY_REPEAT_STATE,
@@ -56,8 +55,10 @@ public class Auto extends LinearOpMode {
 
         robot.drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        robot.lift.numCyclesCompleted = 0;
+
         stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
-        stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_GROUND);
+        stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
         stateMap.put(robot.lift.LIFT_SUBHEIGHT, robot.lift.APPROACH_HEIGHT);
         stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
         stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
@@ -292,7 +293,7 @@ public class Auto extends LinearOpMode {
 
                     if (!robot.drive.isBusy()) {
                         // Trajectory is complete. Either re-start it or go park
-                        numCyclesCompleted += 1;
+                        robot.lift.numCyclesCompleted += 1;
 
                         // Is it time to park?
                         if (autoTime.seconds() > TIME_TO_PARK) {
@@ -324,7 +325,7 @@ public class Auto extends LinearOpMode {
             // Continue executing trajectory following
             robot.drive.update();
 
-            telemetry.addData("Cycle:", "%d", numCyclesCompleted);
+            telemetry.addData("Cycle:", "%d", robot.lift.numCyclesCompleted);
             telemetry.update();
         }
     }
