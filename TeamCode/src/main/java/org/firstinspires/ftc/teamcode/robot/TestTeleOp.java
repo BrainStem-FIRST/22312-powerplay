@@ -30,6 +30,10 @@ public class TestTeleOp extends LinearOpMode {
     private final String GAMEPAD_1_Y_STATE = "GAMEPAD_1_Y_STATE";
     private final String GAMEPAD_1_Y_PRESSED = "GAMEPAD_1_Y_IS_PRESSED";
 
+    private final String MANUAL_DRIVE_MODE = "MANUAL";
+    private final String AUTO_DRIVE_MODE = "AUTO";
+    private final String DRIVE_MODE = "DRIVE_MODE";
+
     private boolean leftTriggerPressed = false;
     private final double SLOWMODE  = 0.45;
 
@@ -66,6 +70,7 @@ public class TestTeleOp extends LinearOpMode {
         stateMap.put(robot.lift.LIFT_SUBHEIGHT, robot.lift.APPROACH_HEIGHT);
         stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
         stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
+        stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE);
 
         waitForStart();
       while (opModeIsActive()) {
@@ -118,38 +123,44 @@ public class TestTeleOp extends LinearOpMode {
         }
 
         if (gamepad1.left_bumper) {
+            stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
             Trajectory reverseTrajectory = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .back(41)
+                    .back(42)
+                    .addDisplacementMarker(() -> stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE))
                     .build();
 
             drive.followTrajectoryAsync(reverseTrajectory);
         } else if (gamepad1.right_bumper) {
+            stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
             Trajectory reverseTrajectory = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .forward(41)
+                    .forward(42)
+                    .addDisplacementMarker(() -> stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE))
                     .build();
 
             drive.followTrajectoryAsync(reverseTrajectory);
         }
 
-        if(toggleMap.get(GAMEPAD_1_LEFT_TRIGGER_STATE)){
-            drive.setWeightedDrivePower(
-                    new Pose2d(
+        if (stateMap.get(DRIVE_MODE).equals(MANUAL_DRIVE_MODE)) {
+              if (toggleMap.get(GAMEPAD_1_LEFT_TRIGGER_STATE)) {
+                  drive.setWeightedDrivePower(
+                          new Pose2d(
 
-                            (SLOWMODE *-gamepad1.left_stick_y),
-                            (SLOWMODE *-gamepad1.left_stick_x),
-                            (SLOWMODE * -gamepad1.right_stick_x)
-                    )
-            );
-        } else {
-            drive.setWeightedDrivePower(
-                    new Pose2d(
+                                  (SLOWMODE * -gamepad1.left_stick_y),
+                                  (SLOWMODE * -gamepad1.left_stick_x),
+                                  (SLOWMODE * -gamepad1.right_stick_x)
+                          )
+                  );
+              } else {
+                  drive.setWeightedDrivePower(
+                          new Pose2d(
 
-                            -gamepad1.left_stick_y,
-                            -gamepad1.left_stick_x,
-                            -gamepad1.right_stick_x
-                    )
-            );
-        }
+                                  -gamepad1.left_stick_y,
+                                  -gamepad1.left_stick_x,
+                                  -gamepad1.right_stick_x
+                          )
+                  );
+              }
+          }
 
 
         drive.update();
