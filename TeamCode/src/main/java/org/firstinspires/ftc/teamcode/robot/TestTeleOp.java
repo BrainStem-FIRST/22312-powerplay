@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -124,7 +127,7 @@ public class TestTeleOp extends LinearOpMode {
 
         if (gamepad1.left_bumper) {
             stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
-            Trajectory reverseTrajectory = drive.trajectoryBuilder(drive.getPoseEstimate())
+            Trajectory reverseTrajectory = drive.highSpeedTrajectoryBuilder(drive.getPoseEstimate())
                     .back(42)
                     .addDisplacementMarker(() -> stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE))
                     .build();
@@ -132,7 +135,7 @@ public class TestTeleOp extends LinearOpMode {
             drive.followTrajectoryAsync(reverseTrajectory);
         } else if (gamepad1.right_bumper) {
             stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
-            Trajectory reverseTrajectory = drive.trajectoryBuilder(drive.getPoseEstimate())
+            Trajectory reverseTrajectory = drive.highSpeedTrajectoryBuilder(drive.getPoseEstimate())
                     .forward(42)
                     .addDisplacementMarker(() -> stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE))
                     .build();
