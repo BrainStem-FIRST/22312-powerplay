@@ -253,13 +253,13 @@ public class Auto extends LinearOpMode {
                     stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
                 })
                 // Go back for a new cone
-                .splineTo(new Vector2d(pickupPose.getX(), pickupPose.getY()), pickupPose.getHeading())
+                .lineToLinearHeading(pickupPose)
 
                 // Stop at the pickup position so the loop can identify when the trajectory sequence completed by a call to drive.isBusy()
                 .build();
 
         trajectoryPark = robot.drive.trajectorySequenceBuilder(trajectory2.end())
-                .splineTo(new Vector2d(parkingPose.getX(), parkingPose.getY()), parkingPose.getHeading())
+                .lineToLinearHeading(parkingPose)
                 .build();
 
 
@@ -320,13 +320,12 @@ public class Auto extends LinearOpMode {
 
             // Execute systems based on stateMap
             robot.updateSystems();
-            telemetry.addData("Grabber Position", "%f", robot.grabber.grabberPosition());
 
             // Continue executing trajectory following
             robot.drive.update();
 
+            telemetry.addData("Grabber Position", "%f", robot.grabber.grabberPosition());
             telemetry.addData("Cycle:", "%d", robot.lift.numCyclesCompleted);
-
             telemetry.addData("Lift Position", robot.lift.getPosition());
             telemetry.update();
         }
