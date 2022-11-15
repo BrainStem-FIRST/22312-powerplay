@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -28,6 +32,10 @@ public class TestTeleOp extends LinearOpMode {
     private final String GAMEPAD_1_LEFT_TRIGGER_PRESSED = "GAMEPAD_1_LEFT_TRIGGER_PRESSED";
     private final String GAMEPAD_1_Y_STATE = "GAMEPAD_1_Y_STATE";
     private final String GAMEPAD_1_Y_PRESSED = "GAMEPAD_1_Y_IS_PRESSED";
+
+    private final String MANUAL_DRIVE_MODE = "MANUAL";
+    private final String AUTO_DRIVE_MODE = "AUTO";
+    private final String DRIVE_MODE = "DRIVE_MODE";
 
     private boolean leftTriggerPressed = false;
     private final double SLOWMODE  = 0.45;
@@ -65,6 +73,7 @@ public class TestTeleOp extends LinearOpMode {
         stateMap.put(robot.lift.LIFT_SUBHEIGHT, robot.lift.APPROACH_HEIGHT);
         stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
         stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
+        stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE);
 
         waitForStart();
       while (opModeIsActive()) {
@@ -84,7 +93,7 @@ public class TestTeleOp extends LinearOpMode {
             stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
         }
         if(toggleMap.get(GAMEPAD_1_A_STATE)){
-            stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_LOW);
+            stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_HIGH);
 //            toggleMap.put(GAMEPAD_1_Y_STATE, false);
 //            toggleMap.put(GAMEPAD_1_X_STATE, false);
         } else {
@@ -116,25 +125,45 @@ public class TestTeleOp extends LinearOpMode {
             robot.arm.tiltDown();
         }
 
-        if(toggleMap.get(GAMEPAD_1_LEFT_TRIGGER_STATE)){
-            drive.setWeightedDrivePower(
-                    new Pose2d(
+        if (gamepad1.left_bumper) {
+            stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
+            Trajectory reverseTrajectory = drive.highSpeedTrajectoryBuilder(drive.getPoseEstimate())
+                    .back(42)
+                    .addDisplacementMarker(() -> stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE))
+                    .build();
 
-                            (SLOWMODE *-gamepad1.left_stick_y),
-                            (SLOWMODE *-gamepad1.left_stick_x),
-                            (SLOWMODE * -gamepad1.right_stick_x)
-                    )
-            );
-        } else {
-            drive.setWeightedDrivePower(
-                    new Pose2d(
+            drive.followTrajectoryAsync(reverseTrajectory);
+        } else if (gamepad1.right_bumper) {
+            stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
+            Trajectory reverseTrajectory = drive.highSpeedTrajectoryBuilder(drive.getPoseEstimate())
+                    .forward(42)
+                    .addDisplacementMarker(() -> stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE))
+                    .build();
 
-                            -gamepad1.left_stick_y,
-                            -gamepad1.left_stick_x,
-                            -gamepad1.right_stick_x
-                    )
-            );
+            drive.followTrajectoryAsync(reverseTrajectory);
         }
+
+        if (stateMap.get(DRIVE_MODE).equals(MANUAL_DRIVE_MODE)) {
+              if (toggleMap.get(GAMEPAD_1_LEFT_TRIGGER_STATE)) {
+                  drive.setWeightedDrivePower(
+                          new Pose2d(
+
+                                  (SLOWMODE * -gamepad1.left_stick_y),
+                                  (SLOWMODE * -gamepad1.left_stick_x),
+                                  (SLOWMODE * -gamepad1.right_stick_x)
+                          )
+                  );
+              } else {
+                  drive.setWeightedDrivePower(
+                          new Pose2d(
+
+                                  -gamepad1.left_stick_y,
+                                  -gamepad1.left_stick_x,
+                                  -gamepad1.right_stick_x
+                          )
+                  );
+              }
+          }
 
 
         drive.update();
