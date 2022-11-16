@@ -239,7 +239,7 @@ public class AutoWithCamera extends LinearOpMode {
                     stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
                 })
                 // Go back for a new cone
-                .splineTo(new Vector2d(pickupPose.getX(), pickupPose.getY()), pickupPose.getHeading())
+                .lineToLinearHeading(pickupPose)
 
                 // Stop at the pickup position so the loop can identify when the trajectory sequence completed by a call to drive.isBusy()
                 .build();
@@ -325,6 +325,12 @@ public class AutoWithCamera extends LinearOpMode {
              */
             // Assign PARKING_NUMBER based on tagOfInterest
             // Determine parking position based on Alliance and Orientation
+            if(tagOfInterest.id == LEFT)
+                PARKING_NUMBER = 1;
+            else if (tagOfInterest.id == MIDDLE)
+                PARKING_NUMBER = 2;
+            else
+                PARKING_NUMBER = 3;
 
             if(isAllianceRED) {
                 if(isOrientationLEFT)   // RED-LEFT
@@ -390,7 +396,7 @@ public class AutoWithCamera extends LinearOpMode {
         }
 
         trajectoryPark = robot.drive.trajectorySequenceBuilder(trajectory2.end())
-                .splineTo(new Vector2d(parkingPose.getX(), parkingPose.getY()), parkingPose.getHeading())
+                .lineToLinearHeading(parkingPose)
                 .build();
 
         // initiate first trajectory asynchronous (go to pickup location) at the start of autonomous
