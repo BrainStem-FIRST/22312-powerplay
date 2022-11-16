@@ -34,8 +34,7 @@ public class Lift {
     public final int LIFT_ADJUSTMENT = -75;
     // Lift pick up position is only 4 cone bases higher than the starting position,
     // which is reset to 0 ticks at the start of Auto when lift is positioned on top of the single cone
-    public int LIFT_POSITION_PICKUP = (int) ((CONE_BASE * 4) * TICK_PER_INCH);  // This is a variable value
-    public final int LIFT_POSITION_PICKUP_ZONE = LIFT_POSITION_PICKUP + 50;     // This is a constant tick below which the grabber is allowed to pickup. See grabber.setState(). 50 ticks is just an offset.
+    public final int LIFT_POSITION_PICKUP = (int) ((CONE_BASE * 4) * TICK_PER_INCH);
 
     Constants constants = new Constants();
 
@@ -142,8 +141,7 @@ public class Lift {
             }
             case LIFT_PICKUP:{
                 // accounts for stacked cone height
-                LIFT_POSITION_PICKUP -= (int) (TICK_PER_INCH * (CONE_BASE * numCyclesCompleted));
-                position = LIFT_POSITION_PICKUP;
+                position = (int) (LIFT_POSITION_PICKUP - (TICK_PER_INCH * (CONE_BASE * numCyclesCompleted)));
                 break;
             }
         }

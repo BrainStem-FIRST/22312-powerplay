@@ -73,7 +73,7 @@ public class Grabber {
         }
     }
     public boolean shouldGrab(Lift lift) {
-        return lift.getPosition() < lift.LIFT_POSITION_PICKUP_ZONE &&
+        return lift.getPosition() < lift.LIFT_POSITION_PICKUP+50 &&
                 ((String)stateMap.get(constants.CONE_CYCLE)).equalsIgnoreCase(constants.STATE_IN_PROGRESS);
     }
 
