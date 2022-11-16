@@ -108,13 +108,13 @@ public class TestTeleOp extends LinearOpMode {
 //        }
 
 
-        if (gamepad1.dpad_left) {
-            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.LEFT_POSITION);
-        } else if (gamepad1.dpad_up) {
-            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
-        } else if (gamepad1.dpad_right) {
-            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.RIGHT_POSITION);
-        }
+//        if (gamepad1.dpad_left) {
+//            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.LEFT_POSITION);
+//        } else if (gamepad1.dpad_up) {
+//            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
+//        } else if (gamepad1.dpad_right) {
+//            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.RIGHT_POSITION);
+//        }
         if(gamepad1.right_trigger > 0.5 && stateMap.get(constants.CONE_CYCLE).equalsIgnoreCase(constants.STATE_NOT_STARTED)){
             stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS);
         }
@@ -125,7 +125,7 @@ public class TestTeleOp extends LinearOpMode {
             robot.arm.tiltDown();
         }
 
-        if (gamepad1.left_bumper) {
+        if (gamepad1.dpad_down) {
             stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
             Trajectory reverseTrajectory = drive.highSpeedTrajectoryBuilder(drive.getPoseEstimate())
                     .back(42)
@@ -133,7 +133,7 @@ public class TestTeleOp extends LinearOpMode {
                     .build();
 
             drive.followTrajectoryAsync(reverseTrajectory);
-        } else if (gamepad1.right_bumper) {
+        } else if (gamepad1.dpad_up) {
             stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
             Trajectory reverseTrajectory = drive.highSpeedTrajectoryBuilder(drive.getPoseEstimate())
                     .forward(42)
@@ -141,6 +141,22 @@ public class TestTeleOp extends LinearOpMode {
                     .build();
 
             drive.followTrajectoryAsync(reverseTrajectory);
+        } else if (gamepad1.dpad_left) {
+            stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
+            Trajectory leftTrajectory = drive.highSpeedTrajectoryBuilder(drive.getPoseEstimate())
+                    .strafeLeft(3)
+                    .addDisplacementMarker(() -> stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE))
+                    .build();
+
+            drive.followTrajectoryAsync(leftTrajectory);
+        } else if (gamepad1.dpad_right) {
+            stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
+            Trajectory rightTrajectory = drive.highSpeedTrajectoryBuilder(drive.getPoseEstimate())
+                    .strafeRight(3)
+                    .addDisplacementMarker(() -> stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE))
+                    .build();
+
+            drive.followTrajectoryAsync(rightTrajectory);
         }
 
         if (stateMap.get(DRIVE_MODE).equals(MANUAL_DRIVE_MODE)) {
