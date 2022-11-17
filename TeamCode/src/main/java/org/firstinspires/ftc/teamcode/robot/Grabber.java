@@ -73,7 +73,9 @@ public class Grabber {
         }
     }
     public boolean shouldGrab(Lift lift) {
-        return lift.getPosition() < lift.LIFT_POSITION_PICKUP+50 &&
+        telemetry.addData("should grab function", true);
+        telemetry.update();
+        return lift.getPosition() < lift.LIFT_POSITION_MIDPOLE &&
                 ((String)stateMap.get(constants.CONE_CYCLE)).equalsIgnoreCase(constants.STATE_IN_PROGRESS);
     }
 

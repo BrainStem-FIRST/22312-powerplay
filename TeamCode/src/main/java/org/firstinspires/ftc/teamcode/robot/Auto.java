@@ -284,6 +284,7 @@ public class Auto extends LinearOpMode {
                     if (!robot.drive.isBusy()) {
                         currentTrajectoryState = TrajectoryState.TRAJECTORY_REPEAT_STATE;
                         robot.drive.followTrajectorySequenceAsync(trajectory2);
+                        telemetry.addData("Lift Pickup Position =", robot.lift.getPosition());
                         //currentTrajectoryState = TrajectoryState.TRAJECTORY_IDLE;
                     }
                     break;
