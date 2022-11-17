@@ -33,9 +33,9 @@ public class Lift {
 
     public final int LIFT_POSITION_RESET = 0;
     public final int LIFT_POSITION_GROUND = 105;
-    public final int LIFT_POSITION_LOWPOLE = 380;
-    public final int LIFT_POSITION_MIDPOLE = 620;
-    public final int LIFT_POSITION_HIGHPOLE = 900;
+    public final int LIFT_POSITION_LOWPOLE = 420;
+    public final int LIFT_POSITION_MIDPOLE = 680;
+    public final int LIFT_POSITION_HIGHPOLE = 940;
     public final int LIFT_POSITION_PICKUP = 8;
     public final int LIFT_ADJUSTMENT = -75;
     Constants constants = new Constants();
@@ -47,7 +47,7 @@ public class Lift {
     public final String LIFT_PICKUP = "PICKUP";
     public final String LIFT_POLE_GROUND = "GROUND";
     public final String LIFT_POLE_LOW = "POLE_LOW";
-    public final String LIFT_POLE_MEDIUM = "POlE_MEDIUM";
+    public final String LIFT_POLE_MEDIUM = "POLE_MEDIUM";
     public final String LIFT_POLE_HIGH = "POLE_HIGH";
     public final String APPROACH_HEIGHT = "APPROACH_HEIGHT";
     public final String PLACEMENT_HEIGHT = "PLACEMENT_HEIGHT";
