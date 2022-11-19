@@ -57,7 +57,7 @@ public class Auto extends LinearOpMode {
 
         robot.lift.numCyclesCompleted = 0;
 
-        stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
+        stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_STATE);
         stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
         stateMap.put(robot.lift.LIFT_SUBHEIGHT, robot.lift.APPROACH_HEIGHT);
         stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
@@ -203,8 +203,8 @@ public class Auto extends LinearOpMode {
                 .forward(41)
                 .addTemporalMarker(0.5,()->{    // Start positioning scaffolding half a second into trajectory
                     // Position grabber to the front of the robot
-                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_MEDIUM);
-                    stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.RIGHT_POSITION);
+                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_LOW);
+                    stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.LEFT_POSITION);
                     stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
                 })
                 // Drop off the cone at hand on the Medium High pole on the right
@@ -227,8 +227,13 @@ public class Auto extends LinearOpMode {
         // This trajectory is intended to be repeated
         trajectory2 = robot.drive.trajectorySequenceBuilder(trajectory1.end())
                 // Once at the pickup location, initiate cone cycle
-                .addTemporalMarker(()->stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS))
-                .waitSeconds(CONE_CYCLE_DURATION)   // wait for the cone cycle to complete
+                //.addTemporalMarker(()-> {
+                //    robot.lift.raiseHeightTo(robot.lift.liftPositionPickup);
+                   //stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
+                //    robot.grabber.grabberClose();
+                //})
+
+                //.waitSeconds(CONE_CYCLE_DURATION)   // wait for the cone cycle to complete
 
                 .setReversed(true)  // go backwards
 
@@ -247,13 +252,14 @@ public class Auto extends LinearOpMode {
                 .setReversed(false) // go forwards
 
                 // shift position of lift and turret while running to pickup position
-                .UNSTABLE_addTemporalMarkerOffset(1.0, ()->{
+                .UNSTABLE_addTemporalMarkerOffset(0.5, ()->{
                     stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
                     stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
                     stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
                 })
                 // Go back for a new cone
-                .lineToLinearHeading(pickupPose)
+                .splineTo(new Vector2d(pickupPose.getX(), pickupPose.getY()), pickupPose.getHeading())
+
 
                 // Stop at the pickup position so the loop can identify when the trajectory sequence completed by a call to drive.isBusy()
                 .build();
@@ -282,9 +288,19 @@ public class Auto extends LinearOpMode {
                 case TRAJECTORY_START_STATE:
                     // Switch to next trajectory once the starting trajectory is complete
                     if (!robot.drive.isBusy()) {
+
+                        // End of Trajectory 1.
+                        // Pickup code
+                        telemetry.addData("Cycle:", "%d", robot.lift.numCyclesCompleted);
+                        telemetry.addData("Calculated Lift Position =", "%d", robot.lift.liftPositionPickup);
+                        robot.lift.raiseHeightTo(robot.lift.liftPositionPickup);
+                        telemetry.addData("Lift Position After Call =", "%d", robot.lift.getPosition());
+                        robot.grabber.grabberClose();
+                        robot.lift.raiseHeightTo((int) (robot.lift.liftPositionPickup + (6 * robot.lift.TICK_PER_INCH)));
+
+
                         currentTrajectoryState = TrajectoryState.TRAJECTORY_REPEAT_STATE;
                         robot.drive.followTrajectorySequenceAsync(trajectory2);
-                        telemetry.addData("Lift Pickup Position =", robot.lift.getPosition());
                         //currentTrajectoryState = TrajectoryState.TRAJECTORY_IDLE;
                     }
                     break;
@@ -295,6 +311,19 @@ public class Auto extends LinearOpMode {
                     if (!robot.drive.isBusy()) {
                         // Trajectory is complete. Either re-start it or go park
                         robot.lift.numCyclesCompleted += 1;
+                        telemetry.addData("Cycle:", "%d", robot.lift.numCyclesCompleted);
+                        robot.lift.liftPositionPickup -= (int) (robot.lift.TICK_PER_INCH *
+                                (robot.lift.CONE_BASE * robot.lift.numCyclesCompleted));
+
+                        // End of Trajectory 2.
+                        // Pickup code
+                        telemetry.addData("Calculated Lift Position =", "%d", robot.lift.liftPositionPickup);
+                        robot.lift.raiseHeightTo(robot.lift.liftPositionPickup);
+                        telemetry.addData("Lift Position After Call =", "%d", robot.lift.getPosition());
+                        robot.grabber.grabberClose();
+                        robot.lift.raiseHeightTo((int) (robot.lift.liftPositionPickup + (6 * robot.lift.TICK_PER_INCH)));
+
+                        telemetry.update();
 
                         // Is it time to park?
                         if (autoTime.seconds() > TIME_TO_PARK) {
@@ -326,8 +355,7 @@ public class Auto extends LinearOpMode {
             robot.drive.update();
 
             telemetry.addData("Grabber Position", "%f", robot.grabber.grabberPosition());
-            telemetry.addData("Cycle:", "%d", robot.lift.numCyclesCompleted);
-            telemetry.addData("Lift Position", robot.lift.getPosition());
+            telemetry.addData("Lift Position End of Cycle=", robot.lift.getPosition());
             telemetry.update();
         }
     }

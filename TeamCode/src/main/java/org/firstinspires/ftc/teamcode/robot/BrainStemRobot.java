@@ -70,7 +70,7 @@ public class BrainStemRobot {
     }
 
     public void updateSystems() {
-        telemetry.addData("robotStateMap" , stateMap);
+        //telemetry.addData("robotStateMap" , stateMap);
         stateMap.put(constants.SYSTEM_TIME, System.currentTimeMillis());
 
 
