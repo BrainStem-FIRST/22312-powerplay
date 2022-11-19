@@ -22,19 +22,19 @@ public class Lift {
 
     public final int MINIMUM_CLEARANCE_HEIGHT = 43;    // inches to lift to clear side panels
 
-    public final double CONE_BASE = 1.25;   //base of the cone for pickup calculations
+    public final double CONE_BASE = 1.5;   //base of the cone for pickup calculations
     public int numCyclesCompleted = 0;      //numCyclesCompleted during Auto for pickup calculations
 
     // TODO: Pole heights might need to be recalculated because the lift starting position (encoder values reset) is now the height of single cone at hand
     public final int LIFT_POSITION_RESET = 0;
-    public final int LIFT_POSITION_GROUND = 97;
+    public final int LIFT_POSITION_GROUND = 87;
     public final int LIFT_POSITION_LOWPOLE = 390; //it was 340
     public final int LIFT_POSITION_MIDPOLE = 630;
     public final int LIFT_POSITION_HIGHPOLE = 840;
     public final int LIFT_ADJUSTMENT = -75;
     // Lift pick up position is only 4 cone bases higher than the starting position,
     // which is reset to 0 ticks at the start of Auto when lift is positioned on top of the single cone
-    public int liftPositionPickup = (int) ((CONE_BASE * 4) * TICK_PER_INCH);
+    public int liftPositionPickup = (int) (((CONE_BASE * 4) * TICK_PER_INCH) - (2 * TICK_PER_INCH));
 
     Constants constants = new Constants();
 
@@ -82,6 +82,7 @@ public class Lift {
     public void setState() {
         String subheight = (String) stateMap.get(LIFT_SUBHEIGHT);
         String currentState = getCurrentState(subheight);
+        telemetry.addData("subheight:", subheight);
         String level = (String) stateMap.get(LIFT_SYSTEM_NAME);
 
         stateMap.put(LIFT_CURRENT_STATE, currentState);
@@ -146,7 +147,7 @@ public class Lift {
             }
         }
         // this function can return position 0 if lift is in transition between heights (as reported by getCurrentState() function)
-        telemetry.addData("Lift Position =", position);
+        telemetry.addData("Lift State Position =", position);
         return position;
     }
 
@@ -154,7 +155,7 @@ public class Lift {
     private void selectTransition(String desiredLevel, String subheight, String currentState){
         switch(desiredLevel){
             case LIFT_PICKUP:{
-                transitionToLiftPosition(liftPositionPickup);
+                transitionToLiftPosition(liftPositionPickup + deliveryHeight(subheight));
                 break;
             }
             case LIFT_POLE_LOW:{
@@ -199,8 +200,15 @@ public class Lift {
 
     public int deliveryHeight(String subheight){
         int height = 0;
+        String currentState = (String) stateMap.get(LIFT_CURRENT_STATE);
+
         if(subheight.equalsIgnoreCase(PLACEMENT_HEIGHT)){
-            height += LIFT_ADJUSTMENT;
+
+            if(currentState.equalsIgnoreCase(LIFT_PICKUP)) {
+                height += LIFT_ADJUSTMENT-169;
+            } else {
+                height += LIFT_ADJUSTMENT;
+            }
         }
         return height;
     }

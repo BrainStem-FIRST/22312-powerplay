@@ -215,8 +215,7 @@ public class AutoTest extends LinearOpMode {
                     stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
                     stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
                 })
-// For Test: Don't move
-//                .forward(3)
+                .forward(3)
 
                 .addTemporalMarker(()->{
                    // Position grabber to the front of the robot
@@ -272,7 +271,7 @@ public class AutoTest extends LinearOpMode {
 
         robot.grabber.grabberClose();
         telemetry.addData("Initial Grabber Position (Closed expected)", "%f", robot.grabber.grabberPosition());
-        telemetry.addData("Initial Lift Position (0 ticks expected)", "%f", robot.lift.getPosition());
+        telemetry.addData("Initial Lift Position (0 ticks expected)", "%d", robot.lift.getPosition());
 
         telemetry.update();
 
@@ -290,7 +289,7 @@ public class AutoTest extends LinearOpMode {
                     if (!robot.drive.isBusy()) {
                         currentTrajectoryState = TrajectoryState.TRAJECTORY_REPEAT_STATE;
                         robot.lift.numCyclesCompleted = 0;  // Starting at 5-high stack
-// For TEst: Don't move
+// For Test: Don't move
 //                      robot.drive.followTrajectorySequenceAsync(trajectory2);
                     }
                     break;
@@ -313,6 +312,21 @@ public class AutoTest extends LinearOpMode {
 
                     if(gamepad1.dpad_right) {
                         // Position the arm to dispose of the cone at hand
+                        stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_LOW);
+                        stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
+                        stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
+                    }
+
+                    if(gamepad1.dpad_left){
+                        stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_MEDIUM);
+                        stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
+                        stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
+                    }
+
+                    if(gamepad1.dpad_up) {
+                        stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_GROUND);
+                        stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
+                        stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
                     }
 
                     if(gamepad1.right_trigger > 0.5 && stateMap.get(constants.CONE_CYCLE).equalsIgnoreCase(constants.STATE_NOT_STARTED)){
@@ -339,8 +353,9 @@ public class AutoTest extends LinearOpMode {
                             robot.drive.followTrajectorySequenceAsync(trajectory2);
                         }
                     }
-                    break;
-****************/
+ **********/
+                break;
+
                 case TRAJECTORY_PARKING_STATE:
                     // Wait for the robot to complete the trajectory and go to IDLE state
                     if (!robot.drive.isBusy()) {
@@ -362,6 +377,7 @@ public class AutoTest extends LinearOpMode {
             telemetry.addData("Grabber Position", "%f", robot.grabber.grabberPosition());
             telemetry.addData("Cycle:", "%d", robot.lift.numCyclesCompleted);
             telemetry.addData("Lift Position", robot.lift.getPosition());
+            telemetry.addData("Current state:", currentTrajectoryState);
             telemetry.update();
         }
 
