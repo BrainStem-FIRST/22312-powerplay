@@ -59,7 +59,7 @@ public class AutoWithCamera extends LinearOpMode {
 
 
     // Trajectory related variables
-    public static boolean isAllianceRED = true;
+    public static boolean isAllianceRED = true; //TODO: dynamically update values
     public static boolean isOrientationLEFT = true;
 
     // original auto

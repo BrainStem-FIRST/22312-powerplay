@@ -248,6 +248,6 @@ public class Lift {
 
     // Used by Auto to reduce lift pickup position each time the number of cones in the stack were removed
     public void updateLiftPickupPosition() {
-        liftPositionPickup -= (TICK_PER_INCH * (CONE_BASE * numCyclesCompleted));
+        liftPositionPickup -= (TICK_PER_INCH * CONE_BASE);
     }
 }
