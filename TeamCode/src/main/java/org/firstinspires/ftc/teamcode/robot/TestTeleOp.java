@@ -33,6 +33,7 @@ public class TestTeleOp extends LinearOpMode {
     private final String GAMEPAD_1_Y_STATE = "GAMEPAD_1_Y_STATE";
     private final String GAMEPAD_1_Y_PRESSED = "GAMEPAD_1_Y_IS_PRESSED";
 
+    private double extensionPosition = 0.025;
     private final String MANUAL_DRIVE_MODE = "MANUAL";
     private final String AUTO_DRIVE_MODE = "AUTO";
     private final String DRIVE_MODE = "DRIVE_MODE";
@@ -75,10 +76,17 @@ public class TestTeleOp extends LinearOpMode {
         stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
         stateMap.put(constants.DRIVER_2_SELECTED_LIFT, robot.lift.LIFT_POLE_HIGH);
         stateMap.put(constants.DRIVER_2_SELECTED_TURRET, robot.turret.CENTER_POSITION);
+
         stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE);
+
 
         waitForStart();
       while (opModeIsActive()) {
+      if(gamepad2.x){
+          robot.lift.setMotor(1.0);
+          telemetry.addData("Emergency Lift Up", true);
+          telemetry.update();
+      } else {
         setButtons();
 
         if (toggleMap.get(GAMEPAD_1_B_STATE)) {
@@ -108,16 +116,22 @@ public class TestTeleOp extends LinearOpMode {
         }else if(gamepad2.dpad_up){
             stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
         }
-
+        while(gamepad2.right_stick_y > 0.2){
+            robot.arm.joyStickExtension(extensionPosition);
+        }
+        while(gamepad2.right_stick_y < -0.2){
+            robot.arm.joyStickExtension((-extensionPosition));
+        }
         if(gamepad1.right_trigger > 0.5 && stateMap.get(constants.CONE_CYCLE).equalsIgnoreCase(constants.STATE_NOT_STARTED)){
             stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS);
         }
+
 
         if (gamepad1.dpad_down) {
             stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
             toggleMap.put(GAMEPAD_1_A_STATE, false);
             Trajectory reverseTrajectory = drive.highSpeedTrajectoryBuilder(drive.getPoseEstimate())
-                    .back(4)
+                    .back(7)
                     .addDisplacementMarker(() -> stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_GROUND))
                     .back(40)
                     .addDisplacementMarker(() -> stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE))
@@ -175,6 +189,7 @@ public class TestTeleOp extends LinearOpMode {
 
         telemetry.update();
         }
+      }
     }
 
     private void setButtons() {

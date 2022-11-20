@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.Range;
 
+import java.util.Map;
+
 
 public class Extension {
     private Telemetry telemetry;
@@ -32,13 +34,15 @@ public class Extension {
     public final String FULL_EXTEND = "EXTENDED";
     public final String TRANSITION_STATE = "TRANSITION";
 
+    private Map stateMap;
+
     public double extensionGetPosition(){
         return extension.getPosition();
     }
 
-    public Extension(HardwareMap hwMap, Telemetry telemetry) {
+    public Extension(HardwareMap hwMap, Telemetry telemetry, Map stateMap) {
         this.telemetry = telemetry;
-
+        this.stateMap = stateMap;
         extension = (ServoImplEx) hwMap.servo.get("Extension");
         twoBar = (ServoImplEx) hwMap.servo.get("Two Bar");
 
@@ -100,6 +104,9 @@ public class Extension {
         extension.setPosition(EXTENSION_POSITION_HOME);
     }
 
+    public void joyStickExtension(double addedPosition){
+        extension.setPosition(extensionGetPosition() + addedPosition);
+    }
     // Extends the arm to its maximum reach
     public void extendMax() {
         extension.setPosition(EXTENSION_POSITION_MAX);
@@ -126,6 +133,7 @@ public class Extension {
         }
         return state;
     }
+
 
     private void selectTransition(String desiredLevel){
         switch(desiredLevel) {

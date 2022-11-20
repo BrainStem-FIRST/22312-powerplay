@@ -18,7 +18,7 @@ import java.util.Map;
 public class Lift {
     private Telemetry telemetry;
     public DcMotor liftMotor;
-
+    public DcMotor liftMotor2;
     static final double MM_TO_INCHES = 0.0393700787;
 
     static final double COUNTS_PER_MOTOR_REV = 28;     // ticks at the motor shaft
@@ -67,10 +67,16 @@ public class Lift {
         this.telemetry = telemetry;
         this.stateMap = stateMap;
         liftMotor = hwMap.dcMotor.get("Lift");
+        liftMotor2 = hwMap.dcMotor.get("LiftMotor2");
 
         liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        liftMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        liftMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public boolean isCollectionHeight() {
@@ -85,6 +91,8 @@ public class Lift {
         String subheight = (String) stateMap.get(LIFT_SUBHEIGHT);
         String currentState = getCurrentState(subheight);
         String level = (String) stateMap.get(LIFT_SYSTEM_NAME);
+        telemetry.addData("Current ticks", liftMotor.getCurrentPosition());
+        telemetry.addData("Should Lift Move", shouldLiftMove(level,currentState));
 
         stateMap.put(LIFT_CURRENT_STATE, currentState);
 
@@ -94,6 +102,7 @@ public class Lift {
             selectTransition(level, subheight, currentState);
         } else {
             liftMotor.setPower(0);
+            liftMotor2.setPower(0);
         }
     }
 
@@ -200,9 +209,13 @@ public class Lift {
 
     public void raiseHeightTo (int heightInTicks) {
         //raising heights to reach different junctions, so four values
+        telemetry.addData("Raise Height To", heightInTicks);
         liftMotor.setTargetPosition(heightInTicks);
+        liftMotor2.setTargetPosition(heightInTicks);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotor.setPower(1.0);
+        liftMotor2.setPower(1.0);
 
     }
 
@@ -226,7 +239,7 @@ public class Lift {
 
     }
     public void setMotor(double power){
-//        liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftMotor.setPower(power);
     }
 
