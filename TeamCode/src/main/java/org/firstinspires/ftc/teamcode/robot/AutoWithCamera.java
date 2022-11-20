@@ -51,13 +51,6 @@ public class AutoWithCamera extends LinearOpMode {
 
     AprilTagDetection tagOfInterest = null; //camera
 
-
-    // robot
-    Constants constants = new Constants();
-    Map<String, String> stateMap = new HashMap<String, String>() { };
-    BrainStemRobot robot = new BrainStemRobot(hardwareMap, telemetry, stateMap);
-
-
     // Trajectory related variables
     public static boolean isAllianceRED = true; //TODO: dynamically update values
     public static boolean isOrientationLEFT = true;
@@ -84,6 +77,10 @@ public class AutoWithCamera extends LinearOpMode {
         //------------------------------------------------------
         //                 Initialize the robot
         //------------------------------------------------------
+
+        Constants constants = new Constants();
+        Map<String, String> stateMap = new HashMap<String, String>() { };
+        BrainStemRobot robot = new BrainStemRobot(hardwareMap, telemetry, stateMap);
 
         // this variable is used to calculate liftPositionPickup for stacked cones
         robot.lift.numCyclesCompleted = 0;
@@ -219,7 +216,7 @@ public class AutoWithCamera extends LinearOpMode {
 
                 // Lift to high pole while running backwards
                 // TODO: Adjust offset time so the action completes right before the robot reaches High Pole
-                .UNSTABLE_addTemporalMarkerOffset(1.0, ()->{
+                .UNSTABLE_addTemporalMarkerOffset(2.0, ()->{
                     stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_HIGH);
                     stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.LEFT_POSITION);
                     stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
