@@ -52,6 +52,9 @@ public class BrainStemRobot {
         drive   = new SampleMecanumDrive(hwMap);
         grabber   = new Grabber(hwMap, telemetry, stateMap);
 
+        // Set run mode (due to lack of a separate initialization function)
+        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         stateMap.put(constants.CONE_CYCLE, constants.STATE_NOT_STARTED);
         stateMap.put(constants.CYCLE_LIFT_DOWN, constants.STATE_NOT_STARTED);
         stateMap.put(constants.CYCLE_GRABBER, constants.STATE_NOT_STARTED);

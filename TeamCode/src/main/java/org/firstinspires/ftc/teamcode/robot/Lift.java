@@ -200,15 +200,9 @@ public class Lift {
 
     public int deliveryHeight(String subheight){
         int height = 0;
-        String currentState = (String) stateMap.get(LIFT_CURRENT_STATE);
 
         if(subheight.equalsIgnoreCase(PLACEMENT_HEIGHT)){
-
-            if(currentState.equalsIgnoreCase(LIFT_PICKUP)) {
-                height += LIFT_ADJUSTMENT-169;
-            } else {
-                height += LIFT_ADJUSTMENT;
-            }
+            height += LIFT_ADJUSTMENT;
         }
         return height;
     }
@@ -252,4 +246,8 @@ public class Lift {
         return (getPosition() > LIFT_POSITION_GROUND);
     }
 
+    // Used by Auto to reduce lift pickup position each time the number of cones in the stack were removed
+    public void updateLiftPickupPosition() {
+        liftPositionPickup -= (TICK_PER_INCH * (CONE_BASE * numCyclesCompleted));
+    }
 }
