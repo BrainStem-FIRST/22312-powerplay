@@ -59,7 +59,7 @@ public class AutoWithCamera extends LinearOpMode {
     public static int PARKING_NUMBER = 1; // Controlled by the dashboard for test purposes
     public static double SPEED = 50.0;    // Controlled by the dashboard for test purposes
     private ElapsedTime autoTime = new ElapsedTime();
-    private double TIME_TO_PARK = 25.0;
+    private double TIME_TO_PARK = 50.0;
 
     // used for trajectory state machine
     enum    TrajectoryState {
@@ -84,6 +84,8 @@ public class AutoWithCamera extends LinearOpMode {
 
         // this variable is used to calculate liftPositionPickup for stacked cones
         robot.lift.numCyclesCompleted = 0;
+
+        robot.lift.resetEncoders();
 
         stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_STATE);
         stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
@@ -127,7 +129,7 @@ public class AutoWithCamera extends LinearOpMode {
         double XFORM_X, XFORM_Y;
         double startingHeading, deliveryHeading, pickupHeading;
 
-        double CONE_CYCLE_DURATION = 0.5;   // seconds to allow cone cycle to complete before moving again in trajectory
+        double CONE_CYCLE_DURATION = 1.5;   // seconds to allow cone cycle to complete before moving again in trajectory
 
 
         // Determine trajectory headings for all alliance combinations
@@ -164,8 +166,8 @@ public class AutoWithCamera extends LinearOpMode {
 
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 36, XFORM_Y * 67.25, Math.toRadians(startingHeading));
-        pickupPose      = new Pose2d(XFORM_X * 64.25, XFORM_Y * 15.5, Math.toRadians(pickupHeading));
-        deliverPose     = new Pose2d(XFORM_X * 0, XFORM_Y * 15.5, Math.toRadians(deliveryHeading));
+        pickupPose      = new Pose2d(XFORM_X * 65, XFORM_Y * 12, Math.toRadians(pickupHeading));
+        deliverPose     = new Pose2d(XFORM_X * 0, XFORM_Y * 12, Math.toRadians(deliveryHeading));
         parkingPose = new Pose2d();
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
@@ -183,7 +185,7 @@ public class AutoWithCamera extends LinearOpMode {
                     // Position grabber to the left of the robot
                     stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_LOW);
                     stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.LEFT_POSITION);
-                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
+                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.EXTEND_LEFT);
                 })
                 // Drop off the cone at hand on the Low pole on the left
                 // This action starts after .forward() is completed
@@ -210,8 +212,8 @@ public class AutoWithCamera extends LinearOpMode {
                 .addTemporalMarker(()->stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS))
                 .waitSeconds(CONE_CYCLE_DURATION)   // wait for the cone cycle to complete
                 // Cone cycle's lift up is not high enough to clear the cone from stack. Lift more to Medium Pole Height
-                .addTemporalMarker(()->stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_MEDIUM))
-
+                //.addTemporalMarker(()->robot.lift.raiseHeightTo(255))
+                .addTemporalMarker(()->stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POSITION_CLEAR))
                 .setReversed(true)  // go backwards
 
                 // Lift to high pole while running backwards
@@ -219,7 +221,7 @@ public class AutoWithCamera extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(2.0, ()->{
                     stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_HIGH);
                     stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.LEFT_POSITION);
-                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
+                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.EXTEND_LEFT);
                 })
 
                 .lineToLinearHeading(deliverPose)
@@ -428,8 +430,8 @@ public class AutoWithCamera extends LinearOpMode {
                         // Trajectory is complete. Either re-start it or go park
 
                         // Is it time to park?
-                        //if (autoTime.seconds() > TIME_TO_PARK) {
-                        if((trajectory2.duration()+trajectoryPark.duration()) < (30.0 - autoTime.time())) {
+                        if (autoTime.seconds() > TIME_TO_PARK) {
+                        //if((trajectory2.duration()+trajectoryPark.duration()) < (30.0 - autoTime.time())) {
                             currentTrajectoryState = TrajectoryState.TRAJECTORY_PARKING_STATE;
                             robot.drive.followTrajectorySequenceAsync(trajectoryPark);
                         } else {
