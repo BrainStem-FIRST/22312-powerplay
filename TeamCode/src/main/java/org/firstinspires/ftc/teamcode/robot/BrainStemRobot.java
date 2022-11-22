@@ -64,6 +64,7 @@ public class BrainStemRobot {
         telemetry.update();
     }
 
+    // Not used -> DELETE
     public void initializeRobotPosition(){
         lift.initializePosition();
         lift.moveToMinHeight();  // Raise lift to clear side panels. This does not clear the arm holding cone.

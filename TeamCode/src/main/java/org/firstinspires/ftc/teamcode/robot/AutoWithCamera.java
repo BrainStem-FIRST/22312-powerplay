@@ -165,10 +165,10 @@ public class AutoWithCamera extends LinearOpMode {
         }
 
         // Determine trajectory segment positions based on Alliance and Orientation
-        startingPose    = new Pose2d(XFORM_X * 36, XFORM_Y * 67.25, Math.toRadians(startingHeading));
-        pickupPose      = new Pose2d(XFORM_X * 65, XFORM_Y * 12, Math.toRadians(pickupHeading));
-        deliverPose     = new Pose2d(XFORM_X * 0, XFORM_Y * 12, Math.toRadians(deliveryHeading));
-        parkingPose = new Pose2d();
+        startingPose    = new Pose2d(XFORM_X * 35.25, XFORM_Y * 67.25, Math.toRadians(startingHeading));
+        pickupPose      = new Pose2d(XFORM_X * 65, XFORM_Y * 11.75, Math.toRadians(pickupHeading));
+        deliverPose     = new Pose2d(XFORM_X * 3, XFORM_Y * 11.75, Math.toRadians(deliveryHeading));
+        parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
 
@@ -340,69 +340,69 @@ public class AutoWithCamera extends LinearOpMode {
                 PARKING_NUMBER = 2;
             else
                 PARKING_NUMBER = 3;
-
-            if(isAllianceRED) {
-                if(isOrientationLEFT)   // RED-LEFT
-                    switch (PARKING_NUMBER) {
-                        case 1:
-                            parkingPose = new Pose2d (-60, -12, Math.toRadians(180));
-                            break;
-
-                        case 2:
-                            parkingPose = new Pose2d (-36, -12, Math.toRadians(180));
-                            break;
-
-                        case 3:
-                            parkingPose = new Pose2d (-12, -12, Math.toRadians(-90));
-                            break;
-                    }
-                else                    // RED-RIGHT
-                    switch (PARKING_NUMBER) {
-                        case 1:
-                            parkingPose = new Pose2d (12, -12, Math.toRadians(-90));
-                            break;
-
-                        case 2:
-                            parkingPose = new Pose2d (36, -12, Math.toRadians(0));
-                            break;
-
-                        case 3:
-                            parkingPose = new Pose2d (60, -12, Math.toRadians(0));
-                            break;
-                    }
-            }
-            else {
-                if(isOrientationLEFT)   // BLUE-LEFT
-                    switch (PARKING_NUMBER) {
-                        case 1:
-                            parkingPose = new Pose2d (60, 12, Math.toRadians(0));
-                            break;
-
-                        case 2:
-                            parkingPose = new Pose2d (36, 12, Math.toRadians(0));
-                            break;
-
-                        case 3:
-                            parkingPose = new Pose2d (12, 12, Math.toRadians(90));
-                            break;
-                    }
-                else                    // BLUE-RIGHT
-                    switch (PARKING_NUMBER) {
-                        case 1:
-                            parkingPose = new Pose2d (-12, 12, Math.toRadians(90));
-                            break;
-
-                        case 2:
-                            parkingPose = new Pose2d (-36, 12, Math.toRadians(-90));
-                            break;
-
-                        case 3:
-                            parkingPose = new Pose2d (-60, 12, Math.toRadians(-90));
-                            break;
-                    }
-            }
-
         }
+
+        if(isAllianceRED) {
+            if(isOrientationLEFT)   // RED-LEFT
+                switch (PARKING_NUMBER) {
+                    case 1:
+                        parkingPose = new Pose2d (-58.75, -11.75, Math.toRadians(180));
+                        break;
+
+                    case 2:
+                        parkingPose = new Pose2d (-35.25, -11.75, Math.toRadians(180));
+                        break;
+
+                    case 3:
+                        parkingPose = new Pose2d (-11.75, -11.75, Math.toRadians(-90));
+                        break;
+                }
+            else                    // RED-RIGHT
+                switch (PARKING_NUMBER) {
+                    case 1:
+                        parkingPose = new Pose2d (11.75, -11.75, Math.toRadians(-90));
+                        break;
+
+                    case 2:
+                        parkingPose = new Pose2d (35.25, -11.75, Math.toRadians(0));
+                        break;
+
+                    case 3:
+                        parkingPose = new Pose2d (58.75, -11.75, Math.toRadians(0));
+                        break;
+                }
+        }
+        else {
+            if(isOrientationLEFT)   // BLUE-LEFT
+                switch (PARKING_NUMBER) {
+                    case 1:
+                        parkingPose = new Pose2d (58.75, 11.75, Math.toRadians(0));
+                        break;
+
+                    case 2:
+                        parkingPose = new Pose2d (35.25, 11.75, Math.toRadians(0));
+                        break;
+
+                    case 3:
+                        parkingPose = new Pose2d (11.75, 11.75, Math.toRadians(90));
+                        break;
+                }
+            else                    // BLUE-RIGHT
+                switch (PARKING_NUMBER) {
+                    case 1:
+                        parkingPose = new Pose2d (-11.75, 11.75, Math.toRadians(90));
+                        break;
+
+                    case 2:
+                        parkingPose = new Pose2d (-35.25, 11.75, Math.toRadians(-90));
+                        break;
+
+                    case 3:
+                        parkingPose = new Pose2d (-58.75, 11.75, Math.toRadians(-90));
+                        break;
+                }
+        }
+
 
         trajectoryPark = robot.drive.trajectorySequenceBuilder(trajectory2.end())
                 .lineToLinearHeading(parkingPose)

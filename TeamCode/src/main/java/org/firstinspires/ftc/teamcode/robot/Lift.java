@@ -13,16 +13,16 @@ public class Lift {
     static final double MM_TO_INCHES = 0.0393700787;
 
     static final double COUNTS_PER_MOTOR_REV = 28;     // ticks at the motor shaft
-    static final double DRIVE_GEAR_REDUCTION = 5.23;     // TODO: Fix to 3:1 gear reduction (slowing down)
+    static final double DRIVE_GEAR_REDUCTION = 2.89;     // 3:1 gear reduction (slowing down) is actual 2.89:1
     static final double PULLEY_WHEEL_DIAMETER_INCHES = 24.25 * MM_TO_INCHES;     // convert mm to inches
-    static final double TICK_PER_INCH = 26.25; //(COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (PULLEY_WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double TICK_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (PULLEY_WHEEL_DIAMETER_INCHES * 3.1415);
 
     static final double LIFT_UP_SPEED = 0.5;
     static final double LIFT_DOWN_SPEED = 0.5;
 
     public final int MINIMUM_CLEARANCE_HEIGHT = 43;    // inches to lift to clear side panels
 
-    public final double CONE_BASE = 1.3; //base of the cone for pickup calculations
+    public final double CONE_BASE = 1.3;    //base of the cone for pickup calculations
     public int numCyclesCompleted = 0;      //numCyclesCompleted during Auto for pickup calculations
 
     // TODO: Pole heights might need to be recalculated because the lift starting position (encoder values reset) is now the height of single cone at hand
@@ -31,12 +31,13 @@ public class Lift {
     public final int LIFT_POSITION_LOWPOLE = 390; //it was 340
     public final int LIFT_POSITION_MIDPOLE = 630;
     public final int LIFT_POSITION_HIGHPOLE = 870;  //840;
+
     public final int LIFT_ADJUSTMENT = -75;
-    public final int LIFT_CLEAR_HEIGHT = 255;
+
     // Lift pick up position is only 4 cone bases higher than the starting position,
-    // which is reset to 0 ticks at the start of Auto when lift is positioned on top of the single cone
-    public final int LIFT_PICKUP_INIT = (int) ((6.5 * TICK_PER_INCH) - LIFT_ADJUSTMENT); //(int) (((CONE_BASE * 4) * TICK_PER_INCH) - (2 * TICK_PER_INCH))
-    public int liftPositionPickup = 211; //LIFT_PICKUP_INIT;
+    // which is reset to 0 ticks at the start of Auto when lift is positioned on top of a single cone
+    public final int LIFT_PICKUP_INIT = (int) ((CONE_BASE * 4) * TICK_PER_INCH);
+    public int liftPositionPickup = LIFT_PICKUP_INIT - LIFT_ADJUSTMENT;
 
     Constants constants = new Constants();
 
@@ -52,7 +53,12 @@ public class Lift {
     public final String APPROACH_HEIGHT = "APPROACH_HEIGHT";
     public final String PLACEMENT_HEIGHT = "PLACEMENT_HEIGHT";
     public final String LIFT_SUBHEIGHT = "SUB_HEIGHT";
+
+    // Used in Auto to determine the lift's position high enough to unstack the cones during pickup
     public final String LIFT_POSITION_CLEAR = "LIFT_CLEAR_HEIGHT";
+    // This is the encoder tick count for the lift that raises the cone's base just below the rim of the field wall.
+    // Raising the cone any further during auto pickup risks hitting the cone's base to the lip of the wall.
+    public final int LIFT_CLEAR_HEIGHT = 255;   // Encoder position was determined empirically
 
     public final String TRANSITION_STATE = "TRANSITION";
     public final int DELIVERY_ADJUSTMENT = -3;
@@ -149,7 +155,7 @@ public class Lift {
             }
             case LIFT_PICKUP:{
                 // accounts for stacked cone height
-                position = liftPositionPickup; //- (TICK_PER_INCH * (CONE_BASE * numCyclesCompleted)));
+                position = liftPositionPickup;
                 break;
             }
         }
@@ -228,6 +234,7 @@ public class Lift {
 
     }
 
+    // Not used -> DELETE
     public  boolean isClear () {
         //true means turret can turn and lift is raised to minimum clearance; false is the opposite
         double currentLiftHeight = liftMotor.getCurrentPosition() * TICK_PER_INCH;
@@ -237,18 +244,20 @@ public class Lift {
         return false;
 
     }
+    // Not used -> DELETE
     public void moveToMinHeight(){
         if (!isClear()) {
             raiseHeightTo(MINIMUM_CLEARANCE_HEIGHT);
         }
     }
 
+    // Not used -> DELETE
     public void initializePosition( ) {
         liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
     }
+    // Not used -> DELETE
     public void setMotor(double power){
-//        liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftMotor.setPower(power);
     }
 
