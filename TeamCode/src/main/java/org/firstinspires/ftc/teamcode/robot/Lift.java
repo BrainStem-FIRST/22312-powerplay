@@ -30,7 +30,7 @@ public class Lift {
     public final int LIFT_POSITION_GROUND = 87;
     public final int LIFT_POSITION_LOWPOLE = 390; //it was 340
     public final int LIFT_POSITION_MIDPOLE = 630;
-    public final int LIFT_POSITION_HIGHPOLE = 870;  //840;
+    public final int LIFT_POSITION_HIGHPOLE = 900;  //840;
 
     public final int LIFT_ADJUSTMENT = -75;
 
@@ -90,8 +90,8 @@ public class Lift {
     public void setState() {
         String subheight = (String) stateMap.get(LIFT_SUBHEIGHT);
         String currentState = getCurrentState(subheight);
-        telemetry.addData("subheight:", subheight);
-        telemetry.addData("lift encoder count", getPosition());
+//        telemetry.addData("subheight:", subheight);
+//        telemetry.addData("lift encoder count", getPosition());
         String level = (String) stateMap.get(LIFT_SYSTEM_NAME);
 
         stateMap.put(LIFT_CURRENT_STATE, currentState);
@@ -160,7 +160,7 @@ public class Lift {
             }
         }
         // this function can return position 0 if lift is in transition between heights (as reported by getCurrentState() function)
-        telemetry.addData("Lift State Position =", position);
+//        telemetry.addData("Lift State Position =", position);
         return position;
     }
 
@@ -294,8 +294,8 @@ public class Lift {
         }
         liftPositionPickup += 75;
         //liftPositionPickup = (int) (LIFT_PICKUP_INIT - ((CONE_BASE * numCyclesCompleted) * TICK_PER_INCH));
-        telemetry.addData("cyclenumber:", numCyclesCompleted);
-        telemetry.addData("liftpositionpickup:", liftPositionPickup);
+//        telemetry.addData("cyclenumber:", numCyclesCompleted);
+//        telemetry.addData("liftpositionpickup:", liftPositionPickup);
         telemetry.update();
     }
 
