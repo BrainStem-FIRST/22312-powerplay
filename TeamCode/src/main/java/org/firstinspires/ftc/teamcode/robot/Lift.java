@@ -287,23 +287,23 @@ public class Lift {
     public void updateLiftPickupPosition() {
         switch (numCyclesCompleted){
             case 0: {
-                liftPositionPickup = 136;
+                liftPositionPickup = 176; //136
                 break;
             }
             case 1: {
-                liftPositionPickup = 96;
+                liftPositionPickup = 136; //96
                 break;
             }
             case 2: {
-                liftPositionPickup = 63;
+                liftPositionPickup = 103; //63
                 break;
             }
             case 3: {
-                liftPositionPickup = 34;
+                liftPositionPickup = 74; //34
                 break;
             }
             case 4: {
-                liftPositionPickup = 3;
+                liftPositionPickup = 43; //3
                 break;
             }
         }

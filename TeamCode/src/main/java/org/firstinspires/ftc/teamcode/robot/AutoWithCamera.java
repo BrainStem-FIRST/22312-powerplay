@@ -93,7 +93,7 @@ public class AutoWithCamera extends LinearOpMode {
 
         robot.lift.resetEncoders();
 
-        stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_STATE);
+//        stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_STATE);
         stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
         stateMap.put(robot.lift.LIFT_SUBHEIGHT, robot.lift.APPROACH_HEIGHT);
         stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
@@ -186,10 +186,11 @@ public class AutoWithCamera extends LinearOpMode {
         trajectoryStart = robot.drive.trajectorySequenceBuilder(startingPose)
                 //moves forward in a line facing 90 degrees away (positioned in between two poles)
                 //.splineTo(new Vector2d(startingPose.getX(), XFORM_Y * 38.5), 180,
+                .addTemporalMarker(()->stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_STATE))
                 .forward(38.5,
                         SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
-                .addTemporalMarker(0.2,()->{    // Start positioning scaffolding
+                .addTemporalMarker(0.3,()->{    // Start positioning scaffolding
                     // Position grabber to the left of the robot
                     stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_LOW);
                     stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.LEFT_POSITION); // robot is facing the low pole already
