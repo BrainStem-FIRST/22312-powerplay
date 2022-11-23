@@ -64,7 +64,7 @@ public class AutoWithCamera extends LinearOpMode {
     public static int PARKING_NUMBER = 1; // Controlled by the dashboard for test purposes
     public static double SPEED = 40.0;    // Controlled by the dashboard for test purposes
     private ElapsedTime autoTime = new ElapsedTime();
-    private double TIME_TO_PARK = 27.0;
+    private double TIME_TO_PARK = 25.0;
 
     // used for trajectory state machine
     enum    TrajectoryState {
@@ -173,7 +173,7 @@ public class AutoWithCamera extends LinearOpMode {
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 34.75, XFORM_Y * 65, Math.toRadians(startingHeading));
         pickupPose      = new Pose2d(XFORM_X * 63.5, XFORM_Y * 11.75, Math.toRadians(pickupHeading));
-        depositPose     = new Pose2d(XFORM_X * -2, XFORM_Y * 11.75, Math.toRadians(deliveryHeading));
+        depositPose     = new Pose2d(XFORM_X * 22.5, XFORM_Y * 11.75, Math.toRadians(deliveryHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
@@ -185,15 +185,15 @@ public class AutoWithCamera extends LinearOpMode {
         // From starting position, turn sideways (to push the signal cone), strafe, deliver on Low Pole, spline to pickup position, and pickup top-most cone
         trajectoryStart = robot.drive.trajectorySequenceBuilder(startingPose)
                 //moves forward in a line facing 90 degrees away (positioned in between two poles)
-                .splineTo(new Vector2d(startingPose.getX(), XFORM_Y * 38.5), 180,
-                //.forward(38.5,
+                //.splineTo(new Vector2d(startingPose.getX(), XFORM_Y * 38.5), 180,
+                .forward(38.5,
                         SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
                 .addTemporalMarker(0.2,()->{    // Start positioning scaffolding
                     // Position grabber to the left of the robot
                     stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_LOW);
-                    stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION); // robot is facing the low pole already
-                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
+                    stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.LEFT_POSITION); // robot is facing the low pole already
+                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.EXTEND_LEFT);
                 })
                 // Drop off the cone at hand on the Low pole on the left
                 // This action starts after .forward() is completed
@@ -203,7 +203,7 @@ public class AutoWithCamera extends LinearOpMode {
                     stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
                     stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
                 })
-                .strafeRight(3,
+                .forward(3,
                         SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
 
@@ -227,7 +227,7 @@ public class AutoWithCamera extends LinearOpMode {
 
                 // Lift to high pole while running backwards
                 .UNSTABLE_addTemporalMarkerOffset(1.2, ()->{
-                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_HIGH);
+                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_MEDIUM);
                     stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.LEFT_POSITION);
                     stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.EXTEND_LEFT);
                 })
@@ -426,9 +426,11 @@ public class AutoWithCamera extends LinearOpMode {
 
         trajectoryParkFromPickup = robot.drive.trajectorySequenceBuilder(pickupPose)
                 .lineToLinearHeading(parkingPose)
+                //.addTemporalMarker(0.3, ()->stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_GROUND))
                 .build();
         trajectoryParkFromDeposit = robot.drive.trajectorySequenceBuilder(depositPose)
                 .lineToLinearHeading(parkingPose)
+                //.addTemporalMarker(0.3, ()->stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_GROUND))
                 .build();
 
         // Show trajectory durations for debugging
@@ -461,8 +463,8 @@ public class AutoWithCamera extends LinearOpMode {
                         // Deposit is complete. Either go back to Pickup or go park
 
                         // Is it time to park?
-//                        if (autoTime.seconds() > TIME_TO_PARK) {
-                        if((trajectoryPickup.duration()+trajectoryParkFromPickup.duration()) < (30.0 - autoTime.seconds())) {
+                        if (autoTime.seconds() > TIME_TO_PARK) {
+                        //if((trajectoryPickup.duration()+trajectoryParkFromPickup.duration()) < (30.0 - autoTime.seconds())) {
                             currentTrajectoryState = TrajectoryState.TRAJECTORY_PARKING_STATE;
                             robot.drive.followTrajectorySequenceAsync(trajectoryParkFromDeposit);
 
@@ -483,8 +485,8 @@ public class AutoWithCamera extends LinearOpMode {
                         // Pickup is complete. Either go back to Deposit or go park
 
                         // Is it time to park?
-//                        if (autoTime.seconds() > TIME_TO_PARK) {
-                        if((trajectoryDeposit.duration()+trajectoryParkFromDeposit.duration()) < (30.0 - autoTime.seconds())) {
+                        if (autoTime.seconds() > TIME_TO_PARK) {
+                        //if((trajectoryDeposit.duration()+trajectoryParkFromDeposit.duration()) < (30.0 - autoTime.seconds())) {
                             currentTrajectoryState = TrajectoryState.TRAJECTORY_PARKING_STATE;
                             robot.drive.followTrajectorySequenceAsync(trajectoryParkFromPickup);
 
