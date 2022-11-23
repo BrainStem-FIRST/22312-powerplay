@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -21,7 +20,8 @@ public class Extension {
 
     // Servo Positions
     public final double EXTENSION_POSITION_HOME = 0;    // Fully retracted
-    public final double EXTENSION_POSITION_MAX  = 1;    // Fully extended
+    public final double EXTENSION_POSITION_MAX  = 0.6;  // Fully extended
+    public final double EXTENSION_POSITION_LEFT = 0.4;  // Extended to left position
 
     public final double TWOBAR_POSITION_HOME    = 0;    // vertical position
     public final double TWOBAR_POSITION_MAX     = 1;    // fully tilted
@@ -29,7 +29,8 @@ public class Extension {
     // extension statemap values
     public final String SYSTEM_NAME = "EXTENSION"; //statemap key
     public final String DEFAULT_VALUE = "RETRACTED";
-    public final String FULL_EXTEND = "EXTENDED";
+    public final String FULL_EXTEND = "EXTENDED_R";
+    public final String EXTEND_LEFT = "EXTENDED_L";
     public final String TRANSITION_STATE = "TRANSITION";
 
     public double extensionGetPosition(){
@@ -43,10 +44,10 @@ public class Extension {
         twoBar = (ServoImplEx) hwMap.servo.get("Two Bar");
 
         // Scale the operating range of Servos and set initial position
-        extension.setPwmRange(new PwmControl.PwmRange(1250,2522));
+        extension.setPwmRange(new PwmControl.PwmRange(1150,2522)); //low cap was 1250 and it was not retracting all the way
         extendHome();
 
-        twoBar.setPwmRange(new PwmControl.PwmRange(1745,2522));
+        twoBar.setPwmRange(new PwmControl.PwmRange(1745,2400));
         tiltDown();
 
     }
@@ -105,6 +106,13 @@ public class Extension {
         extension.setPosition(EXTENSION_POSITION_MAX);
     }
 
+    // Extends arm to left position
+    public void extendLeft() {
+        extension.setPosition(EXTENSION_POSITION_LEFT);
+    }
+
+
+
     public void setState(String desiredState){
         String currentState = getCurrentState();
         telemetry.addData("armCurrentState" , currentState);
@@ -121,8 +129,10 @@ public class Extension {
         telemetry.addData("ExtensionCurrentPosition", currentPosition);
         if(currentPosition<0.2){
             state = DEFAULT_VALUE;
-        } else if (currentPosition>0.8) {
+        } else if (currentPosition>=0.6) {
             state = FULL_EXTEND;
+        } else {
+            state = EXTEND_LEFT;
         }
         return state;
     }
@@ -135,6 +145,10 @@ public class Extension {
             }
             case FULL_EXTEND: {
                 extendMax();
+                break;
+            }
+            case EXTEND_LEFT: {
+                extendLeft();
                 break;
             }
         }

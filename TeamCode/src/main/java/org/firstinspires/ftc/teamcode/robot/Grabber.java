@@ -15,42 +15,67 @@ import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
+import java.util.HashMap;
+import java.util.Map;
+
+
 
 public class Grabber {
     private Telemetry telemetry;
     private ServoImplEx grabber;
 
+
     public final String SYSTEM_NAME = "GRABBER";
     public final String OPEN_STATE = "OPEN";
     public final String CLOSED_STATE = "CLOSED";
+    Constants constants = new Constants();
 
-    public final double OPEN_VALUE = 0.4;
+    public final double OPEN_VALUE = 0.58;
     public final double CLOSED_VALUE = 0.685;
 
-    public Grabber(HardwareMap hwMap, Telemetry telemetry) {
+    private Map stateMap;
+
+    public Grabber(HardwareMap hwMap, Telemetry telemetry, Map stateMap) {
         this.telemetry = telemetry;
+        this.stateMap = stateMap;
+
 
         grabber = (ServoImplEx) hwMap.servo.get("Grabber");
 
         grabber.setPwmRange(new PwmControl.PwmRange(100,2522));
-        grabberOpen();
-
+        //grabberOpen();
     }
 
 
-    public void setState(String position) {
-
-        telemetry.addData("GrabberState", position);
-        switch (position) {
-            case OPEN_STATE: {
-                grabber.setPosition(OPEN_VALUE);
-                break;
-            }
-            case CLOSED_STATE: {
+    public void setState(String position, Lift lift) {
+        if(((String)stateMap.get(constants.CYCLE_GRABBER)).equalsIgnoreCase(constants.STATE_IN_PROGRESS)){
+            if (shouldGrab(lift)) {
                 grabber.setPosition(CLOSED_VALUE);
-                break;
+            } else {
+                grabber.setPosition(OPEN_VALUE);
+                telemetry.addData("Open Grabber", true);
             }
+
+            if (stateMap.get(constants.GRABBER_START_TIME) == null) {
+                stateMap.put(constants.GRABBER_START_TIME, System.currentTimeMillis());
+            } else {
+                long grabberStartTime = (long) stateMap.get(constants.GRABBER_START_TIME);
+                long grabberEndTime = grabberStartTime + constants.GRABBER_CYCLE_TIME;
+                if(System.currentTimeMillis() > grabberEndTime) {
+                    stateMap.put(constants.GRABBER_START_TIME, null);
+                    stateMap.put(constants.CYCLE_GRABBER, constants.STATE_COMPLETE);
+                }
+            }
+
+        } else if (((String)stateMap.get(constants.CYCLE_GRABBER)).equalsIgnoreCase(constants.STATE_NOT_STARTED) && shouldGrab(lift)) {
+            grabber.setPosition(OPEN_VALUE);
         }
+    }
+    public boolean shouldGrab(Lift lift) {
+        telemetry.addData("should grab function", true);
+        telemetry.update();
+        return lift.getPosition() < lift.LIFT_POSITION_MIDPOLE &&
+                ((String)stateMap.get(constants.CONE_CYCLE)).equalsIgnoreCase(constants.STATE_IN_PROGRESS);
     }
 
     /************************* GRABBER UTILITIES **************************/
