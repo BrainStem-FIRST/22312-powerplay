@@ -52,6 +52,9 @@ public class BrainStemRobot {
         drive   = new SampleMecanumDrive(hwMap);
         grabber   = new Grabber(hwMap, telemetry, stateMap);
 
+        // Set run mode (due to lack of a separate initialization function)
+        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         stateMap.put(constants.CONE_CYCLE, constants.STATE_NOT_STARTED);
         stateMap.put(constants.CYCLE_LIFT_DOWN, constants.STATE_NOT_STARTED);
         stateMap.put(constants.CYCLE_GRABBER, constants.STATE_NOT_STARTED);
@@ -61,6 +64,7 @@ public class BrainStemRobot {
         telemetry.update();
     }
 
+    // Not used -> DELETE
     public void initializeRobotPosition(){
         lift.initializePosition();
         lift.moveToMinHeight();  // Raise lift to clear side panels. This does not clear the arm holding cone.
@@ -70,7 +74,7 @@ public class BrainStemRobot {
     }
 
     public void updateSystems() {
-        telemetry.addData("robotStateMap" , stateMap);
+        //telemetry.addData("robotStateMap" , stateMap);
         stateMap.put(constants.SYSTEM_TIME, System.currentTimeMillis());
 
 
@@ -80,12 +84,13 @@ public class BrainStemRobot {
             lift.setState();
             turret.setState((String) stateMap.get(turret.SYSTEM_NAME), lift);
             arm.setState((String) stateMap.get(arm.SYSTEM_NAME));
+            grabber.setState((String) stateMap.get(grabber.SYSTEM_NAME), lift);
         }
 
     }
 
     public void coneCycle() {
-        if(startliftDown()) {
+        if(startLiftDown()) {
             stateMap.put(constants.CYCLE_LIFT_DOWN, constants.STATE_IN_PROGRESS);
             stateMap.put(lift.LIFT_SUBHEIGHT, lift.PLACEMENT_HEIGHT);
         } else if(startGrabberAction()){
@@ -106,6 +111,7 @@ public class BrainStemRobot {
     private void setConeCycleSystems() {
         lift.setState();
         grabber.setState((String) stateMap.get(grabber.SYSTEM_NAME), lift);
+        arm.setState((String) stateMap.get(arm.SYSTEM_NAME));
     }
 
     private boolean startLiftUp() {
@@ -113,7 +119,7 @@ public class BrainStemRobot {
                 ((String) stateMap.get(constants.CYCLE_LIFT_UP)).equalsIgnoreCase(constants.STATE_NOT_STARTED);
     }
 
-    private boolean startliftDown() {
+    private boolean startLiftDown() {
         return (((String) stateMap.get(constants.CONE_CYCLE)).equalsIgnoreCase(constants.STATE_IN_PROGRESS) &&
                 ((String)(stateMap.get(constants.CYCLE_LIFT_DOWN))).equalsIgnoreCase(constants.STATE_NOT_STARTED));
     }

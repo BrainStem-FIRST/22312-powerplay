@@ -30,7 +30,7 @@ public class Grabber {
     public final String CLOSED_STATE = "CLOSED";
     Constants constants = new Constants();
 
-    public final double OPEN_VALUE = 0.45;
+    public final double OPEN_VALUE = 0.58;
     public final double CLOSED_VALUE = 0.685;
 
     private Map stateMap;
@@ -43,8 +43,7 @@ public class Grabber {
         grabber = (ServoImplEx) hwMap.servo.get("Grabber");
 
         grabber.setPwmRange(new PwmControl.PwmRange(100,2522));
-        grabberOpen();
-
+        //grabberOpen();
     }
 
 
@@ -54,6 +53,7 @@ public class Grabber {
                 grabber.setPosition(CLOSED_VALUE);
             } else {
                 grabber.setPosition(OPEN_VALUE);
+                telemetry.addData("Open Grabber", true);
             }
 
             if (stateMap.get(constants.GRABBER_START_TIME) == null) {
@@ -72,7 +72,9 @@ public class Grabber {
         }
     }
     public boolean shouldGrab(Lift lift) {
-        return lift.getPosition() < lift.LIFT_POSITION_GROUND &&
+        telemetry.addData("should grab function", true);
+        telemetry.update();
+        return lift.getPosition() < lift.LIFT_POSITION_MIDPOLE &&
                 ((String)stateMap.get(constants.CONE_CYCLE)).equalsIgnoreCase(constants.STATE_IN_PROGRESS);
     }
 

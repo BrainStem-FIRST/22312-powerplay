@@ -33,7 +33,9 @@ public class TestTeleOp extends LinearOpMode {
     private final String GAMEPAD_1_Y_STATE = "GAMEPAD_1_Y_STATE";
     private final String GAMEPAD_1_Y_PRESSED = "GAMEPAD_1_Y_IS_PRESSED";
 
+
     private double extensionPosition = 0.025;
+
     private final String MANUAL_DRIVE_MODE = "MANUAL";
     private final String AUTO_DRIVE_MODE = "AUTO";
     private final String DRIVE_MODE = "DRIVE_MODE";
@@ -74,6 +76,7 @@ public class TestTeleOp extends LinearOpMode {
         stateMap.put(robot.lift.LIFT_SUBHEIGHT, robot.lift.APPROACH_HEIGHT);
         stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
         stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
+
         stateMap.put(constants.DRIVER_2_SELECTED_LIFT, robot.lift.LIFT_POLE_HIGH);
         stateMap.put(constants.DRIVER_2_SELECTED_TURRET, robot.turret.CENTER_POSITION);
 
@@ -138,16 +141,19 @@ public class TestTeleOp extends LinearOpMode {
                     .build();
 
             drive.followTrajectoryAsync(reverseTrajectory);
+
         } else if (gamepad1.dpad_up) {
             stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
             toggleMap.put(GAMEPAD_1_A_STATE, true);
             Trajectory reverseTrajectory = drive.highSpeedTrajectoryBuilder(drive.getPoseEstimate())
                     .addDisplacementMarker(() -> stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_HIGH))
+
                     .forward(42)
                     .addDisplacementMarker(() -> stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE))
                     .build();
 
             drive.followTrajectoryAsync(reverseTrajectory);
+
         }
         if(gamepad2.left_stick_x <= -0.1 || gamepad2.left_stick_x >= 0.1){
             drive.setWeightedDrivePower(
@@ -157,6 +163,7 @@ public class TestTeleOp extends LinearOpMode {
                             0
                     )
             );
+
         }
 
         if (stateMap.get(DRIVE_MODE).equals(MANUAL_DRIVE_MODE)) {

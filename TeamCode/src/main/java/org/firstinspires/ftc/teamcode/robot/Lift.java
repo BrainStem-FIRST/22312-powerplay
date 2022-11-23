@@ -1,17 +1,8 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 import com.qualcomm.robotcore.hardware.DcMotor;
-import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-
 import java.util.Map;
 
 
@@ -22,7 +13,7 @@ public class Lift {
     static final double MM_TO_INCHES = 0.0393700787;
 
     static final double COUNTS_PER_MOTOR_REV = 28;     // ticks at the motor shaft
-    static final double DRIVE_GEAR_REDUCTION = 5.23;     // TODO: Fix to 3:1 gear reduction (slowing down)
+    static final double DRIVE_GEAR_REDUCTION = 2.89;     // 3:1 gear reduction (slowing down) is actual 2.89:1
     static final double PULLEY_WHEEL_DIAMETER_INCHES = 24.25 * MM_TO_INCHES;     // convert mm to inches
     static final double TICK_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (PULLEY_WHEEL_DIAMETER_INCHES * 3.1415);
 
@@ -31,13 +22,25 @@ public class Lift {
 
     public final int MINIMUM_CLEARANCE_HEIGHT = 43;    // inches to lift to clear side panels
 
+    public final double CONE_BASE = 1.3;    //base of the cone for pickup calculations
+    public int numCyclesCompleted = 0;      //numCyclesCompleted during Auto for pickup calculations
+
+    // TODO: Pole heights might need to be recalculated because the lift starting position (encoder values reset) is now the height of single cone at hand
     public final int LIFT_POSITION_RESET = 0;
+
     public final int LIFT_POSITION_GROUND = 105;
     public final int LIFT_POSITION_LOWPOLE = 420;
     public final int LIFT_POSITION_MIDPOLE = 680;
     public final int LIFT_POSITION_HIGHPOLE = 940;
     public final int LIFT_POSITION_PICKUP = 8;
+
     public final int LIFT_ADJUSTMENT = -75;
+
+    // Lift pick up position is only 4 cone bases higher than the starting position,
+    // which is reset to 0 ticks at the start of Auto when lift is positioned on top of a single cone
+    public final int LIFT_PICKUP_INIT = (int) ((CONE_BASE * 4) * TICK_PER_INCH);
+    public int liftPositionPickup = LIFT_PICKUP_INIT - LIFT_ADJUSTMENT;
+
     Constants constants = new Constants();
 
 
@@ -52,6 +55,12 @@ public class Lift {
     public final String APPROACH_HEIGHT = "APPROACH_HEIGHT";
     public final String PLACEMENT_HEIGHT = "PLACEMENT_HEIGHT";
     public final String LIFT_SUBHEIGHT = "SUB_HEIGHT";
+
+    // Used in Auto to determine the lift's position high enough to unstack the cones during pickup
+    public final String LIFT_POSITION_CLEAR = "LIFT_CLEAR_HEIGHT";
+    // This is the encoder tick count for the lift that raises the cone's base just below the rim of the field wall.
+    // Raising the cone any further during auto pickup risks hitting the cone's base to the lip of the wall.
+    public final int LIFT_CLEAR_HEIGHT = 255;   // Encoder position was determined empirically
 
     public final String TRANSITION_STATE = "TRANSITION";
     public final int DELIVERY_ADJUSTMENT = -3;
@@ -69,13 +78,12 @@ public class Lift {
         liftMotor = hwMap.dcMotor.get("Lift");
         liftMotor2 = hwMap.dcMotor.get("LiftMotor2");
 
-        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         liftMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        liftMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
@@ -90,6 +98,8 @@ public class Lift {
     public void setState() {
         String subheight = (String) stateMap.get(LIFT_SUBHEIGHT);
         String currentState = getCurrentState(subheight);
+//        telemetry.addData("subheight:", subheight);
+//        telemetry.addData("lift encoder count", getPosition());
         String level = (String) stateMap.get(LIFT_SYSTEM_NAME);
         telemetry.addData("Current ticks", liftMotor.getCurrentPosition());
         telemetry.addData("Should Lift Move", shouldLiftMove(level,currentState));
@@ -150,15 +160,26 @@ public class Lift {
                 position = LIFT_POSITION_GROUND;
                 break;
             }
+            case LIFT_POSITION_CLEAR:{
+                position = LIFT_CLEAR_HEIGHT;
+                break;
+            }
+            case LIFT_PICKUP:{
+                // accounts for stacked cone height
+                position = liftPositionPickup;
+                break;
+            }
         }
-            return position;
+        // this function can return position 0 if lift is in transition between heights (as reported by getCurrentState() function)
+//        telemetry.addData("Lift State Position =", position);
+        return position;
     }
 
 
     private void selectTransition(String desiredLevel, String subheight, String currentState){
         switch(desiredLevel){
             case LIFT_PICKUP:{
-                transitionToLiftPosition(LIFT_POSITION_PICKUP);
+                transitionToLiftPosition(liftPositionPickup + deliveryHeight(subheight));
                 break;
             }
             case LIFT_POLE_LOW:{
@@ -175,6 +196,10 @@ public class Lift {
             }
             case LIFT_POLE_GROUND:{
                 transitionToLiftPosition(LIFT_POSITION_GROUND + deliveryHeight(subheight));
+                break;
+            }
+            case LIFT_POSITION_CLEAR:{
+                transitionToLiftPosition(LIFT_CLEAR_HEIGHT);
                 break;
             }
         }
@@ -195,12 +220,17 @@ public class Lift {
             state = LIFT_POLE_MEDIUM;
         } else if (inHeightTolerance(currentPosition, LIFT_POSITION_HIGHPOLE + deliveryHeight(subheight))) {
             state = LIFT_POLE_HIGH;
+        } else if (inHeightTolerance(currentPosition, LIFT_CLEAR_HEIGHT)) {
+            state = LIFT_POSITION_CLEAR;
+        } else if (inHeightTolerance(currentPosition, liftPositionPickup + deliveryHeight(subheight))) {
+            state = LIFT_PICKUP; //accounted for pickup
         }
         return state;
     }
 
     public int deliveryHeight(String subheight){
         int height = 0;
+
         if(subheight.equalsIgnoreCase(PLACEMENT_HEIGHT)){
             height += LIFT_ADJUSTMENT;
         }
@@ -219,6 +249,7 @@ public class Lift {
 
     }
 
+    // Not used -> DELETE
     public  boolean isClear () {
         //true means turret can turn and lift is raised to minimum clearance; false is the opposite
         double currentLiftHeight = liftMotor.getCurrentPosition() * TICK_PER_INCH;
@@ -228,18 +259,20 @@ public class Lift {
         return false;
 
     }
+    // Not used -> DELETE
     public void moveToMinHeight(){
         if (!isClear()) {
             raiseHeightTo(MINIMUM_CLEARANCE_HEIGHT);
         }
     }
 
+    // Not used -> DELETE
     public void initializePosition( ) {
         liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
     }
+    // Not used -> DELETE
     public void setMotor(double power){
-        liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftMotor.setPower(power);
     }
 
@@ -250,4 +283,38 @@ public class Lift {
         return (getPosition() > LIFT_POSITION_GROUND);
     }
 
+    // Used by Auto to reduce lift pickup position each time the number of cones in the stack were removed
+    public void updateLiftPickupPosition() {
+        switch (numCyclesCompleted){
+            case 0: {
+                liftPositionPickup = 136;
+                break;
+            }
+            case 1: {
+                liftPositionPickup = 96;
+                break;
+            }
+            case 2: {
+                liftPositionPickup = 63;
+                break;
+            }
+            case 3: {
+                liftPositionPickup = 34;
+                break;
+            }
+            case 4: {
+                liftPositionPickup = 3;
+                break;
+            }
+        }
+        liftPositionPickup += 75;
+        //liftPositionPickup = (int) (LIFT_PICKUP_INIT - ((CONE_BASE * numCyclesCompleted) * TICK_PER_INCH));
+//        telemetry.addData("cyclenumber:", numCyclesCompleted);
+//        telemetry.addData("liftpositionpickup:", liftPositionPickup);
+        telemetry.update();
+    }
+
+    public void resetEncoders() {
+        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
 }
