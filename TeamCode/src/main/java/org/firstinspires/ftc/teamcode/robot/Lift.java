@@ -9,7 +9,7 @@ import java.util.Map;
 public class Lift {
     private Telemetry telemetry;
     public DcMotor liftMotor;
-
+    public DcMotor liftMotor2;
     static final double MM_TO_INCHES = 0.0393700787;
 
     static final double COUNTS_PER_MOTOR_REV = 28;     // ticks at the motor shaft
@@ -27,10 +27,12 @@ public class Lift {
 
     // TODO: Pole heights might need to be recalculated because the lift starting position (encoder values reset) is now the height of single cone at hand
     public final int LIFT_POSITION_RESET = 0;
-    public final int LIFT_POSITION_GROUND = 87;
-    public final int LIFT_POSITION_LOWPOLE = 390; //it was 340
-    public final int LIFT_POSITION_MIDPOLE = 630;
-    public final int LIFT_POSITION_HIGHPOLE = 900;  //840;
+
+    public final int LIFT_POSITION_GROUND = 105;
+    public final int LIFT_POSITION_LOWPOLE = 420;
+    public final int LIFT_POSITION_MIDPOLE = 680;
+    public final int LIFT_POSITION_HIGHPOLE = 940;
+    public final int LIFT_POSITION_PICKUP = 8;
 
     public final int LIFT_ADJUSTMENT = -75;
 
@@ -48,7 +50,7 @@ public class Lift {
     public final String LIFT_PICKUP = "PICKUP";
     public final String LIFT_POLE_GROUND = "GROUND";
     public final String LIFT_POLE_LOW = "POLE_LOW";
-    public final String LIFT_POLE_MEDIUM = "POlE_MEDIUM";
+    public final String LIFT_POLE_MEDIUM = "POLE_MEDIUM";
     public final String LIFT_POLE_HIGH = "POLE_HIGH";
     public final String APPROACH_HEIGHT = "APPROACH_HEIGHT";
     public final String PLACEMENT_HEIGHT = "PLACEMENT_HEIGHT";
@@ -74,9 +76,15 @@ public class Lift {
         this.telemetry = telemetry;
         this.stateMap = stateMap;
         liftMotor = hwMap.dcMotor.get("Lift");
+        liftMotor2 = hwMap.dcMotor.get("LiftMotor2");
 
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        liftMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public boolean isCollectionHeight() {
@@ -93,6 +101,8 @@ public class Lift {
 //        telemetry.addData("subheight:", subheight);
 //        telemetry.addData("lift encoder count", getPosition());
         String level = (String) stateMap.get(LIFT_SYSTEM_NAME);
+        telemetry.addData("Current ticks", liftMotor.getCurrentPosition());
+        telemetry.addData("Should Lift Move", shouldLiftMove(level,currentState));
 
         stateMap.put(LIFT_CURRENT_STATE, currentState);
 
@@ -102,6 +112,7 @@ public class Lift {
             selectTransition(level, subheight, currentState);
         } else {
             liftMotor.setPower(0);
+            liftMotor2.setPower(0);
         }
     }
 
@@ -228,9 +239,13 @@ public class Lift {
 
     public void raiseHeightTo (int heightInTicks) {
         //raising heights to reach different junctions, so four values
+        telemetry.addData("Raise Height To", heightInTicks);
         liftMotor.setTargetPosition(heightInTicks);
+        liftMotor2.setTargetPosition(heightInTicks);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotor.setPower(1.0);
+        liftMotor2.setPower(1.0);
 
     }
 
