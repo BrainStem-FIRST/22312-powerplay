@@ -186,7 +186,6 @@ public class AutoWithCamera extends LinearOpMode {
         trajectoryStart = robot.drive.trajectorySequenceBuilder(startingPose)
                 //moves forward in a line facing 90 degrees away (positioned in between two poles)
                 //.splineTo(new Vector2d(startingPose.getX(), XFORM_Y * 38.5), 180,
-                .addTemporalMarker(()->stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_STATE))
                 .forward(38.5,
                         SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
@@ -272,8 +271,7 @@ public class AutoWithCamera extends LinearOpMode {
                 // Stop at the pickup position so the loop can identify when the trajectory sequence completed by a call to drive.isBusy()
                 .build();
 
-        // Load the initial cone
-        robot.grabber.grabberClose();
+
 
         /********************* Initialization Complete **********************/
 
@@ -445,6 +443,9 @@ public class AutoWithCamera extends LinearOpMode {
         currentTrajectoryState = TrajectoryState.TRAJECTORY_START_STATE;
         robot.drive.followTrajectorySequenceAsync(trajectoryStart);
 
+        // Load the initial cone
+        robot.grabber.grabberClose();
+
         while (opModeIsActive() && !isStopRequested()) {
 
             switch (currentTrajectoryState) {
@@ -507,6 +508,7 @@ public class AutoWithCamera extends LinearOpMode {
                     break;
 
                 case TRAJECTORY_IDLE:
+                    robot.lift.raiseHeightTo(5);
                     // Do nothing. This concludes the autonomous program
                     break;
             }
