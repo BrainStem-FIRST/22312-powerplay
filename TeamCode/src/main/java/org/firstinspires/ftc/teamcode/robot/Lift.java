@@ -81,10 +81,9 @@ public class Lift {
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        liftMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        liftMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
+        liftMotor2.setDirection(DcMotor.Direction.REVERSE);
     }
 
     public boolean isCollectionHeight() {
@@ -101,8 +100,8 @@ public class Lift {
 //        telemetry.addData("subheight:", subheight);
 //        telemetry.addData("lift encoder count", getPosition());
         String level = (String) stateMap.get(LIFT_SYSTEM_NAME);
-        telemetry.addData("Current ticks", liftMotor.getCurrentPosition());
-        telemetry.addData("Should Lift Move", shouldLiftMove(level,currentState));
+        telemetry.addData("Lift 2 Motor encoder ticks",liftMotor2.getCurrentPosition());
+        telemetry.addData("Lift 1 Motor Encoder ticks", liftMotor.getCurrentPosition());
 
         stateMap.put(LIFT_CURRENT_STATE, currentState);
 
@@ -273,7 +272,10 @@ public class Lift {
     }
     // Not used -> DELETE
     public void setMotor(double power){
+        liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftMotor.setPower(power);
+        liftMotor2.setPower(power);
     }
 
     private boolean inHeightTolerance(double heightPosition, double targetHeight) {
@@ -316,5 +318,6 @@ public class Lift {
 
     public void resetEncoders() {
         liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 }

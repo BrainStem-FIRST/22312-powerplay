@@ -168,8 +168,13 @@ public class SampleMecanumDrive extends MecanumDrive {
         return new TrajectoryBuilder(startPose, startHeading, VEL_CONSTRAINT, ACCEL_CONSTRAINT);
     }
 
-    public TrajectoryBuilder highSpeedTrajectoryBuilder(Pose2d startPose) {
-        return new TrajectoryBuilder(startPose, HIGH_SPEED_VEL_CONSTRAINT, HIGH_SPEED_ACCEL_CONSTRAINT);
+    public TrajectorySequenceBuilder highSpeedTrajectoryBuilder(Pose2d startPose) {
+        return new TrajectorySequenceBuilder(
+                startPose,
+                HIGH_SPEED_VEL_CONSTRAINT,
+                HIGH_SPEED_ACCEL_CONSTRAINT,
+                MAX_ANG_VEL,
+                MAX_ANG_ACCEL);
     }
 
     public TrajectorySequenceBuilder trajectorySequenceBuilder(Pose2d startPose) {
