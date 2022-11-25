@@ -110,6 +110,8 @@ public class Lift {
         if (shouldLiftMove(level, currentState) ) {
             selectTransition(level, subheight, currentState);
         } else {
+            liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             liftMotor.setPower(0);
             liftMotor2.setPower(0);
         }
@@ -127,8 +129,8 @@ public class Lift {
             if (inHeightTolerance(getPosition(), position + LIFT_ADJUSTMENT)) {
                 stateMap.put(constants.CYCLE_LIFT_DOWN, constants.STATE_COMPLETE);
             }
-        } else if(isCycleInProgress(constants.CYCLE_LIFT_UP) && inHeightTolerance(getPosition(), position)){
-                stateMap.put(constants.CYCLE_LIFT_UP, constants.STATE_COMPLETE);
+        } else if (isCycleInProgress(constants.CYCLE_LIFT_UP) && inHeightTolerance(getPosition(), position)) {
+            stateMap.put(constants.CYCLE_LIFT_UP, constants.STATE_COMPLETE);
         }
     }
 
