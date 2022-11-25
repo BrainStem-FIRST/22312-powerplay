@@ -62,7 +62,7 @@ public class AutoWithCamera extends LinearOpMode {
 
     // original auto
     public static int PARKING_NUMBER = 1; // Controlled by the dashboard for test purposes
-    public static double SPEED = 40.0;    // Controlled by the dashboard for test purposes
+    public static double SPEED = 50.0;    // Controlled by the dashboard for test purposes
     private ElapsedTime autoTime = new ElapsedTime();
     private double TIME_TO_PARK = 25.0;
 
@@ -185,7 +185,7 @@ public class AutoWithCamera extends LinearOpMode {
         // From starting position, turn sideways (to push the signal cone), strafe, deliver on Low Pole, spline to pickup position, and pickup top-most cone
         trajectoryStart = robot.drive.trajectorySequenceBuilder(startingPose)
                 //moves forward in a line facing 90 degrees away (positioned in between two poles)
-                .lineToLinearHeading(new Pose2d(startingPose.getX(), XFORM_Y * 24, Math.toRadians(180)),
+                .lineToLinearHeading(new Pose2d(startingPose.getX(), XFORM_Y * 21.5, pickupPose.getHeading()),
                 //.forward(38.5,
                         SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
@@ -195,31 +195,33 @@ public class AutoWithCamera extends LinearOpMode {
                 .addTemporalMarker(0.3,()->{    // Start positioning scaffolding
                     // Position grabber to the left of the robot
                     stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_LOW);
-                    stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION); // robot is facing the low pole already
+//                    stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION); // robot is facing the low pole already
                     stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
                 })
                 // Drop off the cone at hand on the Low pole on the left
                 // This action starts after .forward() is completed
                 .addTemporalMarker(()->stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS))
                 .waitSeconds(0.3)   // wait for the cone cycle to complete
-                .UNSTABLE_addTemporalMarkerOffset(0.4, ()->{
-                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
-                    //stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
-                })
-                .lineToConstantHeading(new Vector2d(startingPose.getX(), XFORM_Y * 20),
+                .lineToConstantHeading(new Vector2d(startingPose.getX(), XFORM_Y * 15),
                         SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
-
+//                .UNSTABLE_addTemporalMarkerOffset(0.4, ()->{
                 .addTemporalMarker(()->{
-                   // Lower lift for travelling
+                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
+                    // Lower lift for travelling
                     stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
+                    robot.grabber.grabberOpen();
                 })
-//                .lineToLinearHeading(new Pose2d(pickupPose.getX(), pickupPose.getY(), pickupPose.getHeading()),
+
+//                .addTemporalMarker(()->{
+//                    stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
+//                })
+                .lineToLinearHeading(new Pose2d(pickupPose.getX() + XFORM_X*5, pickupPose.getY() + XFORM_Y*1, pickupPose.getHeading()),
+                        SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
+//                .splineTo(new Vector2d(pickupPose.getX(), pickupPose.getY()), pickupPose.getHeading(),
 //                        SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
 //                        SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
-                .splineTo(new Vector2d(pickupPose.getX(), pickupPose.getY()), pickupPose.getHeading(),
-                        SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
                 // Trajectory ends once it reaches the pickup location; it picks up the first cone
                 .addTemporalMarker(()->stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS))
                 .waitSeconds(CONE_CYCLE_DURATION)   // wait for the cone cycle to complete
@@ -260,6 +262,7 @@ public class AutoWithCamera extends LinearOpMode {
 
                 // shift position of lift and turret while running to pickup position
                 .UNSTABLE_addTemporalMarkerOffset(1.2, ()->{
+                    robot.grabber.grabberOpen();
                     stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
                     stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
                     stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
@@ -459,9 +462,10 @@ public class AutoWithCamera extends LinearOpMode {
                 case TRAJECTORY_START_STATE:
                     // Switch to trajectoryDeposit once the starting trajectory is complete
                     if (!robot.drive.isBusy()) {
-                        currentTrajectoryState = TrajectoryState.TRAJECTORY_IDLE;
-                        //robot.drive.followTrajectorySequenceAsync(trajectoryDeposit);
+                        currentTrajectoryState = TrajectoryState.TRAJECTORY_DEPOSIT_STATE;
+                        robot.drive.followTrajectorySequenceAsync(trajectoryDeposit);
                     }
+                    break;
 
                 case TRAJECTORY_DEPOSIT_STATE:
                     // Invoke trajectoryPickup when deposit is complete.
@@ -515,7 +519,7 @@ public class AutoWithCamera extends LinearOpMode {
                     break;
 
                 case TRAJECTORY_IDLE:
-                    robot.lift.raiseHeightTo(5);
+                    //robot.lift.raiseHeightTo(5);
                     // Do nothing. This concludes the autonomous program
                     break;
             }
