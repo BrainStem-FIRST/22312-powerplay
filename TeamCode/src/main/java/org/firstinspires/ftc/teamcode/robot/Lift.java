@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -287,23 +288,23 @@ public class Lift {
     public void updateLiftPickupPosition() {
         switch (numCyclesCompleted){
             case 0: {
-                liftPositionPickup = 136;
+                liftPositionPickup = 166; //136
                 break;
             }
             case 1: {
-                liftPositionPickup = 96;
+                liftPositionPickup = 126; //96
                 break;
             }
             case 2: {
-                liftPositionPickup = 63;
+                liftPositionPickup = 93; //63
                 break;
             }
             case 3: {
-                liftPositionPickup = 34;
+                liftPositionPickup = 64; //34
                 break;
             }
             case 4: {
-                liftPositionPickup = 3;
+                liftPositionPickup = 33; //3
                 break;
             }
         }
