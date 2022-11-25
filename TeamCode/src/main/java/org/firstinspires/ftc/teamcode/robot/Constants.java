@@ -11,8 +11,8 @@ public class Constants {
     public final String LIFT_ENCODER_TICKS = "Lift Encoder Ticks";
     public final String GRABBER_START_TIME = "GRABBER START TIME";
     public final int GRABBER_CYCLE_TIME = 400;
-    public final int LIFT_CYCLE_TIME  = 400;
-    public final String LIFT_GRABBER_START_TIME = "LIFT START TIME";
+    public final int LIFT_DOWN_CYCLE_TIME  = 400;
+    public final String LIFT_DOWN_START_TIME = "LIFT DOWN START TIME";
     public final String SYSTEM_TIME = "SYSTEM TIME";
     public final String  DRIVER_2_SELECTED_LIFT = "DRIVER_2_SELECTED_LIFT";
     public final String DRIVER_2_SELECTED_TURRET = "DRIVER_2_SELECTED_TURRET";
