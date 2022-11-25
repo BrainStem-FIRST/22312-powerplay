@@ -439,6 +439,10 @@ public class AutoWithCamera extends LinearOpMode {
         telemetry.addData("Parking from Deposit Location:", trajectoryParkFromDeposit.duration());
         telemetry.addData("Parking from Pickup Location :", trajectoryParkFromPickup.duration());
 
+        // Load the initial cone
+        robot.grabber.grabberClose();
+        sleep(200);
+
         // initiate first trajectory asynchronous (go to pickup location) at the start of autonomous
         // Need to call drive.update() to make things move within the loop
         currentTrajectoryState = TrajectoryState.TRAJECTORY_START_STATE;
