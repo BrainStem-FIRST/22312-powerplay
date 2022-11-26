@@ -29,7 +29,7 @@ public class Turret {
 
 
     public final int        ANGLE_TOLERANCE = 5;
-    public final int        LIFT_MIN_HEIGHT_TO_MOVE_TURRET = 75;
+    public final int        LIFT_MIN_HEIGHT_TO_MOVE_TURRET = 200;
 
     public Telemetry telemetry;
     public DcMotorEx turretMotor;

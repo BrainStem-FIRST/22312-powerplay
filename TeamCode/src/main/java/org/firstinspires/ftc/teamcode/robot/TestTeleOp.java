@@ -35,7 +35,7 @@ public class TestTeleOp extends LinearOpMode {
     private final String GAMEPAD_1_Y_PRESSED = "GAMEPAD_1_Y_IS_PRESSED";
 
 
-    private double extensionPosition = 0.01;
+    private double extensionPosition = 0.005;
 
     private final String MANUAL_DRIVE_MODE = "MANUAL";
     private final String AUTO_DRIVE_MODE = "AUTO";
@@ -116,12 +116,18 @@ public class TestTeleOp extends LinearOpMode {
         }
 
         if(gamepad2.dpad_right){
-            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.RIGHT_POSITION);
+            stateMap.put(constants.DRIVER_2_SELECTED_TURRET, robot.turret.RIGHT_POSITION);
         } else if(gamepad2.dpad_left){
-            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.LEFT_POSITION);
+            stateMap.put(constants.DRIVER_2_SELECTED_TURRET, robot.turret.LEFT_POSITION);
         }else if(gamepad2.dpad_up){
-            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
+            stateMap.put(constants.DRIVER_2_SELECTED_TURRET, robot.turret.CENTER_POSITION);
         }
+
+        if (!toggleMap.get(GAMEPAD_1_X_STATE)) {
+            stateMap.put(robot.turret.SYSTEM_NAME, stateMap.get(constants.DRIVER_2_SELECTED_TURRET));
+        }
+
+
         while(gamepad2.right_stick_y > 0.2){
             robot.arm.joyStickExtension(extensionPosition);
         }
@@ -132,29 +138,57 @@ public class TestTeleOp extends LinearOpMode {
             stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS);
         }
         if(stateMap.get(DRIVE_MODE).equalsIgnoreCase(MANUAL_DRIVE_MODE)){
-            if (gamepad1.dpad_down) {
-                stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
-                drive.setPoseEstimate(new Pose2d(0,0,0));
-                Pose2d currentPosition = drive.getPoseEstimate();
-                Pose2d targetPosition = new Pose2d(currentPosition.getX() - 40, currentPosition.getY(), currentPosition.getHeading());
-                TrajectorySequence reverseTrajectory = drive.highSpeedTrajectoryBuilder(drive.getPoseEstimate())
-                        .lineToLinearHeading(targetPosition)
-                        .UNSTABLE_addTemporalMarkerOffset(-1, () -> toggleMap.put(GAMEPAD_1_A_STATE, false))
-                        .UNSTABLE_addTemporalMarkerOffset(0,() -> stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE))
-                        .build();
-                drive.followTrajectorySequenceAsync(reverseTrajectory);
+            if(toggleMap.get(GAMEPAD_1_X_STATE)){
+                if(gamepad1.dpad_up){
+                    stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
+                    drive.setPoseEstimate(new Pose2d(0,0,0));
+                    Pose2d currentPosition = drive.getPoseEstimate();
+                    Pose2d targetPosition = new Pose2d(currentPosition.getX() - 40.5, currentPosition.getY(), currentPosition.getHeading());
+                    TrajectorySequence depositTrajectory = drive.highSpeedTrajectoryBuilder(drive.getPoseEstimate())
+                            .lineToLinearHeading(targetPosition)
+                            .UNSTABLE_addTemporalMarkerOffset(-1.5, () -> toggleMap.put(GAMEPAD_1_A_STATE, true))
+                            .UNSTABLE_addTemporalMarkerOffset(-.5, ()-> stateMap.put(robot.turret.SYSTEM_NAME, stateMap.get(constants.DRIVER_2_SELECTED_TURRET)))
+                            .UNSTABLE_addTemporalMarkerOffset(-.5,() -> toggleMap.put(GAMEPAD_1_B_STATE, true))
+                            .UNSTABLE_addTemporalMarkerOffset(0,() -> stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE))
+                            .build();
+                    drive.followTrajectorySequenceAsync(depositTrajectory);
+                } else if(gamepad1.dpad_down){
+                    stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
+                    toggleMap.put(GAMEPAD_1_B_STATE, false);
+                    stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
+                    Pose2d currentPosition = drive.getPoseEstimate();
+                    Pose2d targetPosition = new Pose2d(currentPosition.getX() + 42, currentPosition.getY(), currentPosition.getHeading());
+                    TrajectorySequence forwardTrajectory = drive.highSpeedTrajectoryBuilder(drive.getPoseEstimate())
+                            .lineToLinearHeading(targetPosition)
+                            .UNSTABLE_addTemporalMarkerOffset(-1.5, () -> toggleMap.put(GAMEPAD_1_A_STATE, false))
+                            .UNSTABLE_addTemporalMarkerOffset(0,() -> stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE))
+                            .build();
+                    drive.followTrajectorySequenceAsync(forwardTrajectory);
+                }
+            } else {
+                if (gamepad1.dpad_down) {
+                    stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
+                    drive.setPoseEstimate(new Pose2d(0,0,0));
+                    Pose2d currentPosition = drive.getPoseEstimate();
+                    Pose2d targetPosition = new Pose2d(currentPosition.getX() - 40, currentPosition.getY(), currentPosition.getHeading());
+                    TrajectorySequence reverseTrajectory = drive.highSpeedTrajectoryBuilder(drive.getPoseEstimate())
+                            .lineToLinearHeading(targetPosition)
+                            .UNSTABLE_addTemporalMarkerOffset(-1, () -> toggleMap.put(GAMEPAD_1_A_STATE, false))
+                            .UNSTABLE_addTemporalMarkerOffset(0,() -> stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE))
+                            .build();
+                    drive.followTrajectorySequenceAsync(reverseTrajectory);
 
-            } else if (gamepad1.dpad_up) {
-                stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
-                toggleMap.put(GAMEPAD_1_A_STATE, true);
-                Pose2d currentPosition = drive.getPoseEstimate();
-                Pose2d targetPosition = new Pose2d(currentPosition.getX() + 41.5, currentPosition.getY(), currentPosition.getHeading());
-                TrajectorySequence forwardTrajectory = drive.highSpeedTrajectoryBuilder(drive.getPoseEstimate())
-                        .lineToLinearHeading(targetPosition)
-                        .UNSTABLE_addTemporalMarkerOffset(0,() -> stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE))
-                        .build();
-                drive.followTrajectorySequenceAsync(forwardTrajectory);
-
+                } else if (gamepad1.dpad_up) {
+                    stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
+                    toggleMap.put(GAMEPAD_1_A_STATE, true);
+                    Pose2d currentPosition = drive.getPoseEstimate();
+                    Pose2d targetPosition = new Pose2d(currentPosition.getX() + 41.5, currentPosition.getY(), currentPosition.getHeading());
+                    TrajectorySequence forwardTrajectory = drive.highSpeedTrajectoryBuilder(drive.getPoseEstimate())
+                            .lineToLinearHeading(targetPosition)
+                            .UNSTABLE_addTemporalMarkerOffset(0,() -> stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE))
+                            .build();
+                    drive.followTrajectorySequenceAsync(forwardTrajectory);
+                }
             }
         }
 
