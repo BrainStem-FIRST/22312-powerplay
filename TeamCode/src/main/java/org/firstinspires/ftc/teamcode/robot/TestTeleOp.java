@@ -35,7 +35,7 @@ public class TestTeleOp extends LinearOpMode {
     private final String GAMEPAD_1_Y_PRESSED = "GAMEPAD_1_Y_IS_PRESSED";
 
 
-    private double extensionPosition = 0.025;
+    private double extensionPosition = 0.01;
 
     private final String MANUAL_DRIVE_MODE = "MANUAL";
     private final String AUTO_DRIVE_MODE = "AUTO";

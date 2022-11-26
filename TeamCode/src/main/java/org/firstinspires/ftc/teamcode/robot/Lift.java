@@ -29,7 +29,7 @@ public class Lift {
     // TODO: Pole heights might need to be recalculated because the lift starting position (encoder values reset) is now the height of single cone at hand
     public final int LIFT_POSITION_RESET = 0;
 
-    public final int LIFT_POSITION_GROUND = 122;
+    public final int LIFT_POSITION_GROUND = 110; //110 is a sweet spot
     public final int LIFT_POSITION_LOWPOLE = 420;
     public final int LIFT_POSITION_MIDPOLE = 680;
     public final int LIFT_POSITION_HIGHPOLE = 940;
