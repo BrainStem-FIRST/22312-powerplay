@@ -8,6 +8,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -25,9 +26,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-
+@Disabled
 @Config
-@Autonomous(name="Robot: Test Auto with Camera", group="Robot")
+@Autonomous(name="Robot: Auto with Camera", group="Robot")
 public class AutoWithCamera extends LinearOpMode {
     //camera
     public OpenCvCamera camera;
@@ -57,8 +58,11 @@ public class AutoWithCamera extends LinearOpMode {
     AprilTagDetection tagOfInterest = null; //camera
 
     // Trajectory related variables
-    public static boolean isAllianceRED = true; //TODO: dynamically update values
-    public static boolean isOrientationLEFT = true;
+    public static boolean isAllianceRED;
+    private boolean allianceIsSet = false;
+    public static boolean isOrientationLEFT;
+    private boolean orientationIsSet = false;
+    private boolean programConfirmation = false;
 
     // original auto
     public static int PARKING_NUMBER = 1; // Controlled by the dashboard for test purposes
@@ -93,11 +97,19 @@ public class AutoWithCamera extends LinearOpMode {
 
         robot.lift.resetEncoders();
 
+        // Load the initial cone
+        robot.grabber.grabberOpen();
+
         stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_STATE);
         stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
         stateMap.put(robot.lift.LIFT_SUBHEIGHT, robot.lift.APPROACH_HEIGHT);
         stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
         stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
+
+
+        while (!programConfirmation && !isStopRequested()) {
+            setProgram();
+        }
 
 
         //------------------------------------------------------
@@ -122,7 +134,6 @@ public class AutoWithCamera extends LinearOpMode {
         });
 
         telemetry.setMsTransmissionInterval(50); //camera
-
 
         //------------------------------------------------------
         //            Variable used for trajectories
@@ -186,7 +197,7 @@ public class AutoWithCamera extends LinearOpMode {
         trajectoryStart = robot.drive.trajectorySequenceBuilder(startingPose)
                 //moves forward in a line facing 90 degrees away (positioned in between two poles)
                 //.splineTo(new Vector2d(startingPose.getX(), XFORM_Y * 38.5), 180,
-                .forward(38.5,
+                .lineToLinearHeading(new Pose2d(startingPose.getX(), XFORM_Y * 38.5, Math.toRadians(pickupHeading)),
                         SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
                 .addTemporalMarker(0.2,()->{    // Start positioning scaffolding
@@ -271,8 +282,19 @@ public class AutoWithCamera extends LinearOpMode {
                 // Stop at the pickup position so the loop can identify when the trajectory sequence completed by a call to drive.isBusy()
                 .build();
 
+
+        telemetry.clearAll();
+        telemetry.addLine("Load Cone.  Driver 1 Hit A.");
+        telemetry.update();
+
         // Load the initial cone
+        while(!gamepad1.a && !isStopRequested()) {}
+
         robot.grabber.grabberClose();
+
+        telemetry.clearAll();
+        telemetry.addLine("Robot is Ready!");
+        telemetry.update();
 
         /********************* Initialization Complete **********************/
 
@@ -391,8 +413,7 @@ public class AutoWithCamera extends LinearOpMode {
                         parkingPose = new Pose2d (58.75, -11.75, Math.toRadians(0));
                         break;
                 }
-        }
-        else {
+        } else {
             if(isOrientationLEFT)   // BLUE-LEFT
                 switch (PARKING_NUMBER) {
                     case 1:
@@ -438,10 +459,6 @@ public class AutoWithCamera extends LinearOpMode {
         telemetry.addData("Pickup trajectory :", trajectoryPickup.duration());
         telemetry.addData("Parking from Deposit Location:", trajectoryParkFromDeposit.duration());
         telemetry.addData("Parking from Pickup Location :", trajectoryParkFromPickup.duration());
-
-        // Load the initial cone
-        robot.grabber.grabberClose();
-        sleep(200);
 
         // initiate first trajectory asynchronous (go to pickup location) at the start of autonomous
         // Need to call drive.update() to make things move within the loop
@@ -530,4 +547,87 @@ public class AutoWithCamera extends LinearOpMode {
         telemetry.addData("Thing :", Ending_Location);
         telemetry.update();
     }//camera
+
+    private void setProgram() {
+        allianceIsSet = false;
+        orientationIsSet = false;
+
+        telemetry.clearAll();
+        telemetry.addLine("Set Alliance. Driver 1 X or B.");
+        telemetry.update();
+        while (!allianceIsSet && !isStopRequested()) {
+            if (gamepad1.x) {
+                isAllianceRED = false;
+                allianceIsSet = true;
+            } else if (gamepad1.b) {
+                isAllianceRED = true;
+                allianceIsSet = true;
+            }
+        }
+
+        String allianceColor;
+        if (isAllianceRED) {
+            allianceColor = "RED";
+        } else {
+            allianceColor = "BLUE";
+        }
+
+        telemetry.clearAll();
+        telemetry.addData("Alliance Set", allianceColor);
+        telemetry.update();
+
+        sleep(2000);
+
+        telemetry.clearAll();
+        telemetry.addLine("Set Orientation. Driver 1 dpad left or right.");
+        telemetry.update();
+
+        while (!orientationIsSet && !isStopRequested()) {
+            if (gamepad1.dpad_left) {
+                isOrientationLEFT = true;
+                orientationIsSet = true;
+            } else if (gamepad1.dpad_right) {
+                isOrientationLEFT = false;
+                orientationIsSet = true;
+            }
+        }
+
+        String orientation;
+        if (isOrientationLEFT) {
+            orientation = "LEFT";
+        } else {
+            orientation = "RIGHT";
+        }
+
+        telemetry.addData("Orientation Set", orientation);
+        telemetry.update();
+
+        sleep(2000);
+        telemetry.clearAll();
+        telemetry.addLine("Confirm Program:");
+        telemetry.addData("Alliance", allianceColor);
+        telemetry.addData("Orientation", orientation);
+        telemetry.addLine("Driver 2. A To Confirm. B to Restart.");
+        telemetry.update();
+
+        while (!gamepad2.a && !gamepad1.b && !isStopRequested()) {
+            telemetry.clearAll();
+            if (gamepad2.a) {
+                telemetry.clearAll();
+                telemetry.addLine("Program Confirmed");
+                telemetry.update();
+                programConfirmation = true;
+            } else if (gamepad2.b) {
+                telemetry.clearAll();
+                telemetry.addLine("Program Rejected");
+                telemetry.update();
+                programConfirmation = false;
+                orientationIsSet = false;
+                allianceIsSet = false;
+            }
+        }
+
+        sleep(2000);
+        telemetry.clearAll();
+    }
 }
