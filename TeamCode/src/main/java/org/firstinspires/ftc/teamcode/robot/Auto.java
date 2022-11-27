@@ -103,7 +103,7 @@ public class Auto extends LinearOpMode {
         stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
         stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
 
-
+        // Wait until Alliance and Orientation is set by drivers
         while (!programConfirmation && !isStopRequested()) {
             setProgram();
         }
@@ -179,7 +179,7 @@ public class Auto extends LinearOpMode {
         }
 
         // Determine trajectory segment positions based on Alliance and Orientation
-        startingPose    = new Pose2d(XFORM_X * 34.75, XFORM_Y * 67, Math.toRadians(startingHeading));
+        startingPose    = new Pose2d(XFORM_X * 34.75, XFORM_Y * 65, Math.toRadians(startingHeading));
         pickupPose      = new Pose2d(XFORM_X * 63.5, XFORM_Y * 11.75, Math.toRadians(pickupHeading));
         depositPose     = new Pose2d(XFORM_X * 22.5, XFORM_Y * 11.75, Math.toRadians(deliveryHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
@@ -193,41 +193,80 @@ public class Auto extends LinearOpMode {
         // From starting position, turn sideways (to push the signal cone), strafe, deliver on Low Pole, spline to pickup position, and pickup top-most cone
         trajectoryStart = robot.drive.trajectorySequenceBuilder(startingPose)
                 //moves forward in a line facing 90 degrees away (positioned in between two poles)
-                //.splineTo(new Vector2d(startingPose.getX(), XFORM_Y * 38.5), 180,
-                .UNSTABLE_addTemporalMarkerOffset(0,()->{    // Start positioning scaffolding
+                .lineToLinearHeading(new Pose2d(startingPose.getX(), XFORM_Y * 21.5, pickupPose.getHeading()),
+                        SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
+                .addTemporalMarker(0.3,()->{    // Start positioning scaffolding
                     // Position grabber to the left of the robot
                     stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_LOW);
-                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.EXTEND_LEFT);
+                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
                 })
-                .lineToLinearHeading(new Pose2d(startingPose.getX() + (XFORM_X * 4), XFORM_Y * 22, Math.toRadians(pickupHeading)),
+                // Drop off the cone at hand on the Low pole on the left
+                // This action starts after .lineToLinearHeading() is completed
+//                .addTemporalMarker(()->stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS))
+//                .waitSeconds(0.3)   // wait for the cone cycle to complete
+                .addTemporalMarker(()->coneCycle(robot))
+
+                .lineToConstantHeading(new Vector2d(startingPose.getX(), XFORM_Y * 15),
                         SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
-                // Drop off the cone at hand on the Low pole on the left
-                // This action starts after .forward() is completed
-                .UNSTABLE_addTemporalMarkerOffset(0, ()-> stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS))
-                .lineToLinearHeading(new Pose2d(startingPose.getX(), XFORM_Y * 10, Math.toRadians(pickupHeading)),
+                .addTemporalMarker(()->{
+                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
+                    // Lower lift for travelling
+                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
+                    robot.grabber.grabberOpen();    // Do we still need this?
+                })
+
+                .lineToLinearHeading(new Pose2d(pickupPose.getX() + XFORM_X*5, pickupPose.getY() + XFORM_Y*1, pickupPose.getHeading()),
                         SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
 
-                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
-                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
-                    stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
-                })
-                .lineToLinearHeading(new Pose2d(startingPose.getX() + ((XFORM_X * 32)), XFORM_Y * 10, Math.toRadians(pickupHeading)),
-                        SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
-                .UNSTABLE_addTemporalMarkerOffset(0.4, ()->{
-                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
-                })
-//                .splineTo(new Vector2d(pickupPose.getX(), pickupPose.getY()), pickupPose.getHeading(),
-//                    SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
-//                    SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
-//                // Trajectory ends once it reaches the pickup location; it picks up the first cone
+                // Trajectory ends once it reaches the pickup location; it picks up the first cone
 //                .addTemporalMarker(()->stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS))
 //                .waitSeconds(CONE_CYCLE_DURATION)   // wait for the cone cycle to complete
-//                .addTemporalMarker(()->stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POSITION_CLEAR))
+                .addTemporalMarker(()->coneCycle(robot))    // TODO: We may still need to wait for it to complete. Observe behaviour.
+                .addTemporalMarker(()->stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POSITION_CLEAR))
 
                 .build();
+
+//        // Another attempt at starting trajectory
+//        trajectoryStart = robot.drive.trajectorySequenceBuilder(startingPose)
+//                //moves forward in a line facing 90 degrees away (positioned in between two poles)
+//                //.splineTo(new Vector2d(startingPose.getX(), XFORM_Y * 38.5), 180,
+//                .UNSTABLE_addTemporalMarkerOffset(0,()->{    // Start positioning scaffolding
+//                    // Position grabber to the left of the robot
+//                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_LOW);
+//                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.EXTEND_LEFT);
+//                })
+//                .lineToLinearHeading(new Pose2d(startingPose.getX() + (XFORM_X * 4), XFORM_Y * 22, Math.toRadians(pickupHeading)),
+//                        SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
+//                        SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
+//                // Drop off the cone at hand on the Low pole on the left
+//                // This action starts after .forward() is completed
+//                .UNSTABLE_addTemporalMarkerOffset(0, ()-> stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS))
+//                .lineToLinearHeading(new Pose2d(startingPose.getX(), XFORM_Y * 10, Math.toRadians(pickupHeading)),
+//                        SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
+//                        SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
+//
+//                .UNSTABLE_addTemporalMarkerOffset(0, ()->{
+//                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
+//                    stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
+//                })
+//                .lineToLinearHeading(new Pose2d(startingPose.getX() + ((XFORM_X * 32)), XFORM_Y * 10, Math.toRadians(pickupHeading)),
+//                        SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
+//                        SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
+//                .UNSTABLE_addTemporalMarkerOffset(0.4, ()->{
+//                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
+//                })
+////                .splineTo(new Vector2d(pickupPose.getX(), pickupPose.getY()), pickupPose.getHeading(),
+////                    SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
+////                    SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
+////                // Trajectory ends once it reaches the pickup location; it picks up the first cone
+////                .addTemporalMarker(()->stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS))
+////                .waitSeconds(CONE_CYCLE_DURATION)   // wait for the cone cycle to complete
+////                .addTemporalMarker(()->stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POSITION_CLEAR))
+//
+//                .build();
 
         // Starting from the pickup position with one cone at hand -> run to delivery pose -> drop cone
         trajectoryDeposit = robot.drive.trajectorySequenceBuilder(trajectoryStart.end())
@@ -463,68 +502,72 @@ public class Auto extends LinearOpMode {
         robot.drive.followTrajectorySequenceAsync(trajectoryStart);
 
         while (opModeIsActive() && !isStopRequested()) {
+
             switch (currentTrajectoryState) {
                 case TRAJECTORY_START_STATE:
                     // Switch to trajectoryDeposit once the starting trajectory is complete
                     if (!robot.drive.isBusy()) {
                         currentTrajectoryState = TrajectoryState.TRAJECTORY_DEPOSIT_STATE;
-//                        robot.drive.followTrajectorySequenceAsync(trajectoryDeposit);
+                        robot.drive.followTrajectorySequenceAsync(trajectoryDeposit);
                     }
+                    break;
 
-//                case TRAJECTORY_DEPOSIT_STATE:
-//                    // Invoke trajectoryPickup when deposit is complete.
-//                    // Park when there is not enough time to complete another trajectory.
-//
-//                    if (!robot.drive.isBusy()) {
-//                        telemetry.addData("remaining time:", (30.0 - autoTime.seconds()));
-//                        // Deposit is complete. Either go back to Pickup or go park
-//
-//                        // Is it time to park?
-//                        if (autoTime.seconds() > TIME_TO_PARK) {
-//                        //if((trajectoryPickup.duration()+trajectoryParkFromPickup.duration()) < (30.0 - autoTime.seconds())) {
-//                            currentTrajectoryState = TrajectoryState.TRAJECTORY_PARKING_STATE;
-//                            robot.drive.followTrajectorySequenceAsync(trajectoryParkFromDeposit);
-//
-//                        } else {
-//                            // Go back to pickup cycle
-//                            currentTrajectoryState = TrajectoryState.TRAJECTORY_PICKUP_STATE;
-//                            robot.drive.followTrajectorySequenceAsync(trajectoryPickup);
-//                        }
-//                    }
-//                    break;
-//
-//                case TRAJECTORY_PICKUP_STATE:
-//                    // Invoke trajectoryDeposit when Pickup finishes.
-//                    // Park when there is not enough time to complete another trajectory.
-//
-//                    if (!robot.drive.isBusy()) {
-//                        telemetry.addData("remaining time:", (30.0 - autoTime.seconds()));
-//                        // Pickup is complete. Either go back to Deposit or go park
-//
-//                        // Is it time to park?
-//                        if (autoTime.seconds() > TIME_TO_PARK) {
-//                        //if((trajectoryDeposit.duration()+trajectoryParkFromDeposit.duration()) < (30.0 - autoTime.seconds())) {
-//                            currentTrajectoryState = TrajectoryState.TRAJECTORY_PARKING_STATE;
-//                            robot.drive.followTrajectorySequenceAsync(trajectoryParkFromPickup);
-//
-//                        } else {
-//                            // Go back to deposit cycle
-//                            currentTrajectoryState = TrajectoryState.TRAJECTORY_DEPOSIT_STATE;
-//                            robot.drive.followTrajectorySequenceAsync(trajectoryDeposit);
-//                        }
-//                    }
-//                    break;
-//
-//                case TRAJECTORY_PARKING_STATE:
-//                    // Wait for the robot to complete the trajectory and go to IDLE state
-//                    if (!robot.drive.isBusy()) {
-//                        currentTrajectoryState = TrajectoryState.TRAJECTORY_IDLE;
-//                    }
-//                    break;
-//
-//                case TRAJECTORY_IDLE:
-//                    // Do nothing. This concludes the autonomous program
-//                    break;
+                case TRAJECTORY_DEPOSIT_STATE:
+                    // Invoke trajectoryPickup when deposit is complete.
+                    // Park when there is not enough time to complete another trajectory.
+
+                    if (!robot.drive.isBusy()) {
+                        telemetry.addData("remaining time:", (30.0 - autoTime.seconds()));
+                        // Deposit is complete. Either go back to Pickup or go park
+
+                        // Is it time to park?
+                        if (autoTime.seconds() > TIME_TO_PARK) {
+                        //if((trajectoryPickup.duration()+trajectoryParkFromPickup.duration()) < (30.0 - autoTime.seconds())) {
+                            currentTrajectoryState = TrajectoryState.TRAJECTORY_PARKING_STATE;
+                            robot.drive.followTrajectorySequenceAsync(trajectoryParkFromDeposit);
+
+                        }
+                        else {
+                            // Go back to pickup cycle
+                            currentTrajectoryState = TrajectoryState.TRAJECTORY_PICKUP_STATE;
+                            robot.drive.followTrajectorySequenceAsync(trajectoryPickup);
+                        }
+                    }
+                    break;
+
+                case TRAJECTORY_PICKUP_STATE:
+                    // Invoke trajectoryDeposit when Pickup finishes.
+                    // Park when there is not enough time to complete another trajectory.
+
+                    if (!robot.drive.isBusy()) {
+                        telemetry.addData("remaining time:", (30.0 - autoTime.seconds()));
+                        // Pickup is complete. Either go back to Deposit or go park
+
+                        // Is it time to park?
+                        if (autoTime.seconds() > TIME_TO_PARK) {
+                        //if((trajectoryDeposit.duration()+trajectoryParkFromDeposit.duration()) < (30.0 - autoTime.seconds())) {
+                            currentTrajectoryState = TrajectoryState.TRAJECTORY_PARKING_STATE;
+                            robot.drive.followTrajectorySequenceAsync(trajectoryParkFromPickup);
+
+                        }
+                        else {
+                            // Go back to deposit cycle
+                            currentTrajectoryState = TrajectoryState.TRAJECTORY_DEPOSIT_STATE;
+                            robot.drive.followTrajectorySequenceAsync(trajectoryDeposit);
+                        }
+                    }
+                    break;
+
+                case TRAJECTORY_PARKING_STATE:
+                    // Wait for the robot to complete the trajectory and go to IDLE state
+                    if (!robot.drive.isBusy()) {
+                        currentTrajectoryState = TrajectoryState.TRAJECTORY_IDLE;
+                    }
+                    break;
+
+                case TRAJECTORY_IDLE:
+                    // Do nothing. This concludes the autonomous program
+                    break;
             }
 
             // Execute systems based on stateMap
@@ -555,7 +598,7 @@ public class Auto extends LinearOpMode {
         orientationIsSet = false;
 
         telemetry.clearAll();
-        telemetry.addLine("Set Alliance. Driver 1 X or B.");
+        telemetry.addLine("Set Alliance: Driver 1-> X=Blue or B=Red.");
         telemetry.update();
         while (!allianceIsSet && !isStopRequested()) {
             if (gamepad1.x) {
@@ -575,13 +618,13 @@ public class Auto extends LinearOpMode {
         }
 
         telemetry.clearAll();
-        telemetry.addData("Alliance Set", allianceColor);
+        telemetry.addData("Alliance Set: ", allianceColor);
         telemetry.update();
 
         sleep(1500);
 
         telemetry.clearAll();
-        telemetry.addLine("Set Orientation. Driver 1 dpad left or right.");
+        telemetry.addLine("Set Orientation: Driver 1-> dpad left or right.");
         telemetry.update();
 
         while (!orientationIsSet && !isStopRequested()) {
@@ -601,15 +644,15 @@ public class Auto extends LinearOpMode {
             orientation = "RIGHT";
         }
 
-        telemetry.addData("Orientation Set", orientation);
+        telemetry.addData("Orientation Set: ", orientation);
         telemetry.update();
 
         sleep(1500);
         telemetry.clearAll();
         telemetry.addLine("Confirm Program:");
-        telemetry.addData("Alliance", allianceColor);
-        telemetry.addData("Orientation", orientation);
-        telemetry.addLine("Driver 2. A To Confirm. B to Restart.");
+        telemetry.addData("Alliance   :", allianceColor);
+        telemetry.addData("Orientation:", orientation);
+        telemetry.addLine("Driver 2-> A To Confirm. B to Restart.");
         telemetry.update();
 
         boolean confirmation = false;
