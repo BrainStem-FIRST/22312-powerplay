@@ -1,9 +1,14 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -12,8 +17,8 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import java.util.HashMap;
 import java.util.Map;
 
-@TeleOp(name="Robot: TeleOp", group="Robot")
-public class RobotTeleOp extends LinearOpMode {
+@TeleOp(name="Robot: 22312Tele", group="Robot")
+public class TestTeleOp extends LinearOpMode {
     private final String GAMEPAD_1_A_STATE = "GAMEPAD_1_A_STATE";
     private final String GAMEPAD_1_A_IS_PRESSED = "GAMEPAD_1_A_IS_PRESSED";
     private final String GAMEPAD_1_B_STATE = "GAMEPAD_1_B_STATE";
@@ -30,7 +35,7 @@ public class RobotTeleOp extends LinearOpMode {
     private final String GAMEPAD_1_Y_PRESSED = "GAMEPAD_1_Y_IS_PRESSED";
 
 
-    private double extensionPosition = 0.025;
+    private double extensionPosition = 0.01;
 
     private final String MANUAL_DRIVE_MODE = "MANUAL";
     private final String AUTO_DRIVE_MODE = "AUTO";
@@ -83,10 +88,10 @@ public class RobotTeleOp extends LinearOpMode {
       while (opModeIsActive()) {
       if(gamepad2.right_trigger > 0.1){
           robot.lift.setMotor(1.0);
-      } else if(gamepad2.left_trigger > 0.1) {
-          robot.lift.setMotor(-1.0);
       } else if(gamepad2.left_bumper) {
           robot.lift.resetEncoders();
+      } else if(gamepad2.left_trigger > 0.1) {
+          robot.lift.setMotor(-1.0);
       } else {
         setButtons();
 
@@ -108,6 +113,12 @@ public class RobotTeleOp extends LinearOpMode {
             stateMap.put(constants.DRIVER_2_SELECTED_LIFT, robot.lift.LIFT_POLE_MEDIUM);
         } else if(gamepad2.y){
             stateMap.put(constants.DRIVER_2_SELECTED_LIFT, robot.lift.LIFT_POLE_HIGH);
+        }
+        if(gamepad1.right_bumper){
+            robot.grabber.grabberOpen();
+            stateMap.put(constants.CYCLE_LIFT_DOWN, constants.STATE_COMPLETE);
+            stateMap.put(constants.CYCLE_GRABBER, constants.STATE_COMPLETE);
+            stateMap.put(constants.CYCLE_LIFT_UP, constants.STATE_COMPLETE);
         }
 
         if(gamepad2.dpad_right){
