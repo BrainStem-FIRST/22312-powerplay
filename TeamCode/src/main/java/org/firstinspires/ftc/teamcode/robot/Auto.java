@@ -180,8 +180,8 @@ public class Auto extends LinearOpMode {
 
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 34.75, XFORM_Y * 65, Math.toRadians(startingHeading));
-        pickupPose      = new Pose2d(XFORM_X * 63.5, XFORM_Y * 11.75, Math.toRadians(pickupHeading));
-        depositPose     = new Pose2d(XFORM_X * 22.5, XFORM_Y * 11.75, Math.toRadians(deliveryHeading));
+        pickupPose      = new Pose2d(XFORM_X * 63.5, XFORM_Y * 12.25, Math.toRadians(pickupHeading));
+        depositPose     = new Pose2d(XFORM_X * 22.5, XFORM_Y * 12.25, Math.toRadians(deliveryHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
@@ -238,7 +238,7 @@ public class Auto extends LinearOpMode {
                 .build();
 
         // Starting from the pickup position with one cone at hand -> run to delivery pose -> drop cone
-        trajectoryDeposit = robot.drive.trajectorySequenceBuilder(trajectoryStart.end())
+        trajectoryDeposit = robot.drive.trajectorySequenceBuilder(pickupPose)   // trajectoryStart.end()
                 .setReversed(true)  // go backwards
 
                 // Lift to high pole while running backwards
