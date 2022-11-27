@@ -30,8 +30,8 @@ public class Lift {
     public final int LIFT_POSITION_RESET = 0;
 
     public final int LIFT_POSITION_GROUND = 125;
-    public final int LIFT_POSITION_LOWPOLE = 420;
-    public final int LIFT_POSITION_MIDPOLE = 680;
+    public final int LIFT_POSITION_LOWPOLE = 430;
+    public final int LIFT_POSITION_MIDPOLE = 685;
     public final int LIFT_POSITION_HIGHPOLE = 940;
     public final int LIFT_POSITION_PICKUP = 8;
 
@@ -40,7 +40,8 @@ public class Lift {
     // Lift pick up position is only 4 cone bases higher than the starting position,
     // which is reset to 0 ticks at the start of Auto when lift is positioned on top of a single cone
     public final int LIFT_PICKUP_INIT = (int) ((CONE_BASE * 4) * TICK_PER_INCH);
-    public int liftPositionPickup = LIFT_PICKUP_INIT - LIFT_ADJUSTMENT;
+//    public int liftPositionPickup = LIFT_PICKUP_INIT - LIFT_ADJUSTMENT;
+    public int liftPositionPickup = 176 - LIFT_ADJUSTMENT;
 
     Constants constants = new Constants();
 
@@ -292,7 +293,7 @@ public class Lift {
     public void updateLiftPickupPosition() {
         switch (numCyclesCompleted){
             case 0: {
-                liftPositionPickup = 196; //136
+                liftPositionPickup = 176; //136
                 break;
             }
             case 1: {

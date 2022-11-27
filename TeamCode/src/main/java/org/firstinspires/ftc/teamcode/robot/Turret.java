@@ -39,7 +39,6 @@ public class Turret {
         //getting turret motor from the hardware map
 
         turretMotor = (DcMotorEx) hwMap.get("TurretMotor");
-        turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //      liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -114,5 +113,8 @@ public class Turret {
 
     public int getPosition(){
         return turretMotor.getCurrentPosition();
+    }
+    public void resetEncoders(){
+        turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 }
