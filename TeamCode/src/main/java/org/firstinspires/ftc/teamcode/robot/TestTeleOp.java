@@ -88,10 +88,10 @@ public class TestTeleOp extends LinearOpMode {
       while (opModeIsActive()) {
       if(gamepad2.right_trigger > 0.1){
           robot.lift.setMotor(1.0);
-      } else if(gamepad2.left_trigger > 0.1) {
-          robot.lift.setMotor(-1.0);
       } else if(gamepad2.left_bumper) {
           robot.lift.resetEncoders();
+      } else if(gamepad2.left_trigger > 0.1) {
+          robot.lift.setMotor(-1.0);
       } else {
         setButtons();
 
@@ -113,6 +113,12 @@ public class TestTeleOp extends LinearOpMode {
             stateMap.put(constants.DRIVER_2_SELECTED_LIFT, robot.lift.LIFT_POLE_MEDIUM);
         } else if(gamepad2.y){
             stateMap.put(constants.DRIVER_2_SELECTED_LIFT, robot.lift.LIFT_POLE_HIGH);
+        }
+        if(gamepad1.right_bumper){
+            robot.grabber.grabberOpen();
+            stateMap.put(constants.CYCLE_LIFT_DOWN, constants.STATE_COMPLETE);
+            stateMap.put(constants.CYCLE_GRABBER, constants.STATE_COMPLETE);
+            stateMap.put(constants.CYCLE_LIFT_UP, constants.STATE_COMPLETE);
         }
 
         if(gamepad2.dpad_right){
