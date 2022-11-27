@@ -1,14 +1,9 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import androidx.annotation.NonNull;
-
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -17,8 +12,8 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import java.util.HashMap;
 import java.util.Map;
 
-@TeleOp(name="Robot: 22312Tele", group="Robot")
-public class TestTeleOp extends LinearOpMode {
+@TeleOp(name="Robot: TeleOp", group="Robot")
+public class RobotTeleOp extends LinearOpMode {
     private final String GAMEPAD_1_A_STATE = "GAMEPAD_1_A_STATE";
     private final String GAMEPAD_1_A_IS_PRESSED = "GAMEPAD_1_A_IS_PRESSED";
     private final String GAMEPAD_1_B_STATE = "GAMEPAD_1_B_STATE";
