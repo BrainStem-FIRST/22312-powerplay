@@ -240,20 +240,19 @@ public class Auto extends LinearOpMode {
                     stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.EXTEND_LEFT);
                 })
 
-//                .splineTo(new Vector2d(depositPose.getX(), depositPose.getY()),depositPose.getHeading())
                 .lineToLinearHeading(depositPose,
                         SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
 
                 // Once at the delivery location, initiate the cone cycle again
-                .addTemporalMarker(()->{
-                    // Deposit cone
-                    coneCycle(robot);
-                    // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
-                    robot.lift.numCyclesCompleted++;
-                    robot.lift.updateLiftPickupPosition();
-                })
-                .waitSeconds(0.5)   // wait for the cone cycle to complete as there is nothing else left in this trajectory
+//                .addTemporalMarker(()->{
+//                    // Deposit cone
+//                    coneCycle(robot);
+//                    // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
+//                    robot.lift.numCyclesCompleted++;
+//                    robot.lift.updateLiftPickupPosition();
+//                })
+//                .waitSeconds(0.5)   // wait for the cone cycle to complete as there is nothing else left in this trajectory
 
                 .build();
 
@@ -269,13 +268,12 @@ public class Auto extends LinearOpMode {
                 })
 
                 // Go back for a new cone
-//                .splineTo(new Vector2d(pickupPose.getX(), pickupPose.getY()),pickupPose.getHeading())
                 .lineToLinearHeading(pickupPose,
                         SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
 
-                .addTemporalMarker(()->coneCycle(robot))
-                .addTemporalMarker(()->stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POSITION_CLEAR))
+//                .addTemporalMarker(()->coneCycle(robot))
+//                .addTemporalMarker(()->stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POSITION_CLEAR))
 
                 // Stop at the pickup position so the loop can identify when the trajectory sequence completed by a call to drive.isBusy()
                 .build();
@@ -471,6 +469,16 @@ public class Auto extends LinearOpMode {
                 case TRAJECTORY_START_STATE:
                     // Switch to trajectoryDeposit once the starting trajectory is complete
                     if (!robot.drive.isBusy()) {
+                        // Initial trajectory completed. Now do da thang
+                        // Deposit cone at pickup station
+                        coneCycle(robot);
+                        robot.lift.raiseHeightTo(robot.lift.LIFT_CLEAR_HEIGHT);
+
+                        // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
+                        robot.lift.numCyclesCompleted++;
+                        robot.lift.updateLiftPickupPosition();
+
+                        // Start the next state
                         currentTrajectoryState = TrajectoryState.TRAJECTORY_DEPOSIT_STATE;
                         robot.drive.followTrajectorySequenceAsync(trajectoryDeposit);
                     }
@@ -481,6 +489,10 @@ public class Auto extends LinearOpMode {
                     // Park when there is not enough time to complete another trajectory.
 
                     if (!robot.drive.isBusy()) {
+                        // Trajectory is  complete. Now do da thang
+                        // Deposit cone at delivery station
+                        coneCycle(robot);
+
                         telemetry.addData("remaining time:", (30.0 - autoTime.seconds()));
                         // Deposit is complete. Either go back to Pickup or go park
 
@@ -504,6 +516,15 @@ public class Auto extends LinearOpMode {
                     // Park when there is not enough time to complete another trajectory.
 
                     if (!robot.drive.isBusy()) {
+                        // Trajectory is  complete. Now do da thang
+                        // Deposit cone at pickup station
+                        coneCycle(robot);
+                        robot.lift.raiseHeightTo(robot.lift.LIFT_CLEAR_HEIGHT);
+
+                        // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
+                        robot.lift.numCyclesCompleted++;
+                        robot.lift.updateLiftPickupPosition();
+
                         telemetry.addData("remaining time:", (30.0 - autoTime.seconds()));
                         // Pickup is complete. Either go back to Deposit or go park
 
@@ -529,7 +550,8 @@ public class Auto extends LinearOpMode {
                     break;
 
                 case TRAJECTORY_IDLE:
-                    //robot.lift.raiseHeightTo(5);
+                    // Lower the lift closer to the ground
+                    robot.lift.raiseHeightTo(robot.lift.LIFT_POSITION_GROUND);
                     // Do nothing. This concludes the autonomous program
                     break;
             }
