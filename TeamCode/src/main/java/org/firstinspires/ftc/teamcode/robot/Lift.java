@@ -41,7 +41,7 @@ public class Lift {
     // which is reset to 0 ticks at the start of Auto when lift is positioned on top of a single cone
     public final int LIFT_PICKUP_INIT = (int) ((CONE_BASE * 4) * TICK_PER_INCH);
 //    public int liftPositionPickup = LIFT_PICKUP_INIT - LIFT_ADJUSTMENT;
-    public int liftPositionPickup = 176 - LIFT_ADJUSTMENT;
+    public int liftPositionPickup = 170 - LIFT_ADJUSTMENT;
 
     Constants constants = new Constants();
 
@@ -62,7 +62,7 @@ public class Lift {
     public final String LIFT_POSITION_CLEAR = "LIFT_CLEAR_HEIGHT";
     // This is the encoder tick count for the lift that raises the cone's base just below the rim of the field wall.
     // Raising the cone any further during auto pickup risks hitting the cone's base to the lip of the wall.
-    public final int LIFT_CLEAR_HEIGHT = 255;   // Encoder position was determined empirically
+    public final int LIFT_CLEAR_HEIGHT = 285;   // Encoder position was determined empirically
 
     public final String TRANSITION_STATE = "TRANSITION";
     public final int DELIVERY_ADJUSTMENT = -3;
@@ -293,7 +293,7 @@ public class Lift {
     public void updateLiftPickupPosition() {
         switch (numCyclesCompleted){
             case 0: {
-                liftPositionPickup = 176; //136
+                liftPositionPickup = 251; //136
                 break;
             }
             case 1: {
