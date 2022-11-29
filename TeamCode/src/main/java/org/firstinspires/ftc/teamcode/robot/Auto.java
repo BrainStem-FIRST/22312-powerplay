@@ -221,13 +221,10 @@ public class Auto extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
                 // Trajectory ends once it reaches the pickup location; it picks up the first cone
-                .addTemporalMarker(()->coneCycle(robot))
-                .addTemporalMarker(()->stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POSITION_CLEAR))
+                //.addTemporalMarker(()->coneCycle(robot))
+                //.addTemporalMarker(()->stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POSITION_CLEAR))
 
                 .build();
-
-        // Reduce speed for testing
-        SPEED = 10;
 
         // Starting from the pickup position with one cone at hand -> run to delivery pose -> drop cone
         trajectoryDeposit = robot.drive.trajectorySequenceBuilder(trajectoryStart.end())
@@ -469,10 +466,11 @@ public class Auto extends LinearOpMode {
                 case TRAJECTORY_START_STATE:
                     // Switch to trajectoryDeposit once the starting trajectory is complete
                     if (!robot.drive.isBusy()) {
-                        // Initial trajectory completed. Now do da thang
+                        // Initial trajectory completed
                         // Deposit cone at pickup station
                         coneCycle(robot);
                         robot.lift.raiseHeightTo(robot.lift.LIFT_CLEAR_HEIGHT);
+                        sleep(500);
 
                         // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
                         robot.lift.numCyclesCompleted++;
@@ -489,7 +487,7 @@ public class Auto extends LinearOpMode {
                     // Park when there is not enough time to complete another trajectory.
 
                     if (!robot.drive.isBusy()) {
-                        // Trajectory is  complete. Now do da thang
+                        // Trajectory is  complete
                         // Deposit cone at delivery station
                         coneCycle(robot);
 
@@ -516,10 +514,11 @@ public class Auto extends LinearOpMode {
                     // Park when there is not enough time to complete another trajectory.
 
                     if (!robot.drive.isBusy()) {
-                        // Trajectory is  complete. Now do da thang
+                        // Trajectory is  complete
                         // Deposit cone at pickup station
                         coneCycle(robot);
                         robot.lift.raiseHeightTo(robot.lift.LIFT_CLEAR_HEIGHT);
+                        sleep(500);
 
                         // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
                         robot.lift.numCyclesCompleted++;
