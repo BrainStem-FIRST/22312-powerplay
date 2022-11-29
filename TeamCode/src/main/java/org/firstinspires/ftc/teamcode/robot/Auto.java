@@ -141,7 +141,7 @@ public class Auto extends LinearOpMode {
         TrajectorySequence trajectoryDeposit;
 
         trajectoryDeposit = robot.drive.trajectorySequenceBuilder(robot.drive.getPoseEstimate())
-                .setReversed(true)  // go backwards
+//                .setReversed(true)  // go backwards
 
                 // Lift to high pole while running backwards
 //                .UNSTABLE_addTemporalMarkerOffset(1.0, ()->{
@@ -165,7 +165,7 @@ public class Auto extends LinearOpMode {
 
         trajectoryPickup = robot.drive.trajectorySequenceBuilder(robot.drive.getPoseEstimate())
 
-                .setReversed(false) // go forwards
+//                .setReversed(false) // go forwards
 
                 // shift position of lift and turret while running to pickup position
 //                .UNSTABLE_addTemporalMarkerOffset(1, ()->{
