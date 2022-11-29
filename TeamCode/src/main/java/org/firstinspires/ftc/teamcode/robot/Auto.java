@@ -93,6 +93,7 @@ public class Auto extends LinearOpMode {
     // Determine waypoints based on Alliance and Orientation
     double XFORM_X, XFORM_Y;
     double startingHeading, deliveryHeading, pickupHeading;
+    String turretState, armState;
 
     // Build trajectories
 
@@ -146,8 +147,8 @@ public class Auto extends LinearOpMode {
                 // Lift to high pole while running backwards
 //                .UNSTABLE_addTemporalMarkerOffset(1.0, ()->{
 //                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_MEDIUM);
-//                    stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.LEFT_POSITION);
-//                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.EXTEND_LEFT);
+//                    stateMap.put(robot.turret.SYSTEM_NAME, turretState);
+//                    stateMap.put(robot.arm.SYSTEM_NAME, armState);
 //                })
 
                 .lineToLinearHeading(depositPose,
@@ -254,12 +255,16 @@ public class Auto extends LinearOpMode {
                 startingHeading = 90;
                 pickupHeading = 180;
                 deliveryHeading = 180;
+                turretState = robot.turret.LEFT_POSITION;
+                armState = robot.arm.EXTEND_LEFT;
             } else {                  // RED-RIGHT
                 XFORM_X = 1;
                 XFORM_Y = -1;
                 startingHeading = 90;
                 pickupHeading = 0;
                 deliveryHeading = 0;
+                turretState = robot.turret.RIGHT_POSITION;
+                armState = robot.arm.FULL_EXTEND;
             }
         }
         else {
@@ -269,12 +274,16 @@ public class Auto extends LinearOpMode {
                 startingHeading = -90;
                 pickupHeading = 0;
                 deliveryHeading = 0;
+                turretState = robot.turret.LEFT_POSITION;
+                armState = robot.arm.EXTEND_LEFT;
             } else {                  // BLUE-RIGHT
                 XFORM_X = -1;
                 XFORM_Y = 1;
                 startingHeading = -90;
                 pickupHeading = 180;
                 deliveryHeading = 180;
+                turretState = robot.turret.RIGHT_POSITION;
+                armState = robot.arm.FULL_EXTEND;
             }
         }
 
