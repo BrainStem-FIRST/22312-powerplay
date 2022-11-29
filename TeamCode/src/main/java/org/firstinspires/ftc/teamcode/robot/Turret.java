@@ -115,4 +115,8 @@ public class Turret {
     public int getPosition(){
         return turretMotor.getCurrentPosition();
     }
+
+    public void resetEncoders(){
+        turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
 }
