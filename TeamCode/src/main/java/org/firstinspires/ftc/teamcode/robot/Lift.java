@@ -31,10 +31,10 @@ public class Lift {
     public final int LIFT_ADJUSTMENT = -75;
 
     // Empirical numbers are for holding the cone above the pole prior to coneCycle drop
-    public final int LIFT_POSITION_GROUND = 76 - LIFT_ADJUSTMENT;       // 125;
-    public final int LIFT_POSITION_LOWPOLE = 393 - LIFT_ADJUSTMENT;     // 430;
-    public final int LIFT_POSITION_MIDPOLE = 653 - LIFT_ADJUSTMENT;     // 685;
-    public final int LIFT_POSITION_HIGHPOLE = 885 - LIFT_ADJUSTMENT;    // 940;
+    public final int LIFT_POSITION_GROUND = 125;
+    public final int LIFT_POSITION_LOWPOLE = 430;
+    public final int LIFT_POSITION_MIDPOLE = 650;   //685;
+    public final int LIFT_POSITION_HIGHPOLE = 940;
 
 
     // Lift pick up position is only 4 cone bases higher than the starting position,
@@ -295,23 +295,23 @@ public class Lift {
     public void updateLiftPickupPosition() {
         switch (numCyclesCompleted){
             case 0: {
-                liftPositionPickup = 165-LIFT_ADJUSTMENT;
+                liftPositionPickup = 170-LIFT_ADJUSTMENT;
                 break;
             }
             case 1: {
-                liftPositionPickup = 129-LIFT_ADJUSTMENT;
+                liftPositionPickup = 130-LIFT_ADJUSTMENT;
                 break;
             }
             case 2: {
-                liftPositionPickup = 91-LIFT_ADJUSTMENT;
+                liftPositionPickup = 100-LIFT_ADJUSTMENT;
                 break;
             }
             case 3: {
-                liftPositionPickup = 65-LIFT_ADJUSTMENT;
+                liftPositionPickup = 70-LIFT_ADJUSTMENT;
                 break;
             }
             case 4: {
-                liftPositionPickup = 27-LIFT_ADJUSTMENT;
+                liftPositionPickup = 40-LIFT_ADJUSTMENT;
                 break;
             }
         }

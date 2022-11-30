@@ -67,7 +67,7 @@ public class Auto extends LinearOpMode {
     public static int PARKING_NUMBER = 2; // Controlled by the dashboard for test purposes
     public static double SPEED = 50.0;    // Controlled by the dashboard for test purposes
     private ElapsedTime autoTime = new ElapsedTime();
-    private double TIME_TO_PARK = 25.0;
+    private double TIME_TO_PARK = 50;
 
     // used for trajectory state machine
     enum    TrajectoryState {
@@ -106,11 +106,9 @@ public class Auto extends LinearOpMode {
     TrajectorySequence buildStartTrajectory(BrainStemRobot robot) {
         TrajectorySequence trajectoryStart;
 
-        trajectoryStart = robot.drive.trajectorySequenceBuilder(startingPose)
+        trajectoryStart = robot.drive.highSpeedTrajectoryBuilder(startingPose)
                 //moves forward in a line facing 90 degrees away (positioned in between two poles)
-                .lineToLinearHeading(new Pose2d(startingPose.getX(), XFORM_Y * 19, pickupPose.getHeading()),
-                        SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(startingPose.getX(), XFORM_Y * 19, pickupPose.getHeading()))
                 .addTemporalMarker(0.3, () -> {    // Start positioning scaffolding
                     stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_LOW);
                     robot.lift.raiseHeightTo(robot.lift.LIFT_POSITION_LOWPOLE);
@@ -139,9 +137,7 @@ public class Auto extends LinearOpMode {
 
         TrajectorySequence trajectoryDeposit;
 
-        trajectoryDeposit = robot.drive.trajectorySequenceBuilder(robot.drive.getPoseEstimate())
-//                .setReversed(true)  // go backwards
-
+        trajectoryDeposit = robot.drive.highSpeedTrajectoryBuilder(robot.drive.getPoseEstimate())
                 // Lift to high pole while running backwards
                 .UNSTABLE_addTemporalMarkerOffset(1.0, ()->{
                     stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_MEDIUM);
@@ -161,10 +157,7 @@ public class Auto extends LinearOpMode {
 
         TrajectorySequence trajectoryPickup;
 
-        trajectoryPickup = robot.drive.trajectorySequenceBuilder(robot.drive.getPoseEstimate())
-
-//                .setReversed(false) // go forwards
-
+        trajectoryPickup = robot.drive.highSpeedTrajectoryBuilder(robot.drive.getPoseEstimate())
                 // shift position of lift and turret while running to pickup position
                 .UNSTABLE_addTemporalMarkerOffset(1, ()->{
                     stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
@@ -281,8 +274,8 @@ public class Auto extends LinearOpMode {
 
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 34.75, XFORM_Y * 64, Math.toRadians(startingHeading));
-        pickupPose      = new Pose2d(XFORM_X * 63.5, XFORM_Y * 13, Math.toRadians(pickupHeading));
-        depositPose     = new Pose2d(XFORM_X * 22.5, XFORM_Y * 13, Math.toRadians(deliveryHeading));
+        pickupPose      = new Pose2d(XFORM_X * 64, XFORM_Y * 12, Math.toRadians(pickupHeading));
+        depositPose     = new Pose2d(XFORM_X * 24, XFORM_Y * 10, Math.toRadians(deliveryHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
