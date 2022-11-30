@@ -24,24 +24,26 @@ public class Lift {
     public final int MINIMUM_CLEARANCE_HEIGHT = 43;    // inches to lift to clear side panels
 
     public final double CONE_BASE = 1.3;    //base of the cone for pickup calculations
-    public int numCyclesCompleted = 0;      //numCyclesCompleted during Auto for pickup calculations
 
     // TODO: Pole heights might need to be recalculated because the lift starting position (encoder values reset) is now the height of single cone at hand
     public final int LIFT_POSITION_RESET = 0;
 
-    public final int LIFT_POSITION_GROUND = 125;
-    public final int LIFT_POSITION_LOWPOLE = 430;
-    public final int LIFT_POSITION_MIDPOLE = 685;
-    public final int LIFT_POSITION_HIGHPOLE = 940;
-    public final int LIFT_POSITION_PICKUP = 8;
-
     public final int LIFT_ADJUSTMENT = -75;
+
+    // Empirical numbers are for holding the cone above the pole prior to coneCycle drop
+    public final int LIFT_POSITION_GROUND = 76 - LIFT_ADJUSTMENT;       // 125;
+    public final int LIFT_POSITION_LOWPOLE = 393 - LIFT_ADJUSTMENT;     // 430;
+    public final int LIFT_POSITION_MIDPOLE = 653 - LIFT_ADJUSTMENT;     // 685;
+    public final int LIFT_POSITION_HIGHPOLE = 885 - LIFT_ADJUSTMENT;    // 940;
+
 
     // Lift pick up position is only 4 cone bases higher than the starting position,
     // which is reset to 0 ticks at the start of Auto when lift is positioned on top of a single cone
-    public final int LIFT_PICKUP_INIT = (int) ((CONE_BASE * 4) * TICK_PER_INCH);
+//    public final int LIFT_PICKUP_INIT = (int) ((CONE_BASE * 4) * TICK_PER_INCH);
 //    public int liftPositionPickup = LIFT_PICKUP_INIT - LIFT_ADJUSTMENT;
-    public int liftPositionPickup = 170 - LIFT_ADJUSTMENT;
+
+    public int numCyclesCompleted = 0;      //numCyclesCompleted during Auto for pickup calculations
+    public int liftPositionPickup = 165 - LIFT_ADJUSTMENT;
 
     Constants constants = new Constants();
 
@@ -274,7 +276,7 @@ public class Lift {
         liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
     }
-    // Not used -> DELETE
+
     public void setMotor(double power){
         liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -293,31 +295,26 @@ public class Lift {
     public void updateLiftPickupPosition() {
         switch (numCyclesCompleted){
             case 0: {
-                liftPositionPickup = 251; //136
+                liftPositionPickup = 165-LIFT_ADJUSTMENT;
                 break;
             }
             case 1: {
-                liftPositionPickup = 126; //96
+                liftPositionPickup = 129-LIFT_ADJUSTMENT;
                 break;
             }
             case 2: {
-                liftPositionPickup = 93; //63
+                liftPositionPickup = 91-LIFT_ADJUSTMENT;
                 break;
             }
             case 3: {
-                liftPositionPickup = 64; //34
+                liftPositionPickup = 65-LIFT_ADJUSTMENT;
                 break;
             }
             case 4: {
-                liftPositionPickup = 33; //3
+                liftPositionPickup = 27-LIFT_ADJUSTMENT;
                 break;
             }
         }
-        liftPositionPickup += 75;
-        //liftPositionPickup = (int) (LIFT_PICKUP_INIT - ((CONE_BASE * numCyclesCompleted) * TICK_PER_INCH));
-//        telemetry.addData("cyclenumber:", numCyclesCompleted);
-//        telemetry.addData("liftpositionpickup:", liftPositionPickup);
-        telemetry.update();
     }
 
     public void resetEncoders() {
