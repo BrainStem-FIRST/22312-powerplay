@@ -67,7 +67,7 @@ public class Auto extends LinearOpMode {
     public static int PARKING_NUMBER = 2; // Controlled by the dashboard for test purposes
     public static double SPEED = 50.0;    // Controlled by the dashboard for test purposes
     private ElapsedTime autoTime = new ElapsedTime();
-    private double TIME_TO_PARK = 50;
+    private double TIME_TO_PARK = 27;
 
     // used for trajectory state machine
     enum    TrajectoryState {
