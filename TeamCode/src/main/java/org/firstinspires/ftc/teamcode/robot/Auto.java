@@ -91,7 +91,7 @@ public class Auto extends LinearOpMode {
     TrajectorySequence trajectoryParkFromDeposit, trajectoryParkFromPickup;
 
     // Determine waypoints based on Alliance and Orientation
-    double XFORM_X, XFORM_Y;
+    double XFORM_X, XFORM_Y, pickupDeltaY;
     double startingHeading, deliveryHeading, pickupHeading;
     String turretState, armState;
 
@@ -252,6 +252,7 @@ public class Auto extends LinearOpMode {
                 deliveryHeading = 180;
                 turretState = robot.turret.LEFT_POSITION;
                 armState = robot.arm.EXTEND_LEFT;
+                pickupDeltaY = 0;
             } else {                  // RED-RIGHT
                 XFORM_X = 1;
                 XFORM_Y = -1;
@@ -260,6 +261,7 @@ public class Auto extends LinearOpMode {
                 deliveryHeading = 0;
                 turretState = robot.turret.RIGHT_POSITION;
                 armState = robot.arm.FULL_EXTEND;
+                pickupDeltaY = 2;
             }
         }
         else {
@@ -271,6 +273,7 @@ public class Auto extends LinearOpMode {
                 deliveryHeading = 0;
                 turretState = robot.turret.LEFT_POSITION;
                 armState = robot.arm.EXTEND_LEFT;
+                pickupDeltaY = 0;
             } else {                  // BLUE-RIGHT
                 XFORM_X = -1;
                 XFORM_Y = 1;
@@ -279,12 +282,13 @@ public class Auto extends LinearOpMode {
                 deliveryHeading = 180;
                 turretState = robot.turret.RIGHT_POSITION;
                 armState = robot.arm.FULL_EXTEND;
+                pickupDeltaY = 2;
             }
         }
 
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 34.75, XFORM_Y * 64, Math.toRadians(startingHeading));
-        pickupPose      = new Pose2d(XFORM_X * 64, XFORM_Y * 12, Math.toRadians(pickupHeading));
+        pickupPose      = new Pose2d(XFORM_X * 64, XFORM_Y * (12 + pickupDeltaY), Math.toRadians(pickupHeading));
         depositPose     = new Pose2d(XFORM_X * 24, XFORM_Y * 10, Math.toRadians(deliveryHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 
