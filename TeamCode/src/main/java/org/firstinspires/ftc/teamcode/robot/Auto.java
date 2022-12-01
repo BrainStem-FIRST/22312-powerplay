@@ -491,7 +491,7 @@ public class Auto extends LinearOpMode {
                     // Park when there is not enough time to complete another trajectory.
 
                     if (!robot.drive.isBusy()) {
-                        // Trajectory is complete, robot is stopped, presumably safe to move Gulliver
+                        // Trajectory is  complete
 
                         // Deposit cone at delivery station
                         coneCycle(robot);
@@ -565,11 +565,11 @@ public class Auto extends LinearOpMode {
             robot.drive.update();
 
             // Execute systems based on stateMap
-            robot.updateSystems();
+//            robot.updateSystems();
             // Do all updates except for lift.setState
-//            robot.turret.setState((String) stateMap.get(robot.turret.SYSTEM_NAME), robot.lift);
-//            robot.arm.setState((String) stateMap.get(robot.arm.SYSTEM_NAME));
-//            robot.grabber.setState((String) stateMap.get(robot.grabber.SYSTEM_NAME), robot.lift);
+            robot.turret.setState((String) stateMap.get(robot.turret.SYSTEM_NAME), robot.lift);
+            robot.arm.setState((String) stateMap.get(robot.arm.SYSTEM_NAME));
+            robot.grabber.setState((String) stateMap.get(robot.grabber.SYSTEM_NAME), robot.lift);
 
             telemetry.addData("Lift Position=",robot.lift.getPosition());
 
