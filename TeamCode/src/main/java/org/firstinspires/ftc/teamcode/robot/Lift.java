@@ -33,7 +33,7 @@ public class Lift {
     // Empirical numbers are for holding the cone above the pole prior to coneCycle drop
     public final int LIFT_POSITION_GROUND = 125;
     public final int LIFT_POSITION_LOWPOLE = 430;
-    public final int LIFT_POSITION_MIDPOLE = 650;   //685;
+    public final int LIFT_POSITION_MIDPOLE = 670;   //685;
     public final int LIFT_POSITION_HIGHPOLE = 940;
 
 
