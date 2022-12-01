@@ -91,7 +91,7 @@ public class Auto extends LinearOpMode {
     TrajectorySequence trajectoryParkFromDeposit, trajectoryParkFromPickup;
 
     // Determine waypoints based on Alliance and Orientation
-    double XFORM_X, XFORM_Y, pickupDeltaY;
+    double XFORM_X, XFORM_Y, pickupDeltaX, pickupDeltaY, preloadDeltaX;
     double startingHeading, deliveryHeading, pickupHeading;
     String turretState, armState;
 
@@ -108,7 +108,7 @@ public class Auto extends LinearOpMode {
 
         trajectoryStart = robot.drive.trajectorySequenceBuilder(startingPose)
                 //moves forward in a line facing 90 degrees away (positioned in between two poles)
-                .lineToLinearHeading(new Pose2d(startingPose.getX(), XFORM_Y * 19, pickupPose.getHeading()),
+                .lineToLinearHeading(new Pose2d(startingPose.getX()+preloadDeltaX, XFORM_Y * 19, pickupPose.getHeading()),
                         SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
                 .addTemporalMarker(0.3, () -> {    // Start positioning scaffolding
@@ -167,7 +167,7 @@ public class Auto extends LinearOpMode {
 
         trajectoryPickup = robot.drive.trajectorySequenceBuilder(robot.drive.getPoseEstimate())
                 // shift position of lift and turret while running to pickup position
-                .UNSTABLE_addTemporalMarkerOffset(1, ()->{
+                .UNSTABLE_addTemporalMarkerOffset(0.5, ()->{
                     stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
                     robot.lift.raiseHeightTo(robot.lift.liftPositionPickup);
                     stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
@@ -252,7 +252,9 @@ public class Auto extends LinearOpMode {
                 deliveryHeading = 180;
                 turretState = robot.turret.LEFT_POSITION;
                 armState = robot.arm.EXTEND_LEFT;
+                pickupDeltaX = 0;
                 pickupDeltaY = 0;
+                preloadDeltaX = 0;
             } else {                  // RED-RIGHT
                 XFORM_X = 1;
                 XFORM_Y = -1;
@@ -261,7 +263,9 @@ public class Auto extends LinearOpMode {
                 deliveryHeading = 0;
                 turretState = robot.turret.RIGHT_POSITION;
                 armState = robot.arm.FULL_EXTEND;
+                pickupDeltaX = 2;
                 pickupDeltaY = 2;
+                preloadDeltaX = 2;
             }
         }
         else {
@@ -273,7 +277,9 @@ public class Auto extends LinearOpMode {
                 deliveryHeading = 0;
                 turretState = robot.turret.LEFT_POSITION;
                 armState = robot.arm.EXTEND_LEFT;
+                pickupDeltaX = 0;
                 pickupDeltaY = 0;
+                preloadDeltaX = 0;
             } else {                  // BLUE-RIGHT
                 XFORM_X = -1;
                 XFORM_Y = 1;
@@ -282,13 +288,15 @@ public class Auto extends LinearOpMode {
                 deliveryHeading = 180;
                 turretState = robot.turret.RIGHT_POSITION;
                 armState = robot.arm.FULL_EXTEND;
+                pickupDeltaX = 2;
                 pickupDeltaY = 2;
+                preloadDeltaX = 2;
             }
         }
 
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 34.75, XFORM_Y * 64, Math.toRadians(startingHeading));
-        pickupPose      = new Pose2d(XFORM_X * 64, XFORM_Y * (12 + pickupDeltaY), Math.toRadians(pickupHeading));
+        pickupPose      = new Pose2d(XFORM_X * (64 + pickupDeltaX), XFORM_Y * (12 + pickupDeltaY), Math.toRadians(pickupHeading));
         depositPose     = new Pose2d(XFORM_X * 24, XFORM_Y * 10, Math.toRadians(deliveryHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 
