@@ -181,4 +181,8 @@ public class Extension {
         twoBar.setPosition(TWOBAR_POSITION_HOME);
     }
 
+    public boolean isExtensionOut(){
+        return extensionGetPosition() > 0;
+    }
+
 }

@@ -29,14 +29,16 @@ public class Turret {
 
 
     public final int        ANGLE_TOLERANCE = 5;
-    public final int        LIFT_MIN_HEIGHT_TO_MOVE_TURRET = 75;
+    public final int        LIFT_MIN_HEIGHT_TO_MOVE_TURRET = 60;
 
     public Telemetry telemetry;
     public DcMotorEx turretMotor;
 
+    public Extension extension;
     public Turret(HardwareMap hwMap, Telemetry telemetry) {
         this.telemetry = telemetry;
         //getting turret motor from the hardware map
+        
 
         turretMotor = (DcMotorEx) hwMap.get("TurretMotor");
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -114,7 +116,8 @@ public class Turret {
     public int getPosition(){
         return turretMotor.getCurrentPosition();
     }
-    public void resetEncoders(){
+
+    public void resetEncoders() {
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 }
