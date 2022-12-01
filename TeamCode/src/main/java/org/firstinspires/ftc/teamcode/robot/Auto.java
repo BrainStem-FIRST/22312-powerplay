@@ -145,12 +145,12 @@ public class Auto extends LinearOpMode {
 
         trajectoryDeposit = robot.drive.trajectorySequenceBuilder(robot.drive.getPoseEstimate())
                 // Lift to high pole while running backwards
-//                .UNSTABLE_addTemporalMarkerOffset(1.0, ()->{
-//                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_MEDIUM);
-//                    robot.lift.raiseHeightTo(robot.lift.LIFT_POSITION_MIDPOLE);
-//                    stateMap.put(robot.turret.SYSTEM_NAME, turretState);
-//                    stateMap.put(robot.arm.SYSTEM_NAME, armState);
-//                })
+                .UNSTABLE_addTemporalMarkerOffset(1.0, ()->{
+                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_MEDIUM);
+                    robot.lift.raiseHeightTo(robot.lift.LIFT_POSITION_MIDPOLE);
+                    stateMap.put(robot.turret.SYSTEM_NAME, turretState);
+                    stateMap.put(robot.arm.SYSTEM_NAME, armState);
+                })
 
                 .lineToLinearHeading(depositPose,
                         SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
@@ -167,12 +167,12 @@ public class Auto extends LinearOpMode {
 
         trajectoryPickup = robot.drive.trajectorySequenceBuilder(robot.drive.getPoseEstimate())
                 // shift position of lift and turret while running to pickup position
-//                .UNSTABLE_addTemporalMarkerOffset(1, ()->{
-//                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
-//                    robot.lift.raiseHeightTo(robot.lift.liftPositionPickup);
-//                    stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
-//                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
-//                })
+                .UNSTABLE_addTemporalMarkerOffset(1, ()->{
+                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
+                    robot.lift.raiseHeightTo(robot.lift.liftPositionPickup);
+                    stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
+                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
+                })
 
                 // Go back for a new cone
                 .lineToLinearHeading(pickupPose,
@@ -493,28 +493,8 @@ public class Auto extends LinearOpMode {
                     if (!robot.drive.isBusy()) {
                         // Trajectory is complete, robot is stopped, presumably safe to move Gulliver
 
-                        stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_MEDIUM);
-                        stateMap.put(robot.turret.SYSTEM_NAME, turretState);
-                        stateMap.put(robot.arm.SYSTEM_NAME, armState);
-                        while(!stateMap.get(robot.lift.LIFT_SYSTEM_NAME).equalsIgnoreCase(robot.lift.LIFT_POLE_MEDIUM)) {
-                            robot.updateSystems();
-                        }
-
                         // Deposit cone at delivery station
                         coneCycle(robot);
-
-                        // Position for pickup trajectory
-                        stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
-                        stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
-                        while(!stateMap.get(robot.turret.SYSTEM_NAME).equalsIgnoreCase(robot.turret.CENTER_POSITION)) {
-                            robot.updateSystems();
-                        }
-                        // Wait until turret repositions before lowering the lift
-                        stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
-                        while(!stateMap.get(robot.lift.LIFT_SYSTEM_NAME).equalsIgnoreCase(robot.lift.LIFT_PICKUP)) {
-                            robot.updateSystems();
-                        }
-
 
                         telemetry.addData("remaining time:", (30.0 - autoTime.seconds()));
                         // Deposit is complete. Either go back to Pickup or go park
@@ -541,7 +521,7 @@ public class Auto extends LinearOpMode {
                         // Deposit cone at pickup station
                         coneCycle(robot);
                         robot.lift.raiseHeightTo(robot.lift.LIFT_CLEAR_HEIGHT);
-                        sleep(200);
+                        sleep(100);
 
                         // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
                         robot.lift.numCyclesCompleted++;
