@@ -91,7 +91,8 @@ public class Auto extends LinearOpMode {
     TrajectorySequence trajectoryParkFromDeposit, trajectoryParkFromPickup;
 
     // Determine waypoints based on Alliance and Orientation
-    double XFORM_X, XFORM_Y, pickupDeltaX, pickupDeltaY, preloadDeltaX, preloadDeltaY;
+    double XFORM_X, XFORM_Y;
+    double pickupDeltaX, pickupDeltaY, depositDeltaX, depositDeltaY, preloadDeltaX, preloadDeltaY;
     double startingHeading, deliveryHeading, pickupHeading;
     String turretState, armState;
 
@@ -167,7 +168,7 @@ public class Auto extends LinearOpMode {
 
         trajectoryPickup = robot.drive.trajectorySequenceBuilder(robot.drive.getPoseEstimate())
                 // shift position of lift and turret while running to pickup position
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()->{
+                .UNSTABLE_addTemporalMarkerOffset(0.1, ()->{
                     stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
                     robot.lift.raiseHeightTo(robot.lift.liftPositionPickup);
                     stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
@@ -254,6 +255,10 @@ public class Auto extends LinearOpMode {
                 armState = robot.arm.EXTEND_LEFT;
                 pickupDeltaX = 0;
                 pickupDeltaY = 0;
+
+                depositDeltaX = 0;
+                depositDeltaY = 0;
+
                 preloadDeltaX = 0;
                 preloadDeltaY = 0;
             } else {                  // RED-RIGHT
@@ -266,6 +271,10 @@ public class Auto extends LinearOpMode {
                 armState = robot.arm.FULL_EXTEND;
                 pickupDeltaX = 2;
                 pickupDeltaY = 2;
+
+                depositDeltaX = 0;
+                depositDeltaY = -2;
+
                 preloadDeltaX = 2;
                 preloadDeltaY = 3;
             }
@@ -281,6 +290,10 @@ public class Auto extends LinearOpMode {
                 armState = robot.arm.EXTEND_LEFT;
                 pickupDeltaX = 0;
                 pickupDeltaY = 0;
+
+                depositDeltaX = 0;
+                depositDeltaY = 0;
+
                 preloadDeltaX = 0;
                 preloadDeltaY = 0;
             } else {                  // BLUE-RIGHT
@@ -293,15 +306,19 @@ public class Auto extends LinearOpMode {
                 armState = robot.arm.FULL_EXTEND;
                 pickupDeltaX = 2;
                 pickupDeltaY = 2;
-                preloadDeltaX = 2;
-                preloadDeltaY = 3;
+
+                depositDeltaX = 0;
+                depositDeltaY = -2;
+
+                preloadDeltaX = 3;
+                preloadDeltaY = 4;
             }
         }
 
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 34.75, XFORM_Y * 64, Math.toRadians(startingHeading));
         pickupPose      = new Pose2d(XFORM_X * (64 + pickupDeltaX), XFORM_Y * (12 + pickupDeltaY), Math.toRadians(pickupHeading));
-        depositPose     = new Pose2d(XFORM_X * 24, XFORM_Y * 10, Math.toRadians(deliveryHeading));
+        depositPose     = new Pose2d(XFORM_X * (24 + depositDeltaX), XFORM_Y * (10 + depositDeltaY), Math.toRadians(deliveryHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
