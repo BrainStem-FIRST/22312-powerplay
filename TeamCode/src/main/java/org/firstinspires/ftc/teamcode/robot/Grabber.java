@@ -53,7 +53,6 @@ public class Grabber {
                 grabber.setPosition(CLOSED_VALUE);
             } else {
                 grabber.setPosition(OPEN_VALUE);
-                telemetry.addData("Open Grabber", true);
             }
 
             if (stateMap.get(constants.GRABBER_START_TIME) == null) {
@@ -72,8 +71,6 @@ public class Grabber {
         }
     }
     public boolean shouldGrab(Lift lift) {
-        telemetry.addData("should grab function", true);
-        telemetry.update();
         return lift.getPosition() < lift.LIFT_POSITION_MIDPOLE &&
                 ((String)stateMap.get(constants.CONE_CYCLE)).equalsIgnoreCase(constants.STATE_IN_PROGRESS);
     }

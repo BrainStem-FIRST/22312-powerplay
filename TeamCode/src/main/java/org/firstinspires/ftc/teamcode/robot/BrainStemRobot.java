@@ -77,6 +77,12 @@ public class BrainStemRobot {
         //telemetry.addData("robotStateMap" , stateMap);
         stateMap.put(constants.SYSTEM_TIME, System.currentTimeMillis());
 
+        telemetry.addData("CONE_CYCLE:", stateMap.get(constants.CONE_CYCLE));
+        telemetry.addData("CONE_CYCLE_START_TIME:", stateMap.get(constants.CONE_CYCLE_START_TIME));
+        telemetry.addData("CYCLE_LIFT_DOWN:", stateMap.get(constants.CYCLE_LIFT_DOWN));
+        telemetry.addData("CYCLE_GRABBER:", stateMap.get(constants.CYCLE_GRABBER));
+        telemetry.addData("CYCLE_LIFT_UP:", stateMap.get(constants.CYCLE_LIFT_UP));
+
 
         if(((String)stateMap.get(constants.CONE_CYCLE)).equalsIgnoreCase(constants.STATE_IN_PROGRESS)){
             coneCycle();
@@ -90,28 +96,45 @@ public class BrainStemRobot {
     }
 
     public void coneCycle() {
+        if (stateMap.get(constants.CONE_CYCLE_START_TIME) == null) {
+            stateMap.put(constants.CONE_CYCLE_START_TIME, System.currentTimeMillis());
+        }
+
         if(startLiftDown()) {
-            stateMap.put(constants.CYCLE_LIFT_DOWN, constants.STATE_IN_PROGRESS);
             stateMap.put(lift.LIFT_SUBHEIGHT, lift.PLACEMENT_HEIGHT);
+            stateMap.put(constants.CYCLE_LIFT_DOWN, constants.STATE_IN_PROGRESS);
         } else if(startGrabberAction()){
             stateMap.put(constants.CYCLE_GRABBER, constants.STATE_IN_PROGRESS);
         } else if(startLiftUp()){
             stateMap.put(constants.CYCLE_LIFT_UP, constants.STATE_IN_PROGRESS);
             stateMap.put(lift.LIFT_SUBHEIGHT, lift.APPROACH_HEIGHT);
         } else if(isConeCycleComplete()){
-            stateMap.put(constants.CYCLE_LIFT_DOWN, constants.STATE_NOT_STARTED);
-            stateMap.put(constants.CYCLE_GRABBER, constants.STATE_NOT_STARTED);
-            stateMap.put(constants.CYCLE_LIFT_UP, constants.STATE_NOT_STARTED);
-            stateMap.put(constants.CONE_CYCLE, constants.STATE_NOT_STARTED);
+            resetConeCycle();
         }
 
         setConeCycleSystems();
     }
 
+    public void resetConeCycle() {
+        stateMap.put(lift.LIFT_SUBHEIGHT, lift.APPROACH_HEIGHT);
+        stateMap.put(constants.CYCLE_LIFT_DOWN, constants.STATE_NOT_STARTED);
+        stateMap.put(constants.CYCLE_GRABBER, constants.STATE_NOT_STARTED);
+        stateMap.put(constants.CYCLE_LIFT_UP, constants.STATE_NOT_STARTED);
+        stateMap.put(constants.CONE_CYCLE, constants.STATE_NOT_STARTED);
+        stateMap.put(constants.CONE_CYCLE_START_TIME, null);
+    }
     private void setConeCycleSystems() {
         lift.setState();
         grabber.setState((String) stateMap.get(grabber.SYSTEM_NAME), lift);
         arm.setState((String) stateMap.get(arm.SYSTEM_NAME));
+    }
+
+    private long coneCycleStartTime() {
+        return (long) stateMap.get(constants.CONE_CYCLE_START_TIME);
+    }
+
+    private boolean coneCycleStepTimeExpired(long expirationTime) {
+        return (expirationTime + coneCycleStartTime()) < System.currentTimeMillis();
     }
 
     private boolean startLiftUp() {
@@ -120,7 +143,8 @@ public class BrainStemRobot {
     }
 
     private boolean startLiftDown() {
-        return (((String) stateMap.get(constants.CONE_CYCLE)).equalsIgnoreCase(constants.STATE_IN_PROGRESS) &&
+        return (coneCycleStepTimeExpired(constants.GRABBER_CYCLE_TIME) &&
+                ((String) stateMap.get(constants.CONE_CYCLE)).equalsIgnoreCase(constants.STATE_IN_PROGRESS) &&
                 ((String)(stateMap.get(constants.CYCLE_LIFT_DOWN))).equalsIgnoreCase(constants.STATE_NOT_STARTED));
     }
 

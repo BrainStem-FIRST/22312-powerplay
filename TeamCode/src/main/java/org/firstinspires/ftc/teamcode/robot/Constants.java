@@ -10,8 +10,10 @@ public class Constants {
     public final String CYCLE_GRABBER = "Cycle Grabber";
     public final String LIFT_ENCODER_TICKS = "Lift Encoder Ticks";
     public final String GRABBER_START_TIME = "GRABBER START TIME";
-    public final int GRABBER_CYCLE_TIME = 400;
-    public final int LIFT_DOWN_CYCLE_TIME  = 400;
+    public final long GRABBER_CYCLE_TIME = 200;
+    public final String CONE_CYCLE_START_TIME = "CONE CYCLE START TIME";
+    public final long LIFT_DOWN_CYCLE_TIME  = 400;
+    public final long LIFT_UP_CYCLE_TIME  = 1000;
     public final String LIFT_DOWN_START_TIME = "LIFT DOWN START TIME";
     public final String SYSTEM_TIME = "SYSTEM TIME";
     public final String  DRIVER_2_SELECTED_LIFT = "DRIVER_2_SELECTED_LIFT";

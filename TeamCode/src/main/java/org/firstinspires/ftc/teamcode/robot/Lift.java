@@ -68,7 +68,7 @@ public class Lift {
 
     public final String TRANSITION_STATE = "TRANSITION";
     public final int DELIVERY_ADJUSTMENT = -3;
-    public final int HEIGHT_TOLERANCE = 5;
+    public final int HEIGHT_TOLERANCE = 10;
     public final int CYCLE_TOLERANCE = 5;
     public final String LIFT_CURRENT_STATE = "LIFT CURRENT STATE";
 
@@ -101,11 +101,7 @@ public class Lift {
     public void setState() {
         String subheight = (String) stateMap.get(LIFT_SUBHEIGHT);
         String currentState = getCurrentState(subheight);
-//        telemetry.addData("subheight:", subheight);
-//        telemetry.addData("lift encoder count", getPosition());
         String level = (String) stateMap.get(LIFT_SYSTEM_NAME);
-        telemetry.addData("Lift 2 Motor encoder ticks",liftMotor2.getCurrentPosition());
-        telemetry.addData("Lift 1 Motor Encoder ticks", liftMotor.getCurrentPosition());
 
         stateMap.put(LIFT_CURRENT_STATE, currentState);
 
@@ -135,6 +131,22 @@ public class Lift {
             }
         } else if (isCycleInProgress(constants.CYCLE_LIFT_UP) && inHeightTolerance(getPosition(), position)) {
             stateMap.put(constants.CYCLE_LIFT_UP, constants.STATE_COMPLETE);
+        } else if (isCycleInProgress(constants.CYCLE_LIFT_UP) && coneCycleStepTimeExpired(constants.GRABBER_CYCLE_TIME + constants.LIFT_DOWN_CYCLE_TIME + constants.LIFT_UP_CYCLE_TIME)) {
+            stateMap.put(constants.CYCLE_LIFT_UP, constants.STATE_COMPLETE);
+        } else if (isCycleInProgress(constants.CYCLE_LIFT_DOWN) && coneCycleStepTimeExpired(constants.GRABBER_CYCLE_TIME + constants.LIFT_DOWN_CYCLE_TIME)) {
+            stateMap.put(constants.CYCLE_LIFT_DOWN, constants.STATE_COMPLETE);
+        }
+    }
+
+    private long coneCycleStartTime() {
+        return (long) stateMap.get(constants.CONE_CYCLE_START_TIME);
+    }
+
+    private boolean coneCycleStepTimeExpired(long expirationTime) {
+        if (stateMap.get(constants.CONE_CYCLE_START_TIME) == null) {
+            return false;
+        } else {
+            return (expirationTime + coneCycleStartTime()) < System.currentTimeMillis();
         }
     }
 
@@ -217,6 +229,9 @@ public class Lift {
     public String getCurrentState(String subheight) {
         String state = TRANSITION_STATE;
         double currentPosition = getPosition();
+        telemetry.addData("currentPosition", currentPosition);
+        telemetry.addData("liftPositionPickup", liftPositionPickup);
+        telemetry.addData("deliveryHeight(subheight)", deliveryHeight(subheight));
         if(inHeightTolerance(currentPosition, LIFT_POSITION_GROUND + deliveryHeight(subheight))){
             state = LIFT_POLE_GROUND;
         } else if (inHeightTolerance(currentPosition, LIFT_POSITION_LOWPOLE + deliveryHeight(subheight))) {
@@ -244,7 +259,6 @@ public class Lift {
 
     public void raiseHeightTo (int heightInTicks) {
         //raising heights to reach different junctions, so four values
-        telemetry.addData("Raise Height To", heightInTicks);
         liftMotor.setTargetPosition(heightInTicks);
         liftMotor2.setTargetPosition(heightInTicks);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);

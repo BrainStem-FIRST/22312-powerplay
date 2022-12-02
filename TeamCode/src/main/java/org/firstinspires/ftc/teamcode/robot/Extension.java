@@ -69,10 +69,6 @@ public class Extension {
         double targetPosition = Range.clip(currentPosition + speed*0.10, 0, 1);
         extension.setPosition(targetPosition/EXTENSION_POSITION_MAX);
 
-        //Send telemetry message for debugging purposes
-        telemetry.addData("Speed of move:","%.2f", speed);
-        telemetry.addData("Extension Position:","%.2f", targetPosition);
-        telemetry.update();
     }
 
     // Move the extension's position to the specified distance in inches
@@ -123,9 +119,6 @@ public class Extension {
 
     public void setState(String desiredState){
         String currentState = getCurrentState();
-        telemetry.addData("armCurrentState" , currentState);
-        telemetry.addData("armDesiredState" , desiredState);
-        telemetry.addData("extensionCurrentPosition", extension.getPosition());
         if(!desiredState.equalsIgnoreCase(currentState)){
             selectTransition(desiredState);
         }
@@ -134,7 +127,6 @@ public class Extension {
     public String getCurrentState() {
         String state = TRANSITION_STATE;
         double currentPosition = extension.getPosition();
-        telemetry.addData("ExtensionCurrentPosition", currentPosition);
         if(currentPosition<0.2){
             state = DEFAULT_VALUE;
         } else if (currentPosition>=0.6) {

@@ -90,6 +90,7 @@ public class RobotTeleOp extends LinearOpMode {
           robot.lift.setMotor(1.0);
       } else if(gamepad2.left_bumper) {
           robot.lift.resetEncoders();
+          robot.resetConeCycle();
       } else if(gamepad2.left_trigger > 0.1) {
           robot.lift.setMotor(-1.0);
       } else if(gamepad1.y){
@@ -140,6 +141,7 @@ public class RobotTeleOp extends LinearOpMode {
         }
         if(stateMap.get(DRIVE_MODE).equalsIgnoreCase(MANUAL_DRIVE_MODE)){
             if (gamepad1.dpad_down) {
+                stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
                 stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
                 drive.setPoseEstimate(new Pose2d(0,0,0));
                 Pose2d currentPosition = drive.getPoseEstimate();
@@ -201,7 +203,7 @@ public class RobotTeleOp extends LinearOpMode {
         drive.update();
 
         robot.updateSystems();
-        telemetry.addData("State Map", stateMap);
+//        telemetry.addData("State Map", stateMap);
         telemetry.update();
         }
       }
