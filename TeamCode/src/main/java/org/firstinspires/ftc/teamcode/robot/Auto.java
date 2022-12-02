@@ -109,7 +109,7 @@ public class Auto extends LinearOpMode {
 
         trajectoryStart = robot.drive.trajectorySequenceBuilder(startingPose)
                 //moves forward in a line facing 90 degrees away (positioned in between two poles)
-                .lineToLinearHeading(new Pose2d(startingPose.getX()+preloadDeltaX, XFORM_Y * (19+preloadDeltaY), pickupPose.getHeading()),
+                .lineToLinearHeading(new Pose2d(startingPose.getX()+(XFORM_X*preloadDeltaX), XFORM_Y * (19+preloadDeltaY), pickupPose.getHeading()),
                         SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
                 .addTemporalMarker(0.3, () -> {    // Start positioning scaffolding
@@ -275,8 +275,8 @@ public class Auto extends LinearOpMode {
                 depositDeltaX = 0;
                 depositDeltaY = -2;
 
-                preloadDeltaX = 2;
-                preloadDeltaY = 3;
+                preloadDeltaX = 0;
+                preloadDeltaY = 2;
             }
         }
         else {
@@ -310,8 +310,8 @@ public class Auto extends LinearOpMode {
                 depositDeltaX = 0;
                 depositDeltaY = -2;
 
-                preloadDeltaX = 3;
-                preloadDeltaY = 4;
+                preloadDeltaX = 0;
+                preloadDeltaY = 2;
             }
         }
 
@@ -608,7 +608,7 @@ public class Auto extends LinearOpMode {
 
     void coneCycle(BrainStemRobot robot) {
         stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS);
-        while (stateMap.get(constants.CONE_CYCLE).equals(constants.STATE_IN_PROGRESS)) {
+        while (stateMap.get(constants.CONE_CYCLE).equals(constants.STATE_IN_PROGRESS) && opModeIsActive()) {
             robot.updateSystems();
         }
     }
