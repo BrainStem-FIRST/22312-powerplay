@@ -31,7 +31,7 @@ public class Grabber {
     Constants constants = new Constants();
 
     public final double OPEN_VALUE = 0.58;
-    public final double CLOSED_VALUE = 0.685;
+    public final double CLOSED_VALUE = 0.72;
 
     private Map stateMap;
 
