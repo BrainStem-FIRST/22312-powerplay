@@ -67,7 +67,7 @@ public class Auto extends LinearOpMode {
     public static int PARKING_NUMBER = 2; // Controlled by the dashboard for test purposes
     public static double SPEED = 60.0;    // Controlled by the dashboard for test purposes
     private ElapsedTime autoTime = new ElapsedTime();
-    private double TIME_TO_PARK = 27;
+    private double TIME_TO_PARK = 26.5;
 
     // used for trajectory state machine
     enum    TrajectoryState {
@@ -91,7 +91,7 @@ public class Auto extends LinearOpMode {
     TrajectorySequence trajectoryParkFromDeposit, trajectoryParkFromPickup;
 
     // Determine waypoints based on Alliance and Orientation
-    double XFORM_X, XFORM_Y, pickupDeltaX, pickupDeltaY, preloadDeltaX;
+    double XFORM_X, XFORM_Y, pickupDeltaX, pickupDeltaY, preloadDeltaX, preloadDeltaY;
     double startingHeading, deliveryHeading, pickupHeading;
     String turretState, armState;
 
@@ -108,7 +108,7 @@ public class Auto extends LinearOpMode {
 
         trajectoryStart = robot.drive.trajectorySequenceBuilder(startingPose)
                 //moves forward in a line facing 90 degrees away (positioned in between two poles)
-                .lineToLinearHeading(new Pose2d(startingPose.getX()+preloadDeltaX, XFORM_Y * 19, pickupPose.getHeading()),
+                .lineToLinearHeading(new Pose2d(startingPose.getX()+preloadDeltaX, XFORM_Y * (19+preloadDeltaY), pickupPose.getHeading()),
                         SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
                 .addTemporalMarker(0.3, () -> {    // Start positioning scaffolding
@@ -255,6 +255,7 @@ public class Auto extends LinearOpMode {
                 pickupDeltaX = 0;
                 pickupDeltaY = 0;
                 preloadDeltaX = 0;
+                preloadDeltaY = 0;
             } else {                  // RED-RIGHT
                 XFORM_X = 1;
                 XFORM_Y = -1;
@@ -266,6 +267,7 @@ public class Auto extends LinearOpMode {
                 pickupDeltaX = 2;
                 pickupDeltaY = 2;
                 preloadDeltaX = 2;
+                preloadDeltaY = 3;
             }
         }
         else {
@@ -280,6 +282,7 @@ public class Auto extends LinearOpMode {
                 pickupDeltaX = 0;
                 pickupDeltaY = 0;
                 preloadDeltaX = 0;
+                preloadDeltaY = 0;
             } else {                  // BLUE-RIGHT
                 XFORM_X = -1;
                 XFORM_Y = 1;
@@ -291,6 +294,7 @@ public class Auto extends LinearOpMode {
                 pickupDeltaX = 2;
                 pickupDeltaY = 2;
                 preloadDeltaX = 2;
+                preloadDeltaY = 3;
             }
         }
 
