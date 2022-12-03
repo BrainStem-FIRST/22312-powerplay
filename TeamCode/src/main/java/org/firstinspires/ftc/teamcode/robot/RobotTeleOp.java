@@ -93,7 +93,7 @@ public class RobotTeleOp extends LinearOpMode {
           robot.resetConeCycle();
       } else if(gamepad2.left_trigger > 0.1) {
           robot.lift.setMotor(-1.0);
-      } else if(gamepad1.y){
+      } else if(gamepad2.x){
           robot.turret.resetEncoders();
       } else {
         setButtons();

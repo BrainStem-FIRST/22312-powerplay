@@ -270,7 +270,7 @@ public class Auto extends LinearOpMode {
                 turretState = robot.turret.RIGHT_POSITION;
                 armState = robot.arm.FULL_EXTEND;
                 pickupDeltaX = 2;
-                pickupDeltaY = 4;
+                pickupDeltaY = 6;
 
                 depositDeltaX = 0;
                 depositDeltaY = -2;
@@ -305,7 +305,7 @@ public class Auto extends LinearOpMode {
                 turretState = robot.turret.RIGHT_POSITION;
                 armState = robot.arm.FULL_EXTEND;
                 pickupDeltaX = 2;
-                pickupDeltaY = 4;
+                pickupDeltaY = 6;
 
                 depositDeltaX = 0;
                 depositDeltaY = -2;
