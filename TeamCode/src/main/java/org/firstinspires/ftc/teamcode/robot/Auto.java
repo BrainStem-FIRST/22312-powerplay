@@ -262,7 +262,7 @@ public class Auto extends LinearOpMode {
                 depositDeltaY = 2;
 
                 preloadDeltaX = -1;
-                preloadDeltaY = -1;
+                preloadDeltaY = 1;
             } else {                  // RED-RIGHT
                 XFORM_X = 1;
                 XFORM_Y = -1;
@@ -293,7 +293,7 @@ public class Auto extends LinearOpMode {
                 pickupDeltaX = 0;
                 pickupDeltaY = -3;
 
-                depositDeltaX = -2;
+                depositDeltaX = -1;
                 depositDeltaY = 0;
 
                 preloadDeltaX = -0.5;
@@ -307,7 +307,7 @@ public class Auto extends LinearOpMode {
                 turretState = robot.turret.RIGHT_POSITION;
                 armState = robot.arm.FULL_EXTEND;
                 pickupDeltaX = 2;
-                pickupDeltaY = 3;
+                pickupDeltaY = 4;
 
                 depositDeltaX = 0;
                 depositDeltaY = -2;
