@@ -262,7 +262,7 @@ public class Auto extends LinearOpMode {
                 depositDeltaY = 2;
 
                 preloadDeltaX = -1;
-                preloadDeltaY = -0.5;
+                preloadDeltaY = -1;
             } else {                  // RED-RIGHT
                 XFORM_X = 1;
                 XFORM_Y = -1;
@@ -272,7 +272,7 @@ public class Auto extends LinearOpMode {
                 turretState = robot.turret.RIGHT_POSITION;
                 armState = robot.arm.FULL_EXTEND;
                 pickupDeltaX = 2;
-                pickupDeltaY = 1;
+                pickupDeltaY = 2;
 
                 depositDeltaX = 0;
                 depositDeltaY = -2;
@@ -296,7 +296,7 @@ public class Auto extends LinearOpMode {
                 depositDeltaX = -2;
                 depositDeltaY = 0;
 
-                preloadDeltaX = 0;
+                preloadDeltaX = -0.5;
                 preloadDeltaY = 0;
             } else {                  // BLUE-RIGHT
                 XFORM_X = -1;
@@ -525,7 +525,7 @@ public class Auto extends LinearOpMode {
                         // Trajectory is  complete
 
                         // Deposit cone at delivery station
-                        wait(300);
+//                        wait(300);
                         coneCycle(robot);
 
                         // Go back to pickup cycle
@@ -560,9 +560,9 @@ public class Auto extends LinearOpMode {
                             .lineToLinearHeading(parkingPose)
                             .build();
                     robot.drive.followTrajectory(trajectoryPark);
-                    robot.lift.raiseHeightTo(robot.lift.LIFT_POSITION_GROUND);
-                    robot.turret.moveTo(robot.turret.CENTER_POSITION_VALUE);
                     robot.arm.extendHome();
+                    robot.turret.moveTo(robot.turret.CENTER_POSITION_VALUE);
+                    robot.lift.raiseHeightTo(robot.lift.LIFT_POSITION_GROUND);
 
                     // Wait for the robot to complete the trajectory and go to IDLE state
                     if (!robot.drive.isBusy()) {
