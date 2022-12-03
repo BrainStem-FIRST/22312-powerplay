@@ -118,10 +118,12 @@ public class Auto extends LinearOpMode {
                     stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
                 })
 
+                // stop swinging
+                .waitSeconds(.1)
                 // Drop off the cone at hand on the Low pole on the left
                 .addTemporalMarker(() -> coneCycle(robot))
 
-                .lineToConstantHeading(new Vector2d(startingPose.getX(), XFORM_Y * 12.25),
+                .lineToConstantHeading(new Vector2d(startingPose.getX(), XFORM_Y * 10),
                         SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
 
@@ -187,7 +189,7 @@ public class Auto extends LinearOpMode {
     }
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
 
         //------------------------------------------------------
         //                 Initialize the robot
@@ -254,13 +256,13 @@ public class Auto extends LinearOpMode {
                 turretState = robot.turret.LEFT_POSITION;
                 armState = robot.arm.EXTEND_LEFT;
                 pickupDeltaX = 0;
-                pickupDeltaY = 0;
+                pickupDeltaY = -3;
 
-                depositDeltaX = -2;
-                depositDeltaY = 0;
+                depositDeltaX = -1;
+                depositDeltaY = 2;
 
-                preloadDeltaX = 0;
-                preloadDeltaY = 0;
+                preloadDeltaX = -1;
+                preloadDeltaY = -0.5;
             } else {                  // RED-RIGHT
                 XFORM_X = 1;
                 XFORM_Y = -1;
@@ -270,7 +272,7 @@ public class Auto extends LinearOpMode {
                 turretState = robot.turret.RIGHT_POSITION;
                 armState = robot.arm.FULL_EXTEND;
                 pickupDeltaX = 2;
-                pickupDeltaY = 2;
+                pickupDeltaY = 1;
 
                 depositDeltaX = 0;
                 depositDeltaY = -2;
@@ -289,7 +291,7 @@ public class Auto extends LinearOpMode {
                 turretState = robot.turret.LEFT_POSITION;
                 armState = robot.arm.EXTEND_LEFT;
                 pickupDeltaX = 0;
-                pickupDeltaY = 0;
+                pickupDeltaY = -3;
 
                 depositDeltaX = -2;
                 depositDeltaY = 0;
@@ -305,7 +307,7 @@ public class Auto extends LinearOpMode {
                 turretState = robot.turret.RIGHT_POSITION;
                 armState = robot.arm.FULL_EXTEND;
                 pickupDeltaX = 2;
-                pickupDeltaY = 2;
+                pickupDeltaY = 3;
 
                 depositDeltaX = 0;
                 depositDeltaY = -2;
@@ -523,6 +525,7 @@ public class Auto extends LinearOpMode {
                         // Trajectory is  complete
 
                         // Deposit cone at delivery station
+                        wait(300);
                         coneCycle(robot);
 
                         // Go back to pickup cycle
