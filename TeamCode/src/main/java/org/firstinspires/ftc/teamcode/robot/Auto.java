@@ -67,7 +67,7 @@ public class Auto extends LinearOpMode {
     public static int PARKING_NUMBER = 2; // Controlled by the dashboard for test purposes
     public static double SPEED = 60.0;    // Controlled by the dashboard for test purposes
     private ElapsedTime autoTime = new ElapsedTime();
-    private double TIME_TO_PARK = 26.5;
+    private double TIME_TO_PARK = 25;
 
     // used for trajectory state machine
     enum    TrajectoryState {
@@ -577,6 +577,8 @@ public class Auto extends LinearOpMode {
                             .build();
                     robot.drive.followTrajectory(trajectoryPark);
                     robot.lift.raiseHeightTo(robot.lift.LIFT_POSITION_GROUND);
+                    robot.turret.moveTo(robot.turret.CENTER_POSITION_VALUE);
+                    robot.arm.extendHome();
 
                     // Wait for the robot to complete the trajectory and go to IDLE state
                     if (!robot.drive.isBusy()) {
