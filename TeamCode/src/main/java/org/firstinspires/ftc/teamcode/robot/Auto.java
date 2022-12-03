@@ -525,19 +525,9 @@ public class Auto extends LinearOpMode {
                         // Deposit cone at delivery station
                         coneCycle(robot);
 
-                        telemetry.addData("remaining time:", (30.0 - autoTime.seconds()));
-                        // Deposit is complete. Either go back to Pickup or go park
-
-                        // Is it time to park?
-                        if (autoTime.seconds() > TIME_TO_PARK) {
-                            //if((trajectoryPickup.duration()+trajectoryParkFromPickup.duration()) < (30.0 - autoTime.seconds())) {
-                            currentTrajectoryState = TrajectoryState.TRAJECTORY_PARKING_STATE;
-                        }
-                        else {
-                            // Go back to pickup cycle
-                            currentTrajectoryState = TrajectoryState.TRAJECTORY_PICKUP_STATE;
-                            robot.drive.followTrajectorySequenceAsync(buildPickupTrajectory(robot));
-                        }
+                        // Go back to pickup cycle
+                        currentTrajectoryState = TrajectoryState.TRAJECTORY_PICKUP_STATE;
+                        robot.drive.followTrajectorySequenceAsync(buildPickupTrajectory(robot));
                     }
                     break;
 
@@ -556,18 +546,9 @@ public class Auto extends LinearOpMode {
                         robot.lift.numCyclesCompleted++;
                         robot.lift.updateLiftPickupPosition();
 
-                        telemetry.addData("remaining time:", (30.0 - autoTime.seconds()));
-                        // Pickup is complete. Either go back to Deposit or go park
-
-                        // Is it time to park?
-                        if (autoTime.seconds() > TIME_TO_PARK) {
-                            //if((trajectoryDeposit.duration()+trajectoryParkFromDeposit.duration()) < (30.0 - autoTime.seconds())) {
-                            currentTrajectoryState = TrajectoryState.TRAJECTORY_PARKING_STATE;
-                        } else {
-                            // Go back to deposit cycle
-                            currentTrajectoryState = TrajectoryState.TRAJECTORY_DEPOSIT_STATE;
-                            robot.drive.followTrajectorySequenceAsync(buildDepositTrajectory(robot));
-                        }
+                        // Go back to deposit cycle
+                        currentTrajectoryState = TrajectoryState.TRAJECTORY_DEPOSIT_STATE;
+                        robot.drive.followTrajectorySequenceAsync(buildDepositTrajectory(robot));
                     }
                     break;
 
@@ -592,15 +573,27 @@ public class Auto extends LinearOpMode {
                     break;
             }
 
-            // Continue executing trajectory following
-            robot.drive.update();
+            telemetry.addData("remaining time:", (30.0 - autoTime.seconds()));
 
-            // Execute systems based on stateMap
-//            robot.updateSystems();
-            // Do all updates except for lift.setState
-            robot.turret.setState((String) stateMap.get(robot.turret.SYSTEM_NAME), robot.lift);
-            robot.arm.setState((String) stateMap.get(robot.arm.SYSTEM_NAME));
-            robot.grabber.setState((String) stateMap.get(robot.grabber.SYSTEM_NAME), robot.lift);
+            // Is it time to park?
+            if (autoTime.seconds() > TIME_TO_PARK &&
+                    (currentTrajectoryState != TrajectoryState.TRAJECTORY_PARKING_STATE) &&
+                     currentTrajectoryState != TrajectoryState.TRAJECTORY_IDLE) {
+                //if((trajectoryPickup.duration()+trajectoryParkFromPickup.duration()) < (30.0 - autoTime.seconds())) {
+                currentTrajectoryState = TrajectoryState.TRAJECTORY_PARKING_STATE;
+            }
+            else {
+
+                // Continue executing trajectory following
+                robot.drive.update();
+
+                // Execute systems based on stateMap
+                //            robot.updateSystems();
+                // Do all updates except for lift.setState
+                robot.turret.setState((String) stateMap.get(robot.turret.SYSTEM_NAME), robot.lift);
+                robot.arm.setState((String) stateMap.get(robot.arm.SYSTEM_NAME));
+                robot.grabber.setState((String) stateMap.get(robot.grabber.SYSTEM_NAME), robot.lift);
+            }
 
             telemetry.addData("Lift Position=",robot.lift.getPosition());
 
