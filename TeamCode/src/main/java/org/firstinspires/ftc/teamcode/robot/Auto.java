@@ -291,7 +291,7 @@ public class Auto extends LinearOpMode {
                 pickupDeltaX = 0;
                 pickupDeltaY = 0;
 
-                depositDeltaX = 0;
+                depositDeltaX = -2;
                 depositDeltaY = 0;
 
                 preloadDeltaX = 0;
