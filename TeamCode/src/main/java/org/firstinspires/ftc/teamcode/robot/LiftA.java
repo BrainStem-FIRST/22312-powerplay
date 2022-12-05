@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import java.util.Map;
 
 
-public class Lift {
+public class LiftA {
     private Telemetry telemetry;
     public DcMotor liftMotor;
     public DcMotor liftMotor2;
@@ -45,7 +44,7 @@ public class Lift {
     public int numCyclesCompleted = 0;      //numCyclesCompleted during Auto for pickup calculations
     public int liftPositionPickup = 165 - LIFT_ADJUSTMENT;
 
-    Constants constants = new Constants();
+    ConstantsA constants = new ConstantsA();
 
 
     public final double HARD_STOP_CURRENT_DRAW = 100;
@@ -76,7 +75,7 @@ public class Lift {
     private Map stateMap;
 
 
-    public Lift(HardwareMap hwMap, Telemetry telemetry, Map stateMap) {
+    public LiftA(HardwareMap hwMap, Telemetry telemetry, Map stateMap) {
         this.telemetry = telemetry;
         this.stateMap = stateMap;
         liftMotor = hwMap.dcMotor.get("Lift");

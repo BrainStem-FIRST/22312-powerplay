@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.Range;
 import java.util.Map;
 
 
-public class Extension {
+public class ExtensionA {
     private Telemetry telemetry;
 
     // Three servos (plus the turret) work together to place cone to desired location
@@ -42,7 +42,7 @@ public class Extension {
         return extension.getPosition();
     }
 
-    public Extension(HardwareMap hwMap, Telemetry telemetry, Map stateMap) {
+    public ExtensionA(HardwareMap hwMap, Telemetry telemetry, Map stateMap) {
         this.telemetry = telemetry;
         this.stateMap = stateMap;
         extension = (ServoImplEx) hwMap.servo.get("Extension");

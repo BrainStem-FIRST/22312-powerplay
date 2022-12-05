@@ -1,29 +1,17 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 import static java.lang.Thread.sleep;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.util.Encoder;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
 
-public class BrainStemRobot {
+public class BrainStemRobotA {
 
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor.RunMode currentDrivetrainMode;
@@ -32,25 +20,25 @@ public class BrainStemRobot {
     private OpMode opMode;
 
     // declare robot components
-    public Turret turret;
-    public Lift lift;
-    public Extension arm;
+    public TurretA turret;
+    public LiftA lift;
+    public ExtensionA arm;
     public SampleMecanumDrive drive;
-    public Grabber grabber;
+    public GrabberA grabber;
     private Map stateMap;
-    Constants constants = new Constants();
+    ConstantsA constants = new ConstantsA();
 
-    public BrainStemRobot(HardwareMap hwMap, Telemetry telemetry, Map stateMap) {
+    public BrainStemRobotA(HardwareMap hwMap, Telemetry telemetry, Map stateMap) {
         this.telemetry = telemetry;
         this.stateMap = stateMap;
         this.opMode = opMode;
 
         // instantiate components turret, lift, arm, grabber
-        turret  = new Turret(hwMap, telemetry);
-        lift    = new Lift(hwMap, telemetry, stateMap);
-        arm     = new Extension(hwMap, telemetry, stateMap);
+        turret  = new TurretA(hwMap, telemetry);
+        lift    = new LiftA(hwMap, telemetry, stateMap);
+        arm     = new ExtensionA(hwMap, telemetry, stateMap);
         drive   = new SampleMecanumDrive(hwMap);
-        grabber   = new Grabber(hwMap, telemetry, stateMap);
+        grabber   = new GrabberA(hwMap, telemetry, stateMap);
 
         // Set run mode (due to lack of a separate initialization function)
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

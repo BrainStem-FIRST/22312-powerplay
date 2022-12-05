@@ -9,7 +9,6 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -80,7 +79,7 @@ public class Auto extends LinearOpMode {
     TrajectoryState currentTrajectoryState = TrajectoryState.TRAJECTORY_START_STATE;
 
     Map<String, String> stateMap = new HashMap<String, String>() { };
-    Constants constants = new Constants();
+    ConstantsA constants = new ConstantsA();
 
 
     //------------------------------------------------------
@@ -104,7 +103,7 @@ public class Auto extends LinearOpMode {
 
     // From starting position, turn sideways (to push the signal cone), strafe, deliver on Low Pole, spline to pickup position, and pickup top-most cone
 
-    TrajectorySequence buildStartTrajectory(BrainStemRobot robot) {
+    TrajectorySequence buildStartTrajectory(BrainStemRobotA robot) {
         TrajectorySequence trajectoryStart;
 
         trajectoryStart = robot.drive.trajectorySequenceBuilder(startingPose)
@@ -142,7 +141,7 @@ public class Auto extends LinearOpMode {
         return trajectoryStart;
     }
 
-    TrajectorySequence buildDepositTrajectory(BrainStemRobot robot) {
+    TrajectorySequence buildDepositTrajectory(BrainStemRobotA robot) {
 
         TrajectorySequence trajectoryDeposit;
 
@@ -164,7 +163,7 @@ public class Auto extends LinearOpMode {
         return trajectoryDeposit;
     }
 
-    TrajectorySequence buildPickupTrajectory(BrainStemRobot robot) {
+    TrajectorySequence buildPickupTrajectory(BrainStemRobotA robot) {
 
         TrajectorySequence trajectoryPickup;
 
@@ -195,7 +194,7 @@ public class Auto extends LinearOpMode {
         //                 Initialize the robot
         //------------------------------------------------------
 
-        BrainStemRobot robot = new BrainStemRobot(hardwareMap, telemetry, stateMap);
+        BrainStemRobotA robot = new BrainStemRobotA(hardwareMap, telemetry, stateMap);
 
         // this variable is used to calculate liftPositionPickup for stacked cones
         robot.lift.numCyclesCompleted = 0;
@@ -604,7 +603,7 @@ public class Auto extends LinearOpMode {
         }
     }
 
-    void coneCycle(BrainStemRobot robot) {
+    void coneCycle(BrainStemRobotA robot) {
         stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS);
         while (stateMap.get(constants.CONE_CYCLE).equals(constants.STATE_IN_PROGRESS) && opModeIsActive()) {
             robot.updateSystems();

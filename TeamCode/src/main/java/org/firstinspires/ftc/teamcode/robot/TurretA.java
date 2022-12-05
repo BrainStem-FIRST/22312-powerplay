@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-public class Turret {
+public class TurretA {
     //8192 * 5.23 * 1.8 * 4
     public final double     DEFAULT_TURRET_POWER = 0.1;
     public final double     INITIAL_MOVE_LEFT_TURRET_POWER = 0.1;
@@ -34,8 +34,8 @@ public class Turret {
     public Telemetry telemetry;
     public DcMotorEx turretMotor;
 
-    public Extension extension;
-    public Turret(HardwareMap hwMap, Telemetry telemetry) {
+    public ExtensionA extension;
+    public TurretA(HardwareMap hwMap, Telemetry telemetry) {
         this.telemetry = telemetry;
         //getting turret motor from the hardware map
         
@@ -46,7 +46,7 @@ public class Turret {
         turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void setState(String desiredState, Lift lift){
+    public void setState(String desiredState, LiftA lift){
         String currentState = getCurrentState();
         if(isLiftTooLow(lift) || desiredState.equalsIgnoreCase(currentState)){
             turretMotor.setPower(0);
@@ -56,7 +56,7 @@ public class Turret {
         }
     }
 
-    public boolean isLiftTooLow(Lift lift) {
+    public boolean isLiftTooLow(LiftA lift) {
         boolean tooLow = lift.getPosition() < LIFT_MIN_HEIGHT_TO_MOVE_TURRET;
         return tooLow;
     }
