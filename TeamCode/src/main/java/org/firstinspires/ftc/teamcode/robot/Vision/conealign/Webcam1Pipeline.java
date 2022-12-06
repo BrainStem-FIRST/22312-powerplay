@@ -19,7 +19,7 @@
  * SOFTWARE.
  */
 
-package org.firstinspires.ftc.teamcode.robot.auto.colorcv;
+package org.firstinspires.ftc.teamcode.robot.Vision.conealign;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -44,10 +44,9 @@ import org.openftc.easyopencv.OpenCvPipeline;
  */
 @TeleOp
 @Disabled
-public class ConeDeterminationPipeline extends LinearOpMode {
+public class Webcam1Pipeline extends LinearOpMode {
     OpenCvInternalCamera phoneCam;
     SkystoneDeterminationPipeline pipeline;
-
 
     @Override
     public void runOpMode() {

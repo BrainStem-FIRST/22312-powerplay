@@ -6,7 +6,6 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TRACK_WIDTH;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -14,7 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.robot.auto.imagecv.AprilTagDetectionPipeline;
+import org.firstinspires.ftc.teamcode.robot.Vision.imagecv.AprilTagDetectionPipeline;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -87,13 +86,17 @@ public class Auto extends LinearOpMode {
     //------------------------------------------------------
 
     Pose2d startingPose, pickupPose, depositPose, parkingPose;
+    Pose2d cornerPose;
     TrajectorySequence trajectoryParkFromDeposit, trajectoryParkFromPickup;
 
     // Determine waypoints based on Alliance and Orientation
-    double XFORM_X, XFORM_Y;
-    double pickupDeltaX, pickupDeltaY, depositDeltaX, depositDeltaY, preloadDeltaX, preloadDeltaY;
-    double startingHeading, deliveryHeading, pickupHeading;
-    String turretState, armState;
+    double  XFORM_X, XFORM_Y;
+    double  pickupDeltaX, pickupDeltaY,
+            depositDeltaX, depositDeltaY,
+            preloadDeltaX, preloadDeltaY,
+            cornerDeltaX, cornerDeltaY;
+    double  startingHeading, deliveryHeading, pickupHeading;
+    String  turretState, armState;
 
     // Build trajectories
 
@@ -108,33 +111,36 @@ public class Auto extends LinearOpMode {
 
         trajectoryStart = robot.drive.trajectorySequenceBuilder(startingPose)
                 //moves forward in a line facing 90 degrees away (positioned in between two poles)
-                .lineToLinearHeading(new Pose2d(startingPose.getX()+(XFORM_X*preloadDeltaX), XFORM_Y * (19+preloadDeltaY), pickupPose.getHeading()),
+                .lineToLinearHeading(new Pose2d(cornerPose.getX()+(XFORM_X*cornerDeltaX), cornerPose.getY()+(XFORM_Y*(cornerDeltaY)), 180),
+                //.lineToLinearHeading(new Pose2d(startingPose.getX()+(XFORM_X*preloadDeltaX), XFORM_Y * (19+preloadDeltaY), pickupPose.getHeading()),
                         SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
                 .addTemporalMarker(0.3, () -> {    // Start positioning scaffolding
                     stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_LOW);
                     robot.lift.raiseHeightTo(robot.lift.LIFT_POSITION_LOWPOLE);
                     stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
-                })
-
-                // stop swinging
-                .waitSeconds(.1)
-                // Drop off the cone at hand on the Low pole on the left
-                .addTemporalMarker(() -> coneCycle(robot))
-
-                .lineToConstantHeading(new Vector2d(startingPose.getX(), XFORM_Y * 10),
-                        SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
-
-                .UNSTABLE_addTemporalMarkerOffset(1, () -> {
-                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
-                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
-                    robot.lift.raiseHeightTo(robot.lift.liftPositionPickup);
+                    robot.turret.moveTo(-200); //TODO: Add states for auto pickup and delivery
                 })
 
                 .lineToLinearHeading(new Pose2d(pickupPose.getX() + XFORM_X * 2, pickupPose.getY() + XFORM_Y * 2, pickupPose.getHeading()),
                         SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
+                        SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL)) //TODO: FIX PICKUP POSE
+
+                // stop swinging
+                .waitSeconds(.1)
+                // Drop off the cone at hand on the Low pole on the left
+                .addTemporalMarker(() -> {
+                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.PLACEMENT_HEIGHT);
+                    robot.grabber.grabberOpen();
+                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.APPROACH_HEIGHT);
+                })
+
+
+                .UNSTABLE_addTemporalMarkerOffset(1, () -> {
+                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
+                    robot.lift.raiseHeightTo(robot.lift.liftPositionPickup);
+                    robot.turret.moveTo(200); //TODO: Add states for auto pickup and delivery
+                })
 
                 .build();
 
@@ -186,6 +192,31 @@ public class Auto extends LinearOpMode {
 
         return trajectoryPickup;
     }
+
+    public double xform_Rad(double degree) {
+        double rad= Math.toRadians(degree);
+
+        // Determine trajectory headings for all alliance combinations
+        if (isAllianceRED) {
+            if (isOrientationLEFT) {    // RED-LEFT
+                // No change to rad
+            }
+            else {                      // RED-RIGHT
+                // mirror on y axis
+            }
+        }
+        else {
+            if (isOrientationLEFT) {    // BLUE-LEFT
+                // mirror on x axis AND y axis
+            }
+            else {                      // BLUE-RIGHT
+                // mirror on x axis ONLY
+            }
+        }
+        return rad;
+    }
+
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -318,6 +349,7 @@ public class Auto extends LinearOpMode {
 
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 34.75, XFORM_Y * 64, Math.toRadians(startingHeading));
+        cornerPose      = new Pose2d(XFORM_X * (58.75 + cornerDeltaX), XFORM_Y * (58.75 + pickupDeltaY), xform_Rad(270));
         pickupPose      = new Pose2d(XFORM_X * (64 + pickupDeltaX), XFORM_Y * (12 + pickupDeltaY), Math.toRadians(pickupHeading));
         depositPose     = new Pose2d(XFORM_X * (24 + depositDeltaX), XFORM_Y * (10 + depositDeltaY), Math.toRadians(deliveryHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone

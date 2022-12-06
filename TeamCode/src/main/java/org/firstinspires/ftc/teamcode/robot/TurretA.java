@@ -20,6 +20,11 @@ public class TurretA {
     public final String     CENTER_POSITION = "CENTER_STATE";
     public final String     TRANSITION_STATE = "TRANSITION_STATE";
 
+    // Needed for Autonomous
+    public final String     PICKUP_POSITION = "PICKUP_STATE";
+    public final String     DEPOSIT_POSITION = "DEPOSIT_STATE";
+
+
 
 
     // Turret position values when the initial position is on the CENTER
@@ -27,6 +32,9 @@ public class TurretA {
     public final int        CENTER_POSITION_VALUE = 0;  // 264 -> 0
     public final int        RIGHT_POSITION_VALUE = 256; // 500 -> 0 + (500-264)
 
+    // Needed for Autonomous
+    public final int        PICKUP_POSITION_VALUE = 200;
+    public final int        DEPOSIT_POSITION_VALUE = -200;
 
     public final int        ANGLE_TOLERANCE = 5;
     public final int        LIFT_MIN_HEIGHT_TO_MOVE_TURRET = 60;
@@ -63,7 +71,7 @@ public class TurretA {
 
     private void selectTransition(String desiredLevel, String currentState){
         switch(desiredLevel){
-            case LEFT_POSITION:{
+            case LEFT_POSITION:
                 transitionToPosition(LEFT_POSITION_VALUE);
                 break;
             } case CENTER_POSITION:{
@@ -71,6 +79,12 @@ public class TurretA {
                 break;
             } case RIGHT_POSITION:{
                 transitionToPosition(RIGHT_POSITION_VALUE);
+                break;
+            } case PICKUP_POSITION:{
+                transitionToPosition(PICKUP_POSITION_VALUE);
+                break;
+            } case DEPOSIT_POSITION:{
+                transitionToPosition(DEPOSIT_POSITION_VALUE);
                 break;
             }
         }
@@ -95,6 +109,10 @@ public class TurretA {
         } else if (inTolerance(currentPosition, CENTER_POSITION_VALUE)) {
             state = CENTER_POSITION;
         } else if (inTolerance(currentPosition, RIGHT_POSITION_VALUE)) {
+            state = RIGHT_POSITION;
+        } else if (inTolerance(currentPosition, PICKUP_POSITION_VALUE)) {
+            state = CENTER_POSITION;
+        } else if (inTolerance(currentPosition, DEPOSIT_POSITION_VALUE)) {
             state = RIGHT_POSITION;
         }
         return state;

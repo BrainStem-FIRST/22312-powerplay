@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot.auto.colorcv;/*
+package org.firstinspires.ftc.teamcode.robot.Vision.colorcv;/*
  * Copyright (c) 2021 OpenFTC Team
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy

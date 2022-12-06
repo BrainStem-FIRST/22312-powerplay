@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot.auto.imagecv;
+package org.firstinspires.ftc.teamcode.robot.Vision.imagecv;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot.auto;//package org.firstinspires.ftc.teamcode.auto;
+package org.firstinspires.ftc.teamcode.robot.Vision;//package org.firstinspires.ftc.teamcode.auto;
 //
 //import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.opMode;
 //

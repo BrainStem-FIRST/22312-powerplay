@@ -64,12 +64,12 @@ public class DriveConstants {
      * small and gradually increase them later after everything is working. All distance units are
      * inches.
      */
-    public static double MAX_VEL = 28;
+    public static double MAX_VEL = 28;      // TODO: Why is this so low?
     public static double HI_MAX_VEL = 60;
     public static double MAX_ACCEL = 30;
     public static double HI_MAX_ACCEL = 30;
     public static double MAX_ANG_VEL = Math.toRadians(180);
-    public static double MAX_ANG_ACCEL = Math.toRadians(60);
+    public static double MAX_ANG_ACCEL = Math.toRadians(60);    // TODO: Default value was supposed to be 180 deg/sec2. This value affects turning speed
 
 
     public static double encoderTicksToInches(double ticks) {
