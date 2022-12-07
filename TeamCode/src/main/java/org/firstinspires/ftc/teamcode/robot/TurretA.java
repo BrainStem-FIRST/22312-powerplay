@@ -71,7 +71,7 @@ public class TurretA {
 
     private void selectTransition(String desiredLevel, String currentState){
         switch(desiredLevel){
-            case LEFT_POSITION:
+            case LEFT_POSITION: {
                 transitionToPosition(LEFT_POSITION_VALUE);
                 break;
             } case CENTER_POSITION:{
