@@ -28,7 +28,7 @@ public class Lift {
     // TODO: Pole heights might need to be recalculated because the lift starting position (encoder values reset) is now the height of single cone at hand
     public final int LIFT_POSITION_RESET = 0;
 
-    public final int LIFT_ADJUSTMENT = -75;
+    public final int LIFT_ADJUSTMENT = -70;
 
     // Empirical numbers are for holding the cone above the pole prior to coneCycle drop
     public final int LIFT_POSITION_GROUND = 125;
@@ -334,5 +334,14 @@ public class Lift {
     public void resetEncoders() {
         liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+    public void checkCone(int encoderTicks){
+        liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftMotor.setTargetPosition(getPosition() + encoderTicks);
+        liftMotor2.setTargetPosition(getPosition() + encoderTicks);
+        liftMotor.setPower(0.5);
+        liftMotor2.setPower(0.5);
+
     }
 }

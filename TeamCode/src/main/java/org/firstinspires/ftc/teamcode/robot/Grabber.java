@@ -30,8 +30,8 @@ public class Grabber {
     public final String CLOSED_STATE = "CLOSED";
     Constants constants = new Constants();
 
-    public final double OPEN_VALUE = 0.58;
-    public final double CLOSED_VALUE = 0.72;
+    public final double OPEN_VALUE = 1;
+    public final double CLOSED_VALUE = 0.01;
 
     private Map stateMap;
 
@@ -42,7 +42,7 @@ public class Grabber {
 
         grabber = (ServoImplEx) hwMap.servo.get("Grabber");
 
-        grabber.setPwmRange(new PwmControl.PwmRange(100,2522));
+        grabber.setPwmRange(new PwmControl.PwmRange(400,800));
         //grabberOpen();
     }
 
