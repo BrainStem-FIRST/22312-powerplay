@@ -116,7 +116,7 @@ public class Auto extends LinearOpMode {
                 .setTangent(Math.toRadians(120))
                 .splineToLinearHeading(cornerPose,Math.toRadians(90),
                         SampleMecanumDrive.getVelocityConstraint(60, Math.toRadians(180), 3.5),
-                        SampleMecanumDrive.getAccelerationConstraint(30))
+                        SampleMecanumDrive.getAccelerationConstraint(20))
                 .setTangent(Math.toRadians(90))
                 .lineToLinearHeading(pickupPose) //,Math.toRadians(60))
 
@@ -343,8 +343,8 @@ public class Auto extends LinearOpMode {
 
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 35.5, XFORM_Y * 63.75, Math.toRadians(startingHeading));
-        cornerPose      = new Pose2d(XFORM_X * (60 + cornerDeltaX), XFORM_Y * (55 + pickupDeltaY), Math.toRadians(-90));
-        pickupPose      = new Pose2d(XFORM_X * (56.75 + pickupDeltaX), XFORM_Y * (12 + pickupDeltaY), Math.toRadians(240));
+        cornerPose      = new Pose2d(XFORM_X * (62 + cornerDeltaX), XFORM_Y * (57 + pickupDeltaY), Math.toRadians(-90));
+        pickupPose      = new Pose2d(XFORM_X * (59.9 + pickupDeltaX), XFORM_Y * (15 + pickupDeltaY), Math.toRadians(245));
 
         depositPose     = new Pose2d(XFORM_X * (24 + depositDeltaX), XFORM_Y * (10 + depositDeltaY), Math.toRadians(deliveryHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
