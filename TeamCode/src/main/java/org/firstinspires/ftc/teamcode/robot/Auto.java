@@ -95,7 +95,10 @@ public class Auto extends LinearOpMode {
             depositDeltaX, depositDeltaY,
             preloadDeltaX, preloadDeltaY,
             cornerDeltaX, cornerDeltaY;
-    double  startingHeading, deliveryHeading, pickupHeading;
+    double  startingHeading, startingTangent,
+            deliveryHeading,
+            pickupHeading, pickupTangent,
+            cornerHeading, cornerTangent;
     String  turretState, armState;
 
     // Build trajectories
@@ -113,15 +116,15 @@ public class Auto extends LinearOpMode {
 
                 //make sure the cone is lifted a little from the ground before robot starts moving
 
-                .setTangent(Math.toRadians(120))
-                .splineToLinearHeading(cornerPose,Math.toRadians(90),
+                .setTangent(Math.toRadians(startingTangent))
+                .splineToLinearHeading(cornerPose,Math.toRadians(cornerTangent),
                         SampleMecanumDrive.getVelocityConstraint(60, Math.toRadians(180), 3.5),
                         SampleMecanumDrive.getAccelerationConstraint(20))
-                .setTangent(Math.toRadians(90))
+                .setTangent(Math.toRadians(pickupTangent))
                 .addTemporalMarker(()->{
                     stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_STATE);
                 })
-                .lineToLinearHeading(pickupPose) //,Math.toRadians(60))
+                .lineToLinearHeading(pickupPose)
 
                 .addTemporalMarker(3.0, () -> {
                     stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_LOW);
@@ -130,11 +133,6 @@ public class Auto extends LinearOpMode {
                     stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
                     robot.grabber.grabberClose();
                 })
-
-                //////// Moved conecycle out of trajectories
-//                .addTemporalMarker(6.5, () -> {
-//                    coneCycle(robot);
-//                })
 
                 // Start trajectory ends with holding the cone above the pole
                 .build();
@@ -286,10 +284,20 @@ public class Auto extends LinearOpMode {
                 XFORM_Y = -1;
 
                 startingHeading = 90;
-                pickupHeading = 180;
-                deliveryHeading = 180;
-                turretState = robot.turret.LEFT_POSITION;
-                armState = robot.arm.EXTEND_LEFT;
+                startingTangent = 120;
+
+                cornerHeading = -90;
+                cornerTangent = 90;
+
+                pickupHeading = 245;
+                pickupTangent = 90;
+
+//                deliveryHeading = 180;
+//                turretState = robot.turret.LEFT_POSITION;
+//                armState = robot.arm.EXTEND_LEFT;
+
+                robot.turret.turret_PICKUP_POSITION_VALUE   = 180;
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -150;
 
                 pickupDeltaX = -2;  // originally 0; adjusted for FLL Champ field
                 pickupDeltaY = 2;   // originally 0; adjusted for FLL Champ field
@@ -301,10 +309,20 @@ public class Auto extends LinearOpMode {
                 XFORM_Y = -1;
 
                 startingHeading = 90;
-                pickupHeading = 0;
-                deliveryHeading = 0;
-                turretState = robot.turret.RIGHT_POSITION;
-                armState = robot.arm.FULL_EXTEND;
+                startingTangent = 60;
+
+                cornerHeading = -90;
+                cornerTangent = 90;
+
+                pickupHeading = -65;
+                pickupTangent = 90;
+
+//                deliveryHeading = 0;
+//                turretState = robot.turret.RIGHT_POSITION;
+//                armState = robot.arm.FULL_EXTEND;
+
+                robot.turret.turret_PICKUP_POSITION_VALUE   = -180;
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 150;
 
                 pickupDeltaX = 0;
                 pickupDeltaY = 0;
@@ -319,10 +337,20 @@ public class Auto extends LinearOpMode {
                 XFORM_Y = 1;
 
                 startingHeading = -90;
-                pickupHeading = 0;
-                deliveryHeading = 0;
-                turretState = robot.turret.LEFT_POSITION;
-                armState = robot.arm.EXTEND_LEFT;
+                startingTangent = -60;
+
+                cornerHeading = 90;
+                cornerTangent = -90;
+
+                pickupHeading = 65;
+                pickupTangent = -90;
+
+//                deliveryHeading = 0;
+//                turretState = robot.turret.LEFT_POSITION;
+//                armState = robot.arm.EXTEND_LEFT;
+
+                robot.turret.turret_PICKUP_POSITION_VALUE   = 180;
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -150;
 
                 pickupDeltaX = 0;
                 pickupDeltaY = 0;
@@ -335,10 +363,20 @@ public class Auto extends LinearOpMode {
                 XFORM_Y = 1;
 
                 startingHeading = -90;
-                pickupHeading = 180;
-                deliveryHeading = 180;
-                turretState = robot.turret.RIGHT_POSITION;
-                armState = robot.arm.FULL_EXTEND;
+                startingTangent = 240;
+
+                cornerHeading = 90;
+                cornerTangent = -90;
+
+                pickupHeading = 115;
+                pickupTangent = -90;
+
+//                deliveryHeading = 180;
+//                turretState = robot.turret.RIGHT_POSITION;
+//                armState = robot.arm.FULL_EXTEND;
+
+                robot.turret.turret_PICKUP_POSITION_VALUE   = -180;
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 150;
 
                 pickupDeltaX = 0;
                 pickupDeltaY = 0;
@@ -350,9 +388,9 @@ public class Auto extends LinearOpMode {
 
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 35.5, XFORM_Y * 63.75, Math.toRadians(startingHeading));
-        pickupPose      = new Pose2d(XFORM_X * (59.6 + pickupDeltaX), XFORM_Y * (12 + pickupDeltaY), Math.toRadians(245));
+        cornerPose      = new Pose2d(XFORM_X * (62 + cornerDeltaX), XFORM_Y * (57 + cornerDeltaY), Math.toRadians(cornerHeading));
+        pickupPose      = new Pose2d(XFORM_X * (59.6 + pickupDeltaX), XFORM_Y * (12 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
-//        cornerPose      = new Pose2d(XFORM_X * (62 + cornerDeltaX), XFORM_Y * (57 + pickupDeltaY), Math.toRadians(-90));
 //        depositPose     = new Pose2d(XFORM_X * (24 + depositDeltaX), XFORM_Y * (10 + depositDeltaY), Math.toRadians(deliveryHeading));
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory

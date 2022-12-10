@@ -33,9 +33,8 @@ public class TurretA {
     public final int        RIGHT_POSITION_VALUE = 256; // 500 -> 0 + (500-264)
 
     // Needed for Autonomous
-    public final int        PICKUP_POSITION_VALUE = 180;  // 150
-
-    public final int        DEPOSIT_POSITION_VALUE = -170;  // 150
+    public int              turret_PICKUP_POSITION_VALUE = 180;  // 150
+    public int              turret_DEPOSIT_POSITION_VALUE = -170;  // 150
 
     public final int        ANGLE_TOLERANCE = 5;
     public final int        LIFT_MIN_HEIGHT_TO_MOVE_TURRET = 60;
@@ -82,10 +81,10 @@ public class TurretA {
                 transitionToPosition(RIGHT_POSITION_VALUE);
                 break;
             } case PICKUP_POSITION:{
-                transitionToPosition(PICKUP_POSITION_VALUE);
+                transitionToPosition(turret_PICKUP_POSITION_VALUE);
                 break;
             } case DEPOSIT_POSITION:{
-                transitionToPosition(DEPOSIT_POSITION_VALUE);
+                transitionToPosition(turret_DEPOSIT_POSITION_VALUE);
                 break;
             }
         }
@@ -111,10 +110,10 @@ public class TurretA {
             state = CENTER_POSITION;
         } else if (inTolerance(currentPosition, RIGHT_POSITION_VALUE)) {
             state = RIGHT_POSITION;
-        } else if (inTolerance(currentPosition, PICKUP_POSITION_VALUE)) {
-            state = CENTER_POSITION;
-        } else if (inTolerance(currentPosition, DEPOSIT_POSITION_VALUE)) {
-            state = RIGHT_POSITION;
+        } else if (inTolerance(currentPosition, turret_PICKUP_POSITION_VALUE)) {
+            state = PICKUP_POSITION;
+        } else if (inTolerance(currentPosition, turret_DEPOSIT_POSITION_VALUE)) {
+            state = DEPOSIT_POSITION;
         }
         return state;
     }
