@@ -33,8 +33,9 @@ public class TurretA {
     public final int        RIGHT_POSITION_VALUE = 256; // 500 -> 0 + (500-264)
 
     // Needed for Autonomous
-    public final int        PICKUP_POSITION_VALUE = 150;
-    public final int        DEPOSIT_POSITION_VALUE = -150;
+    public final int        PICKUP_POSITION_VALUE = 180;  // 150
+
+    public final int        DEPOSIT_POSITION_VALUE = -170;  // 150
 
     public final int        ANGLE_TOLERANCE = 5;
     public final int        LIFT_MIN_HEIGHT_TO_MOVE_TURRET = 60;
@@ -98,7 +99,7 @@ public class TurretA {
         // move to desired tick position
         turretMotor.setTargetPosition(positionInTicks);
         turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turretMotor.setPower(1.0);
+        turretMotor.setPower(0.2);
     }
 
     public String getCurrentState() {
