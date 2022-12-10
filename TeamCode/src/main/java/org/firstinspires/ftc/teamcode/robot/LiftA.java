@@ -228,9 +228,11 @@ public class LiftA {
     public String getCurrentState(String subheight) {
         String state = TRANSITION_STATE;
         double currentPosition = getPosition();
-        telemetry.addData("currentPosition", currentPosition);
-        telemetry.addData("liftPositionPickup", liftPositionPickup);
-        telemetry.addData("deliveryHeight(subheight)", deliveryHeight(subheight));
+
+//        telemetry.addData("currentPosition", currentPosition);
+//        telemetry.addData("liftPositionPickup", liftPositionPickup);
+//        telemetry.addData("deliveryHeight(subheight)", deliveryHeight(subheight));
+
         if(inHeightTolerance(currentPosition, LIFT_POSITION_GROUND + deliveryHeight(subheight))){
             state = LIFT_POLE_GROUND;
         } else if (inHeightTolerance(currentPosition, LIFT_POSITION_LOWPOLE + deliveryHeight(subheight))) {

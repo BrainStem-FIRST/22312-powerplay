@@ -131,10 +131,12 @@ public class Auto extends LinearOpMode {
                     robot.grabber.grabberClose();
                 })
 
-                .addTemporalMarker(6.5, () -> {
-                    coneCycle(robot);
-                })
+                //////// Moved conecycle out of trajectories
+//                .addTemporalMarker(6.5, () -> {
+//                    coneCycle(robot);
+//                })
 
+                // Start trajectory ends with holding the cone above the pole
                 .build();
 
         return trajectoryStart;
@@ -145,19 +147,23 @@ public class Auto extends LinearOpMode {
         TrajectorySequence trajectoryDeposit;
 
         trajectoryDeposit = robot.drive.trajectorySequenceBuilder(robot.drive.getPoseEstimate())
-                // Lift to high pole while running backwards
+                // This is an empty trajectory with just timer to operate the Gulliver's Tower
+                .waitSeconds(3.0)
 
-                .UNSTABLE_addTemporalMarkerOffset(1.0, ()->{
-                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_MEDIUM);
-                    robot.lift.raiseHeightTo(robot.lift.LIFT_POSITION_MIDPOLE);
-                    stateMap.put(robot.turret.SYSTEM_NAME, turretState);
-                    stateMap.put(robot.arm.SYSTEM_NAME, armState);
+                // Cone picked up outside of the trajectory. Cone is at hand at clearing height
+                // Start moving turret first, and then lift to avoid kicking the stack
+                .addTemporalMarker(()->{
+                    stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.DEPOSIT_POSITION);
+                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
                 })
 
-                .lineToLinearHeading(depositPose,
-                        SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
+                // Clear the pole before adjusting height. Lift move trails the turret move
+                .UNSTABLE_addTemporalMarkerOffset(0.5,()-> {
+                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_LOW);
+                    robot.lift.raiseHeightTo(robot.lift.liftPositionPickup);
+                })
 
+                // ConeCycle will be outside of trajectory
                 .build();
 
         return trajectoryDeposit;
@@ -168,20 +174,24 @@ public class Auto extends LinearOpMode {
         TrajectorySequence trajectoryPickup;
 
         trajectoryPickup = robot.drive.trajectorySequenceBuilder(robot.drive.getPoseEstimate())
-                // shift position of lift and turret while running to pickup position
-                .UNSTABLE_addTemporalMarkerOffset(0.1, ()->{
-                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
-                    robot.lift.raiseHeightTo(robot.lift.liftPositionPickup);
-                    stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
-                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
+                // This is an empty trajectory for just timing the sequence of Gulliver's Tower moves
+                .waitSeconds(3.0)
+
+                // Cone dropped prior to this trajectory.
+                // All that is needed to move the tower to the pickup location starting with turret first
+                // and then delay-start lift
+                .addTemporalMarker(()->{
+                    stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.PICKUP_POSITION);
+                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
                 })
 
-                // Go back for a new cone
-                .lineToLinearHeading(pickupPose,
-                        SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
+                // Clear the pole before adjusting height. Lift move trails the turret move
+                .UNSTABLE_addTemporalMarkerOffset(0.5,()-> {
+                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
+                    robot.lift.raiseHeightTo(robot.lift.liftPositionPickup);
+                })
 
-                // Stop at the pickup position so the loop can identify when the trajectory sequence completed by a call to drive.isBusy()
+                // Stop at the pickup position. Cone will be picked up outside of trajectory
                 .build();
 
         return trajectoryPickup;
@@ -274,80 +284,76 @@ public class Auto extends LinearOpMode {
             if (isOrientationLEFT) { // RED-LEFT
                 XFORM_X = -1;
                 XFORM_Y = -1;
+
                 startingHeading = 90;
                 pickupHeading = 180;
                 deliveryHeading = 180;
                 turretState = robot.turret.LEFT_POSITION;
                 armState = robot.arm.EXTEND_LEFT;
+
                 pickupDeltaX = -2;  // originally 0; adjusted for FLL Champ field
-                pickupDeltaY = 0;
+                pickupDeltaY = 2;   // originally 0; adjusted for FLL Champ field
 
-                depositDeltaX = -1;
-                depositDeltaY = 2;
-
-                preloadDeltaX = -1;
-                preloadDeltaY = 1;
+//                depositDeltaX = 0;
+//                depositDeltaY = 0;
             } else {                  // RED-RIGHT
                 XFORM_X = 1;
                 XFORM_Y = -1;
+
                 startingHeading = 90;
                 pickupHeading = 0;
                 deliveryHeading = 0;
                 turretState = robot.turret.RIGHT_POSITION;
                 armState = robot.arm.FULL_EXTEND;
-                pickupDeltaX = 2;
-                pickupDeltaY = 2;
 
-                depositDeltaX = 0;
-                depositDeltaY = -2;
+                pickupDeltaX = 0;
+                pickupDeltaY = 0;
 
-                preloadDeltaX = 0;
-                preloadDeltaY = 2;
+//                depositDeltaX = 0;
+//                depositDeltaY = 0;
             }
         }
         else {
             if (isOrientationLEFT) { // BLUE-LEFT
                 XFORM_X = 1;
                 XFORM_Y = 1;
+
                 startingHeading = -90;
                 pickupHeading = 0;
                 deliveryHeading = 0;
                 turretState = robot.turret.LEFT_POSITION;
                 armState = robot.arm.EXTEND_LEFT;
+
                 pickupDeltaX = 0;
-                pickupDeltaY = -3;
+                pickupDeltaY = 0;
 
-                depositDeltaX = -1;
-                depositDeltaY = 0;
-
-                preloadDeltaX = -0.5;
-                preloadDeltaY = 0;
-            } else {                  // BLUE-RIGHT
+//                depositDeltaX = 0;
+//                depositDeltaY = 0;
+            }
+            else {                  // BLUE-RIGHT
                 XFORM_X = -1;
                 XFORM_Y = 1;
+
                 startingHeading = -90;
                 pickupHeading = 180;
                 deliveryHeading = 180;
                 turretState = robot.turret.RIGHT_POSITION;
                 armState = robot.arm.FULL_EXTEND;
-                pickupDeltaX = 2;
-                pickupDeltaY = 4;
 
-                depositDeltaX = 0;
-                depositDeltaY = -2;
+                pickupDeltaX = 0;
+                pickupDeltaY = 0;
 
-                preloadDeltaX = 0;
-                preloadDeltaY = 2;
+//                depositDeltaX = 0;
+//                depositDeltaY = 0;
             }
         }
 
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 35.5, XFORM_Y * 63.75, Math.toRadians(startingHeading));
-        cornerPose      = new Pose2d(XFORM_X * (62 + cornerDeltaX), XFORM_Y * (57 + pickupDeltaY), Math.toRadians(-90));
         pickupPose      = new Pose2d(XFORM_X * (59.6 + pickupDeltaX), XFORM_Y * (12 + pickupDeltaY), Math.toRadians(245));
-
-        depositPose     = new Pose2d(XFORM_X * (24 + depositDeltaX), XFORM_Y * (10 + depositDeltaY), Math.toRadians(deliveryHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
+//        cornerPose      = new Pose2d(XFORM_X * (62 + cornerDeltaX), XFORM_Y * (57 + pickupDeltaY), Math.toRadians(-90));
+//        depositPose     = new Pose2d(XFORM_X * (24 + depositDeltaX), XFORM_Y * (10 + depositDeltaY), Math.toRadians(deliveryHeading));
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
 
@@ -525,75 +531,48 @@ public class Auto extends LinearOpMode {
 
             switch (currentTrajectoryState) {
                 case TRAJECTORY_START_STATE:
-                    // Switch to trajectoryDeposit once the starting trajectory is complete
+                    // Switch to trajectoryPickup once the starting trajectory is complete
                     if (!robot.drive.isBusy()) {
-                        // Initial trajectory completed
+                        // Initial trajectory completed, drop the cone
+                        coneCycle(robot);
+                        sleep(3000); // see where the robot ended up
 
                         // Start the next state
                         currentTrajectoryState = TrajectoryState.TRAJECTORY_PICKUP_STATE;
-                        telemetry.addData("lift position:", robot.lift.getPosition());
-                        telemetry.addData("turret position", robot.turret.getPosition());
-
-                        sleep(3000); // wait to see positioning
+                        robot.drive.followTrajectorySequenceAsync(buildPickupTrajectory(robot));
                     }
                     break;
 
                 case TRAJECTORY_DEPOSIT_STATE:
-                    // Invoke trajectoryPickup when deposit is complete.
-                    // Park when there is not enough time to complete another trajectory.
+                    // Switch to Pickup once the deposit trajectory is complete
+                    if (!robot.drive.isBusy()) {
+                        // Deposit trajectory completed, drop the cone
+                        coneCycle(robot);
+                        sleep(3000); // see where the robot ended up
 
-                    // Deposit cone at delivery station
-                    robot.lift.raiseHeightTo(robot.lift.LIFT_CLEAR_HEIGHT);
-                    sleep(500);
-
-                    stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.DEPOSIT_POSITION);
-                    stateMap.put(robot.lift.LIFT_SUBHEIGHT, robot.lift.APPROACH_HEIGHT);
-                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_LOW);
-
-                    while(!robot.turret.getCurrentState().equalsIgnoreCase(robot.turret.DEPOSIT_POSITION) &&
-                            !robot.lift.getCurrentState(robot.lift.APPROACH_HEIGHT).equalsIgnoreCase(robot.lift.LIFT_POLE_LOW)) {
-                        robot.updateSystems();
-                        telemetry.addData("Turret Position (deposit):",robot.turret.getPosition());
-                        telemetry.update();
+                        // Start the pickup state
+                        currentTrajectoryState = TrajectoryState.TRAJECTORY_PICKUP_STATE;
+                        robot.drive.followTrajectorySequenceAsync(buildPickupTrajectory(robot));
                     }
-
-                    sleep(1000);
-                    coneCycle(robot);
-
-                    // Go back to pickup cycle
-                    currentTrajectoryState = TrajectoryState.TRAJECTORY_PICKUP_STATE;
-                    //robot.drive.followTrajectorySequenceAsync(buildPickupTrajectory(robot));
 
                     break;
 
                 case TRAJECTORY_PICKUP_STATE:
-                    // Invoke trajectoryDeposit when Pickup finishes.
-                    // Park when there is not enough time to complete another trajectory.
+                    // Switch to trajectoryPickup once the starting trajectory is complete
+                    if (!robot.drive.isBusy()) {
+                        // Pickup trajectory completed, pickup the cone
+                        coneCycle(robot);
+                        robot.lift.raiseHeightTo(robot.lift.liftPositionPickup);
+                        sleep(3000); // see where the robot ended up; may still need it to complete lift clearance height
 
-                    // Deposit cone at pickup station
-                    stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.PICKUP_POSITION);
-                    stateMap.put(robot.lift.LIFT_SUBHEIGHT, robot.lift.APPROACH_HEIGHT);
-                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
+                        // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
+                        robot.lift.numCyclesCompleted++;
+                        robot.lift.updateLiftPickupPosition();
 
-                    while(!robot.turret.getCurrentState().equalsIgnoreCase(robot.turret.PICKUP_POSITION) &&
-                            !robot.lift.getCurrentState(robot.lift.APPROACH_HEIGHT).equalsIgnoreCase(robot.lift.LIFT_PICKUP)) {
-                        robot.updateSystems();
-                        telemetry.addData("Turret Position (pickup):",robot.turret.getPosition());
-                        telemetry.update();
+                        // Start the next state
+                        currentTrajectoryState = TrajectoryState.TRAJECTORY_DEPOSIT_STATE;
+                        robot.drive.followTrajectorySequenceAsync(buildDepositTrajectory(robot));
                     }
-//                    // Manually controlling lift and turret, bypassing updateSystems
-//                    robot.turret.moveTo(robot.turret.PICKUP_POSITION_VALUE);
-//                    robot.lift.raiseHeightTo(robot.lift.liftPositionPickup);
-
-                    sleep(1000);
-                    coneCycle(robot);
-
-                    // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
-                    robot.lift.numCyclesCompleted++;
-                    robot.lift.updateLiftPickupPosition();
-
-                    // Go back to deposit cycle
-                    currentTrajectoryState = TrajectoryState.TRAJECTORY_DEPOSIT_STATE;
 
                     break;
 
@@ -641,6 +620,7 @@ public class Auto extends LinearOpMode {
             }
 
             telemetry.addData("Lift Position=",robot.lift.getPosition());
+            telemetry.addData("Turret Position=", robot.turret.getPosition());
 
             telemetry.update();
         }
