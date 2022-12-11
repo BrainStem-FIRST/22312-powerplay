@@ -59,6 +59,7 @@ public class Lift {
     public final String APPROACH_HEIGHT = "APPROACH_HEIGHT";
     public final String PLACEMENT_HEIGHT = "PLACEMENT_HEIGHT";
     public final String LIFT_SUBHEIGHT = "SUB_HEIGHT";
+    public final String LIFT_CHECK_STATE = "LIFT_CHECK";
 
     // Used in Auto to determine the lift's position high enough to unstack the cones during pickup
     public final String LIFT_POSITION_CLEAR = "LIFT_CLEAR_HEIGHT";
@@ -219,6 +220,10 @@ public class Lift {
                 transitionToLiftPosition(LIFT_CLEAR_HEIGHT);
                 break;
             }
+            case LIFT_CHECK_STATE:{
+                checkLift();
+                break;
+            }
         }
 
     }
@@ -335,13 +340,21 @@ public class Lift {
         liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
-    public void checkCone(int encoderTicks){
+//    public void checkCone(int encoderTicks){
+//        liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        liftMotor.setTargetPosition(getPosition() + encoderTicks);
+//        liftMotor2.setTargetPosition(getPosition() + encoderTicks);
+//        liftMotor.setPower(0.5);
+//        liftMotor2.setPower(0.5);
+//
+//    }
+    public void checkLift(){
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        liftMotor.setTargetPosition(getPosition() + encoderTicks);
-        liftMotor2.setTargetPosition(getPosition() + encoderTicks);
+        liftMotor.setTargetPosition(getPosition() - 20);
+        liftMotor2.setTargetPosition(getPosition() - 20);
         liftMotor.setPower(0.5);
         liftMotor2.setPower(0.5);
-
     }
 }

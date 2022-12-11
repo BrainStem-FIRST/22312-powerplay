@@ -128,10 +128,6 @@ public class RobotTeleOp extends LinearOpMode {
             stateMap.put(constants.CYCLE_GRABBER, constants.STATE_COMPLETE);
             stateMap.put(constants.CYCLE_LIFT_UP, constants.STATE_COMPLETE);
         }
-        if(gamepad1.left_trigger > 0.2){
-            robot.lift.checkCone((-1  * checkTicks));
-            telemetry.addData("Check Cone Ticks", true);
-        }
 
         if(gamepad2.dpad_right){
             stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.RIGHT_POSITION);
@@ -143,6 +139,9 @@ public class RobotTeleOp extends LinearOpMode {
         if(gamepad1.right_trigger > 0.5 && stateMap.get(constants.CONE_CYCLE).equalsIgnoreCase(constants.STATE_NOT_STARTED)){
             stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS);
         }
+//        if(gamepad1.left_trigger > 0.2){
+//            stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_CHECK_STATE);
+//        }
         if(stateMap.get(DRIVE_MODE).equalsIgnoreCase(MANUAL_DRIVE_MODE)){
             if (gamepad1.dpad_down) {
                 stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
