@@ -329,6 +329,11 @@ public class LiftA {
                 liftPositionPickup = 40-LIFT_ADJUSTMENT;
                 break;
             }
+            case 5: {
+                // No cones left, congratulations.
+                liftPositionPickup = 40-LIFT_ADJUSTMENT;
+                break;
+            }
         }
     }
 
