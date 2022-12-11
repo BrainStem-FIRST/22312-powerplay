@@ -142,6 +142,7 @@ public class RobotTeleOp extends LinearOpMode {
                   robot.lift.setAdjustmentHeight(gamepad1.right_trigger);
               } else if (gamepad1.right_trigger >= 0.9) {
                   stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
+                  robot.grabber.grabberOpen();
               } else {
                   robot.lift.setAdjustmentHeight(0);
               }
