@@ -75,6 +75,7 @@ public class Lift {
 
     public static double currentLiftHeight;
     private Map stateMap;
+    private int adjustmentHeight;
 
 
     public Lift(HardwareMap hwMap, Telemetry telemetry, Map stateMap) {
@@ -116,6 +117,10 @@ public class Lift {
             liftMotor.setPower(0);
             liftMotor2.setPower(0);
         }
+    }
+
+    public void setAdjustmentHeight(double driverInput) {
+        adjustmentHeight = (int) (250 * driverInput);
     }
 
     private boolean shouldLiftMove(String level, String currentState) {
@@ -201,15 +206,15 @@ public class Lift {
                 break;
             }
             case LIFT_POLE_LOW:{
-                transitionToLiftPosition(LIFT_POSITION_LOWPOLE + deliveryHeight(subheight));
+                transitionToLiftPosition(LIFT_POSITION_LOWPOLE - adjustmentHeight);
                 break;
             }
             case LIFT_POLE_MEDIUM:{
-                transitionToLiftPosition(LIFT_POSITION_MIDPOLE + deliveryHeight(subheight));
+                transitionToLiftPosition(LIFT_POSITION_MIDPOLE - adjustmentHeight);
                 break;
             }
             case LIFT_POLE_HIGH:{
-                transitionToLiftPosition(LIFT_POSITION_HIGHPOLE + deliveryHeight(subheight));
+                transitionToLiftPosition(LIFT_POSITION_HIGHPOLE - adjustmentHeight);
                 break;
             }
             case LIFT_POLE_GROUND:{
@@ -293,7 +298,6 @@ public class Lift {
     // Not used -> DELETE
     public void initializePosition( ) {
         liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
     }
 
     public void setMotor(double power){

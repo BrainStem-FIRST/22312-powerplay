@@ -136,9 +136,18 @@ public class RobotTeleOp extends LinearOpMode {
         }else if(gamepad2.dpad_up){
             stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
         }
-        if(gamepad1.right_trigger > 0.5 && stateMap.get(constants.CONE_CYCLE).equalsIgnoreCase(constants.STATE_NOT_STARTED)){
+
+          if (stateMap.get(robot.lift.LIFT_SYSTEM_NAME) != robot.lift.LIFT_POLE_GROUND) {
+              if (gamepad1.right_trigger > 0.05 && gamepad1.right_trigger < 0.9) {
+                  robot.lift.setAdjustmentHeight(gamepad1.right_trigger);
+              } else if (gamepad1.right_trigger >= 0.9) {
+                  stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
+              } else {
+                  robot.lift.setAdjustmentHeight(0);
+              }
+          } else if(gamepad1.right_trigger > 0.5 && stateMap.get(constants.CONE_CYCLE).equalsIgnoreCase(constants.STATE_NOT_STARTED)){
             stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS);
-        }
+          }
 //        if(gamepad1.left_trigger > 0.2){
 //            stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_CHECK_STATE);
 //        }
