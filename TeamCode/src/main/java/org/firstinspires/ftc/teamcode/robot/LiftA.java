@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import java.util.Map;
 
 
-public class Lift {
+public class LiftA {
     private Telemetry telemetry;
     public DcMotor liftMotor;
     public DcMotor liftMotor2;
@@ -45,7 +44,7 @@ public class Lift {
     public int numCyclesCompleted = 0;      //numCyclesCompleted during Auto for pickup calculations
     public int liftPositionPickup = 165 - LIFT_ADJUSTMENT;
 
-    Constants constants = new Constants();
+    ConstantsA constants = new ConstantsA();
 
 
     public final double HARD_STOP_CURRENT_DRAW = 100;
@@ -76,7 +75,7 @@ public class Lift {
     private Map stateMap;
 
 
-    public Lift(HardwareMap hwMap, Telemetry telemetry, Map stateMap) {
+    public LiftA(HardwareMap hwMap, Telemetry telemetry, Map stateMap) {
         this.telemetry = telemetry;
         this.stateMap = stateMap;
         liftMotor = hwMap.dcMotor.get("Lift");
@@ -229,9 +228,11 @@ public class Lift {
     public String getCurrentState(String subheight) {
         String state = TRANSITION_STATE;
         double currentPosition = getPosition();
-        telemetry.addData("currentPosition", currentPosition);
-        telemetry.addData("liftPositionPickup", liftPositionPickup);
-        telemetry.addData("deliveryHeight(subheight)", deliveryHeight(subheight));
+
+//        telemetry.addData("currentPosition", currentPosition);
+//        telemetry.addData("liftPositionPickup", liftPositionPickup);
+//        telemetry.addData("deliveryHeight(subheight)", deliveryHeight(subheight));
+
         if(inHeightTolerance(currentPosition, LIFT_POSITION_GROUND + deliveryHeight(subheight))){
             state = LIFT_POLE_GROUND;
         } else if (inHeightTolerance(currentPosition, LIFT_POSITION_LOWPOLE + deliveryHeight(subheight))) {
@@ -263,8 +264,8 @@ public class Lift {
         liftMotor2.setTargetPosition(heightInTicks);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        liftMotor.setPower(1.0);
-        liftMotor2.setPower(1.0);
+        liftMotor.setPower(0.5);    //1.0
+        liftMotor2.setPower(0.5);   //1.0
 
     }
 
@@ -325,6 +326,11 @@ public class Lift {
                 break;
             }
             case 4: {
+                liftPositionPickup = 40-LIFT_ADJUSTMENT;
+                break;
+            }
+            case 5: {
+                // No cones left, congratulations.
                 liftPositionPickup = 40-LIFT_ADJUSTMENT;
                 break;
             }

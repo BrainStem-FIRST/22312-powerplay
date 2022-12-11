@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-public class Turret {
+public class TurretA {
     //8192 * 5.23 * 1.8 * 4
     public final double     DEFAULT_TURRET_POWER = 0.1;
     public final double     INITIAL_MOVE_LEFT_TURRET_POWER = 0.1;
@@ -20,6 +20,11 @@ public class Turret {
     public final String     CENTER_POSITION = "CENTER_STATE";
     public final String     TRANSITION_STATE = "TRANSITION_STATE";
 
+    // Needed for Autonomous
+    public final String     PICKUP_POSITION = "PICKUP_STATE";
+    public final String     DEPOSIT_POSITION = "DEPOSIT_STATE";
+
+
 
 
     // Turret position values when the initial position is on the CENTER
@@ -27,6 +32,9 @@ public class Turret {
     public final int        CENTER_POSITION_VALUE = 0;  // 264 -> 0
     public final int        RIGHT_POSITION_VALUE = 256; // 500 -> 0 + (500-264)
 
+    // Needed for Autonomous
+    public int              turret_PICKUP_POSITION_VALUE = 180;  // 150
+    public int              turret_DEPOSIT_POSITION_VALUE = -170;  // 150
 
     public final int        ANGLE_TOLERANCE = 5;
     public final int        LIFT_MIN_HEIGHT_TO_MOVE_TURRET = 60;
@@ -34,8 +42,8 @@ public class Turret {
     public Telemetry telemetry;
     public DcMotorEx turretMotor;
 
-    public Extension extension;
-    public Turret(HardwareMap hwMap, Telemetry telemetry) {
+    public ExtensionA extension;
+    public TurretA(HardwareMap hwMap, Telemetry telemetry) {
         this.telemetry = telemetry;
         //getting turret motor from the hardware map
         
@@ -46,7 +54,7 @@ public class Turret {
         turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void setState(String desiredState, Lift lift){
+    public void setState(String desiredState, LiftA lift){
         String currentState = getCurrentState();
         if(isLiftTooLow(lift) || desiredState.equalsIgnoreCase(currentState)){
             turretMotor.setPower(0);
@@ -56,14 +64,14 @@ public class Turret {
         }
     }
 
-    public boolean isLiftTooLow(Lift lift) {
+    public boolean isLiftTooLow(LiftA lift) {
         boolean tooLow = lift.getPosition() < LIFT_MIN_HEIGHT_TO_MOVE_TURRET;
         return tooLow;
     }
 
     private void selectTransition(String desiredLevel, String currentState){
         switch(desiredLevel){
-            case LEFT_POSITION:{
+            case LEFT_POSITION: {
                 transitionToPosition(LEFT_POSITION_VALUE);
                 break;
             } case CENTER_POSITION:{
@@ -71,6 +79,12 @@ public class Turret {
                 break;
             } case RIGHT_POSITION:{
                 transitionToPosition(RIGHT_POSITION_VALUE);
+                break;
+            } case PICKUP_POSITION:{
+                transitionToPosition(turret_PICKUP_POSITION_VALUE);
+                break;
+            } case DEPOSIT_POSITION:{
+                transitionToPosition(turret_DEPOSIT_POSITION_VALUE);
                 break;
             }
         }
@@ -84,7 +98,7 @@ public class Turret {
         // move to desired tick position
         turretMotor.setTargetPosition(positionInTicks);
         turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turretMotor.setPower(1.0);
+        turretMotor.setPower(0.2);
     }
 
     public String getCurrentState() {
@@ -96,6 +110,10 @@ public class Turret {
             state = CENTER_POSITION;
         } else if (inTolerance(currentPosition, RIGHT_POSITION_VALUE)) {
             state = RIGHT_POSITION;
+        } else if (inTolerance(currentPosition, turret_PICKUP_POSITION_VALUE)) {
+            state = PICKUP_POSITION;
+        } else if (inTolerance(currentPosition, turret_DEPOSIT_POSITION_VALUE)) {
+            state = DEPOSIT_POSITION;
         }
         return state;
     }

@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-public class Constants {
+public class ConstantsA {
     public final String STATE_IN_PROGRESS = "IN PROGRESS";
     public final String STATE_COMPLETE = "COMPLETE";
     public final String CONE_CYCLE = "CONE CYCLE";

@@ -1,26 +1,17 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.PwmControl;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
-import java.util.HashMap;
 import java.util.Map;
 
 
 
-public class Grabber {
+public class GrabberA {
     private Telemetry telemetry;
     private ServoImplEx grabber;
 
@@ -28,14 +19,14 @@ public class Grabber {
     public final String SYSTEM_NAME = "GRABBER";
     public final String OPEN_STATE = "OPEN";
     public final String CLOSED_STATE = "CLOSED";
-    Constants constants = new Constants();
+    ConstantsA constants = new ConstantsA();
 
-    public final double OPEN_VALUE = 1;
-    public final double CLOSED_VALUE = 0.01;
+    public final double OPEN_VALUE = 0.27;
+    public final double CLOSED_VALUE = 0.12;
 
     private Map stateMap;
 
-    public Grabber(HardwareMap hwMap, Telemetry telemetry, Map stateMap) {
+    public GrabberA(HardwareMap hwMap, Telemetry telemetry, Map stateMap) {
         this.telemetry = telemetry;
         this.stateMap = stateMap;
 
@@ -47,7 +38,7 @@ public class Grabber {
     }
 
 
-    public void setState(String position, Lift lift) {
+    public void setState(String position, LiftA lift) {
         if(((String)stateMap.get(constants.CYCLE_GRABBER)).equalsIgnoreCase(constants.STATE_IN_PROGRESS)){
             if (shouldGrab(lift)) {
                 grabber.setPosition(CLOSED_VALUE);
@@ -70,7 +61,7 @@ public class Grabber {
             grabber.setPosition(OPEN_VALUE);
         }
     }
-    public boolean shouldGrab(Lift lift) {
+    public boolean shouldGrab(LiftA lift) {
         return lift.getPosition() < lift.LIFT_POSITION_MIDPOLE &&
                 ((String)stateMap.get(constants.CONE_CYCLE)).equalsIgnoreCase(constants.STATE_IN_PROGRESS);
     }
