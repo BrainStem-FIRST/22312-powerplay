@@ -98,7 +98,7 @@ public class TurretA {
         // move to desired tick position
         turretMotor.setTargetPosition(positionInTicks);
         turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turretMotor.setPower(0.2);
+        turretMotor.setPower(0.7);
     }
 
     public String getCurrentState() {

@@ -172,7 +172,7 @@ public class Auto extends LinearOpMode {
 
         trajectoryPickup = robot.drive.trajectorySequenceBuilder(robot.drive.getPoseEstimate())
                 // This is an empty trajectory for just timing the sequence of Gulliver's Tower moves
-                .waitSeconds(3.0)
+                .waitSeconds(2.0)
 
                 // Cone dropped prior to this trajectory.
                 // All that is needed to move the tower to the pickup location starting with turret first
@@ -183,7 +183,7 @@ public class Auto extends LinearOpMode {
                 })
 
                 // Clear the pole before adjusting height. Lift move trails the turret move
-                .addTemporalMarker(1.0,()-> {
+                .addTemporalMarker(0.5,()-> {
                     stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
                 })
 
@@ -295,11 +295,11 @@ public class Auto extends LinearOpMode {
 //                turretState = robot.turret.LEFT_POSITION;
 //                armState = robot.arm.EXTEND_LEFT;
 
-                robot.turret.turret_PICKUP_POSITION_VALUE   = 180;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -150;
+                robot.turret.turret_PICKUP_POSITION_VALUE   = 185;
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -165;
 
-                pickupDeltaX = -2;  // originally 0; adjusted for FLL Champ field
-                pickupDeltaY = 2;   // originally 0; adjusted for FLL Champ field
+                pickupDeltaX = -0.4;  // originally 0; adjusted for FLL Champ field
+                pickupDeltaY = 0;   // originally 0; adjusted for FLL Champ field
 
 //                depositDeltaX = 0;
 //                depositDeltaY = 0;
@@ -321,9 +321,9 @@ public class Auto extends LinearOpMode {
 //                armState = robot.arm.FULL_EXTEND;
 
                 robot.turret.turret_PICKUP_POSITION_VALUE   = -180;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 150;
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 165;
 
-                pickupDeltaX = 0;
+                pickupDeltaX = -2;
                 pickupDeltaY = 0;
 
 //                depositDeltaX = 0;
@@ -388,7 +388,7 @@ public class Auto extends LinearOpMode {
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 35.5, XFORM_Y * 63.75, Math.toRadians(startingHeading));
         cornerPose      = new Pose2d(XFORM_X * (62 + cornerDeltaX), XFORM_Y * (57 + cornerDeltaY), Math.toRadians(cornerHeading));
-        pickupPose      = new Pose2d(XFORM_X * (59.6 + pickupDeltaX), XFORM_Y * (12 + pickupDeltaY), Math.toRadians(pickupHeading));
+        pickupPose      = new Pose2d(XFORM_X * (58.8 + pickupDeltaX), XFORM_Y * (12 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 //        depositPose     = new Pose2d(XFORM_X * (24 + depositDeltaX), XFORM_Y * (10 + depositDeltaY), Math.toRadians(deliveryHeading));
 
@@ -570,7 +570,7 @@ public class Auto extends LinearOpMode {
                 case TRAJECTORY_START_STATE:
                     // Switch to trajectoryPickup once the starting trajectory is complete
                     if (!robot.drive.isBusy()) {
-                        sleep(3000); // see where the robot ended up
+                        sleep(400); // see where the robot ended up
                         // Initial trajectory completed, drop the cone
                         coneCycle(robot);
 
@@ -583,7 +583,7 @@ public class Auto extends LinearOpMode {
                 case TRAJECTORY_DEPOSIT_STATE:
                     // Switch to Pickup once the deposit trajectory is complete
                     if (!robot.drive.isBusy()) {
-                        sleep(3000); // see where the robot ended up
+                        sleep(1200); // see where the robot ended up
                         // Deposit trajectory completed, drop the cone
                         coneCycle(robot);
 
@@ -607,8 +607,8 @@ public class Auto extends LinearOpMode {
                         // Pickup trajectory completed, pick the cone up
                         coneCycle(robot);
 
-                        robot.lift.raiseHeightTo(robot.lift.LIFT_CLEAR_HEIGHT);
-                        sleep(500); // see where the robot ended up; may still need it to complete lift clearance height
+                        //robot.lift.raiseHeightTo(robot.lift.LIFT_CLEAR_HEIGHT);
+                        //sleep(500); // see where the robot ended up; may still need it to complete lift clearance height
 
                         // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
                         robot.lift.numCyclesCompleted++;
