@@ -146,7 +146,7 @@ public class Auto extends LinearOpMode {
 
         trajectoryDeposit = robot.drive.trajectorySequenceBuilder(robot.drive.getPoseEstimate())
                 // This is an empty trajectory with just timer to operate the Gulliver's Tower
-                .waitSeconds(3.0)
+                .waitSeconds(2.0)
 
                 // Cone picked up outside of the trajectory. Cone is at hand at clearing height
                 // Start moving turret first, and then lift to avoid kicking the stack
@@ -172,7 +172,7 @@ public class Auto extends LinearOpMode {
 
         trajectoryPickup = robot.drive.trajectorySequenceBuilder(robot.drive.getPoseEstimate())
                 // This is an empty trajectory for just timing the sequence of Gulliver's Tower moves
-                .waitSeconds(2.0)
+                .waitSeconds(1.75)
 
                 // Cone dropped prior to this trajectory.
                 // All that is needed to move the tower to the pickup location starting with turret first
@@ -388,7 +388,7 @@ public class Auto extends LinearOpMode {
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 35.5, XFORM_Y * 63.75, Math.toRadians(startingHeading));
         cornerPose      = new Pose2d(XFORM_X * (62 + cornerDeltaX), XFORM_Y * (57 + cornerDeltaY), Math.toRadians(cornerHeading));
-        pickupPose      = new Pose2d(XFORM_X * (58.8 + pickupDeltaX), XFORM_Y * (12 + pickupDeltaY), Math.toRadians(pickupHeading));
+        pickupPose      = new Pose2d(XFORM_X * (58.9 + pickupDeltaX), XFORM_Y * (12 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 //        depositPose     = new Pose2d(XFORM_X * (24 + depositDeltaX), XFORM_Y * (10 + depositDeltaY), Math.toRadians(deliveryHeading));
 
@@ -583,7 +583,7 @@ public class Auto extends LinearOpMode {
                 case TRAJECTORY_DEPOSIT_STATE:
                     // Switch to Pickup once the deposit trajectory is complete
                     if (!robot.drive.isBusy()) {
-                        sleep(1200); // see where the robot ended up
+                        sleep(1250); // see where the robot ended up
                         // Deposit trajectory completed, drop the cone
                         coneCycle(robot);
 

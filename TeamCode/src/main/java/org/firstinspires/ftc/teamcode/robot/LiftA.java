@@ -264,8 +264,8 @@ public class LiftA {
         liftMotor2.setTargetPosition(heightInTicks);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        liftMotor.setPower(0.85);    //1.0
-        liftMotor2.setPower(0.85);   //1.0
+        liftMotor.setPower(1.0);    //1.0
+        liftMotor2.setPower(1.0);   //1.0
 
     }
 
