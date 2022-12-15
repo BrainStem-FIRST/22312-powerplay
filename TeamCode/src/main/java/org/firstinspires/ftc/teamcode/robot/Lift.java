@@ -358,7 +358,7 @@ public class Lift {
         liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotor.setTargetPosition(getPosition() - 20);
         liftMotor2.setTargetPosition(getPosition() - 20);
-        liftMotor.setPower(0.5);
-        liftMotor2.setPower(0.5);
+        liftMotor.setPower(1.0);
+        liftMotor2.setPower(1.0);
     }
 }
