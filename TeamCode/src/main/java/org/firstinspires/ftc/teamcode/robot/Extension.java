@@ -34,7 +34,9 @@ public class Extension {
     public final String DEFAULT_VALUE = "RETRACTED";
     public final String FULL_EXTEND = "EXTENDED_R";
     public final String EXTEND_LEFT = "EXTENDED_L";
+    public final String FINE_ADJUSTMENTS = "FINE_ADJUSTMENTS";
     public final String TRANSITION_STATE = "TRANSITION";
+    public int adjustmentPosition = 0;
 
     private Map stateMap;
 
@@ -99,7 +101,7 @@ public class Extension {
 
     // Pulls the extension arm to its starting position (it is NOT in clear)
     public void extendHome() {
-        extension.setPosition(EXTENSION_POSITION_HOME);
+        extension.setPosition(EXTENSION_POSITION_HOME + adjustmentPosition);
     }
 
     public void joyStickExtension(double addedPosition){
@@ -107,15 +109,17 @@ public class Extension {
     }
     // Extends the arm to its maximum reach
     public void extendMax() {
-        extension.setPosition(EXTENSION_POSITION_MAX);
+        extension.setPosition(EXTENSION_POSITION_MAX + adjustmentPosition);
     }
 
     // Extends arm to left position
     public void extendLeft() {
-        extension.setPosition(EXTENSION_POSITION_LEFT);
+        extension.setPosition(EXTENSION_POSITION_LEFT + adjustmentPosition);
     }
 
-
+    public void setAdjustmentPosition(){
+        adjustmentPosition += 0.025;
+    }
 
     public void setState(String desiredState){
         String currentState = getCurrentState();
@@ -152,6 +156,10 @@ public class Extension {
                 extendLeft();
                 break;
             }
+//            case FINE_ADJUSTMENTS:{
+//                fineAdjustments();
+//                break;
+//            }
         }
     }
 
@@ -176,5 +184,8 @@ public class Extension {
     public boolean isExtensionOut(){
         return extensionGetPosition() > 0;
     }
+//    public void fineAdjustments(){
+//        extension.setPosition(adjustmentPosition);
+//    }
 
 }
