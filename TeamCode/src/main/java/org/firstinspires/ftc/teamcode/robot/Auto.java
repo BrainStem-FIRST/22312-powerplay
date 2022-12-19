@@ -122,15 +122,19 @@ public class Auto extends LinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(20))
                 .setTangent(Math.toRadians(pickupTangent))
                 .addTemporalMarker(()->{
-                    stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_STATE);
+                    robot.grabber.grabberClose();
+                    //stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_STATE);
                 })
                 .splineToLinearHeading(pickupPose,Math.toRadians(pickupTangent))
 
                 .addTemporalMarker(3.0, () -> {
-                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_LOW);
-                    stateMap.put(robot.lift.LIFT_SUBHEIGHT, robot.lift.APPROACH_HEIGHT);
-                    stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.DEPOSIT_POSITION);
-                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
+                    robot.lift.goToLowPole();
+                    //stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_LOW);
+                    //stateMap.put(robot.lift.LIFT_SUBHEIGHT, robot.lift.APPROACH_HEIGHT);
+                    robot.turret.depositPosition();
+                    //stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.DEPOSIT_POSITION);
+                    robot.arm.extendMax();
+                    //stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
                     robot.grabber.grabberClose();
                 })
 
@@ -150,14 +154,21 @@ public class Auto extends LinearOpMode {
 
                 // Cone picked up outside of the trajectory. Cone is at hand at clearing height
                 // Start moving turret first, and then lift to avoid kicking the stack
-                .addTemporalMarker(()->{
-                    stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.DEPOSIT_POSITION);
-                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
+                .addTemporalMarker(0.2, () -> {
+                    robot.lift.goToClear();
+                    robot.turret.depositPosition();
+                    //stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.DEPOSIT_POSITION);
+                })
+                .addTemporalMarker(0.3, ()->{
+                    robot.lift.goToLowPole();
+                    robot.arm.extendMax();
+                    //stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
                 })
 
                 // Clear the pole before adjusting height. Lift move trails the turret move
                 .addTemporalMarker(1.0,()-> {
-                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_LOW);
+                    robot.lift.goToLowPole();
+                    //stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_LOW);
                 })
 
                 // ConeCycle will be outside of trajectory
@@ -178,13 +189,16 @@ public class Auto extends LinearOpMode {
                 // All that is needed to move the tower to the pickup location starting with turret first
                 // and then delay-start lift
                 .addTemporalMarker(0,()->{
-                    stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.PICKUP_POSITION);
-                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
+                    robot.turret.pickupPosition();
+                    //stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.PICKUP_POSITION);
+                    robot.arm.extendMax();
+                    //stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
                 })
 
                 // Clear the pole before adjusting height. Lift move trails the turret move
                 .addTemporalMarker(0.5,()-> {
-                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
+                    robot.lift.updateLiftPickupPosition();
+                    //stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
                 })
 
                 // Stop at the pickup position. Cone will be picked up outside of trajectory
@@ -675,10 +689,11 @@ public class Auto extends LinearOpMode {
     }
 
     void coneCycle(BrainStemRobotA robot) {
-        stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS);
-        while (stateMap.get(constants.CONE_CYCLE).equals(constants.STATE_IN_PROGRESS) && opModeIsActive()) {
-            robot.updateSystems();
-        }
+
+//        stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS);
+//        while (stateMap.get(constants.CONE_CYCLE).equals(constants.STATE_IN_PROGRESS) && opModeIsActive()) {
+//            robot.updateSystems();
+//        }
     }
     //camera
     void tagToTelemetry(AprilTagDetection detection) {

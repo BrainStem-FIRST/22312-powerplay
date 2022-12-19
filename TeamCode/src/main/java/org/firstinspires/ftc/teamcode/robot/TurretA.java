@@ -138,4 +138,12 @@ public class TurretA {
     public void resetEncoders() {
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
+
+    public void depositPosition() {
+        turretMotor.setTargetPosition(turret_DEPOSIT_POSITION_VALUE);
+    }
+
+    public void pickupPosition() {
+        turretMotor.setTargetPosition(turret_PICKUP_POSITION_VALUE);
+    }
 }

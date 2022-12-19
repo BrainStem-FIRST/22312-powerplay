@@ -329,9 +329,10 @@ public class LiftA {
                 liftPositionPickup = 40-LIFT_ADJUSTMENT;
                 break;
             }
-            case 5: {
+            default: {
                 // No cones left, congratulations.
-                liftPositionPickup = 40-LIFT_ADJUSTMENT;
+                //41 so it's not case 4 and doesn't have yellow line (to look clean)
+                liftPositionPickup = 41-LIFT_ADJUSTMENT;
                 break;
             }
         }
@@ -340,5 +341,15 @@ public class LiftA {
     public void resetEncoders() {
         liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+    public void goToLowPole() {
+        liftMotor.setTargetPosition(LIFT_POSITION_LOWPOLE - DELIVERY_ADJUSTMENT);
+        liftMotor2.setTargetPosition(LIFT_POSITION_LOWPOLE - DELIVERY_ADJUSTMENT);
+    }
+
+    public void goToClear() {
+        liftMotor.setTargetPosition(LIFT_CLEAR_HEIGHT);
+        liftMotor2.setTargetPosition(LIFT_CLEAR_HEIGHT);
     }
 }
