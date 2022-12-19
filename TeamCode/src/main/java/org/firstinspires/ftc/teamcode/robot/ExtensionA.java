@@ -46,14 +46,14 @@ public class ExtensionA {
         this.telemetry = telemetry;
         this.stateMap = stateMap;
         extension = (ServoImplEx) hwMap.servo.get("Extension");
-        twoBar = (ServoImplEx) hwMap.servo.get("Two Bar");
+//        twoBar = (ServoImplEx) hwMap.servo.get("Two Bar");
 
         // Scale the operating range of Servos and set initial position
         extension.setPwmRange(new PwmControl.PwmRange(1150,2522)); //low cap was 1250 and it was not retracting all the way
         extendHome();
 
-        twoBar.setPwmRange(new PwmControl.PwmRange(1745,2400));
-        tiltDown();
+//        twoBar.setPwmRange(new PwmControl.PwmRange(1745,2400));
+//        tiltDown();
 
     }
 

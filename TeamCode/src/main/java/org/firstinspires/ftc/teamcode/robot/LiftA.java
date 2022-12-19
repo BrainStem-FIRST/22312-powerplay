@@ -343,13 +343,16 @@ public class LiftA {
         liftMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
-    public void goToLowPole() {
-        liftMotor.setTargetPosition(LIFT_POSITION_LOWPOLE - DELIVERY_ADJUSTMENT);
-        liftMotor2.setTargetPosition(LIFT_POSITION_LOWPOLE - DELIVERY_ADJUSTMENT);
+    public void goToLowPoleHeight() {
+        raiseHeightTo(LIFT_POSITION_LOWPOLE - DELIVERY_ADJUSTMENT);
+    }
+
+    public void goToPickupHeight() {
+        // For pickups from stack, negate the approach height adjustment
+        raiseHeightTo(liftPositionPickup+LIFT_ADJUSTMENT);
     }
 
     public void goToClear() {
-        liftMotor.setTargetPosition(LIFT_CLEAR_HEIGHT);
-        liftMotor2.setTargetPosition(LIFT_CLEAR_HEIGHT);
+        raiseHeightTo(LIFT_CLEAR_HEIGHT);
     }
 }

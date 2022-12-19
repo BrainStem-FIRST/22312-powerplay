@@ -98,7 +98,7 @@ public class TurretA {
         // move to desired tick position
         turretMotor.setTargetPosition(positionInTicks);
         turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turretMotor.setPower(0.85);
+        turretMotor.setPower(0.5);  // 0.85
     }
 
     public String getCurrentState() {
@@ -139,11 +139,11 @@ public class TurretA {
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
-    public void depositPosition() {
-        turretMotor.setTargetPosition(turret_DEPOSIT_POSITION_VALUE);
+    public void goToDepositPosition() {
+        transitionToPosition(turret_DEPOSIT_POSITION_VALUE);
     }
 
-    public void pickupPosition() {
-        turretMotor.setTargetPosition(turret_PICKUP_POSITION_VALUE);
+    public void goToPickupPosition() {
+        transitionToPosition(turret_PICKUP_POSITION_VALUE);
     }
 }
