@@ -65,7 +65,7 @@ public class Auto extends LinearOpMode {
     public static int PARKING_NUMBER = 2; // Controlled by the dashboard for test purposes
     public static double SPEED = 60.0;    // Controlled by the dashboard for test purposes
     private ElapsedTime autoTime = new ElapsedTime();
-    private double TIME_TO_PARK = 25;  //25
+    private double TIME_TO_PARK = 27;  //25
 
     // used for trajectory state machine
     enum    TrajectoryState {
@@ -115,13 +115,13 @@ public class Auto extends LinearOpMode {
 
                 .setTangent(Math.toRadians(startingTangent))
                 .splineToLinearHeading(cornerPose,Math.toRadians(cornerTangent),
-                        SampleMecanumDrive.getVelocityConstraint(60, Math.toRadians(180), 3.5),
-                        SampleMecanumDrive.getAccelerationConstraint(180))
+                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 3.5),
+                        SampleMecanumDrive.getAccelerationConstraint(90))
 
                 .setTangent(Math.toRadians(pickupTangent))
                 .splineToLinearHeading(pickupPose,Math.toRadians(pickupTangent),
-                        SampleMecanumDrive.getVelocityConstraint(60, Math.toRadians(180), 3.5),
-                        SampleMecanumDrive.getAccelerationConstraint(180))
+                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 3.5),
+                        SampleMecanumDrive.getAccelerationConstraint(90))
 
                 // Timer is from start of the trajectory; it is not an offset
                 .addTemporalMarker(2.0, () -> {
@@ -152,7 +152,7 @@ public class Auto extends LinearOpMode {
                     robot.turret.goToDepositPosition();
                 })
                 // Clear the pole before adjusting height. Lift move trails the turret move
-                .addTemporalMarker(0.5,()-> {
+                .addTemporalMarker(0.2,()-> {
                     robot.lift.goToLowPoleHeight();
                     robot.arm.extendMax();
                 })
@@ -169,7 +169,7 @@ public class Auto extends LinearOpMode {
 
         trajectoryPickup = robot.drive.trajectorySequenceBuilder(robot.drive.getPoseEstimate())
                 // This is an empty trajectory for just timing the sequence of Gulliver's Tower moves
-                .waitSeconds(1.75)
+                .waitSeconds(2.2)
 
                 // Cone dropped prior to this trajectory.
                 // All that is needed to move the tower to the pickup location starting with turret first
@@ -180,7 +180,7 @@ public class Auto extends LinearOpMode {
                 })
 
                 // Clear the pole before adjusting height. Lift move trails the turret move
-                .addTemporalMarker(0.5,()-> {
+                .addTemporalMarker(1.3,()-> {
                     robot.lift.goToPickupHeight();
                 })
 
@@ -293,8 +293,8 @@ public class Auto extends LinearOpMode {
                 robot.turret.turret_PICKUP_POSITION_VALUE   = 185;
                 robot.turret.turret_DEPOSIT_POSITION_VALUE  = -165;
 
-                pickupDeltaX = -0.4;  // originally 0; adjusted for FLL Champ field
-                pickupDeltaY = 0;   // originally 0; adjusted for FLL Champ field
+                pickupDeltaX = -4; // previously 0
+                pickupDeltaY = 2;  // previously 0
             }
             else {                  // RED-RIGHT
                 XFORM_X = 1;
@@ -374,6 +374,7 @@ public class Auto extends LinearOpMode {
 
         // grab the cone
         robot.grabber.grabberClose();
+        sleep(500);
         // lift off the ground for transportation
         robot.lift.goToClear();
 
@@ -580,9 +581,9 @@ public class Auto extends LinearOpMode {
                     if (!robot.drive.isBusy()) {
                         // Pickup trajectory completed, pick the cone up
                         robot.grabber.grabberClose();
-                        sleep(200); // wait for servo to grab
+                        sleep(300); // wait for servo to grab
                         robot.lift.goToClear();
-                        sleep(200); // wait for lift to clear the stack
+                        sleep(300); // wait for lift to clear the stack
 
 
                         // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack

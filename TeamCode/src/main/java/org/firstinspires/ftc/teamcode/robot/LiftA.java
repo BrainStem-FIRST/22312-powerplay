@@ -31,7 +31,7 @@ public class LiftA {
 
     // Empirical numbers are for holding the cone above the pole prior to coneCycle drop
     public final int LIFT_POSITION_GROUND = 125;
-    public final int LIFT_POSITION_LOWPOLE = 450;
+    public final int LIFT_POSITION_LOWPOLE = 400;   // 450
     public final int LIFT_POSITION_MIDPOLE = 700;   //685;
     public final int LIFT_POSITION_HIGHPOLE = 960;
 
@@ -310,19 +310,19 @@ public class LiftA {
     public void updateLiftPickupPosition() {
         switch (numCyclesCompleted){
             case 0: {
-                liftPositionPickup = 185-LIFT_ADJUSTMENT; //170
+                liftPositionPickup = 175-LIFT_ADJUSTMENT; //170
                 break;
             }
             case 1: {
-                liftPositionPickup = 140-LIFT_ADJUSTMENT; //130
+                liftPositionPickup = 135-LIFT_ADJUSTMENT; //130
                 break;
             }
             case 2: {
-                liftPositionPickup = 110-LIFT_ADJUSTMENT; //100
+                liftPositionPickup = 100-LIFT_ADJUSTMENT; //100
                 break;
             }
             case 3: {
-                liftPositionPickup = 70-LIFT_ADJUSTMENT;
+                liftPositionPickup = 60-LIFT_ADJUSTMENT;
                 break;
             }
             case 4: {
@@ -344,12 +344,12 @@ public class LiftA {
     }
 
     public void goToLowPoleHeight() {
-        raiseHeightTo(LIFT_POSITION_LOWPOLE - DELIVERY_ADJUSTMENT);
+        raiseHeightTo(LIFT_POSITION_LOWPOLE);
     }
 
     public void goToPickupHeight() {
         // For pickups from stack, negate the approach height adjustment
-        raiseHeightTo(liftPositionPickup+LIFT_ADJUSTMENT);
+        raiseHeightTo(liftPositionPickup + LIFT_ADJUSTMENT);
     }
 
     public void goToClear() {

@@ -33,8 +33,8 @@ public class TurretA {
     public final int        RIGHT_POSITION_VALUE = 256; // 500 -> 0 + (500-264)
 
     // Needed for Autonomous
-    public int              turret_PICKUP_POSITION_VALUE = 180;  // 150
-    public int              turret_DEPOSIT_POSITION_VALUE = -175;  // 150
+    public int              turret_PICKUP_POSITION_VALUE = 175;  // 150
+    public int              turret_DEPOSIT_POSITION_VALUE = -170;  // 150
 
     public final int        ANGLE_TOLERANCE = 5;
     public final int        LIFT_MIN_HEIGHT_TO_MOVE_TURRET = 60;
