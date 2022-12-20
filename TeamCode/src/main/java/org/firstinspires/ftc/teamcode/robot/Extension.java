@@ -182,7 +182,7 @@ public class Extension {
     }
 
     public boolean isExtensionOut(){
-        return extensionGetPosition() > 0;
+        return extensionGetPosition() > EXTENSION_POSITION_HOME;
     }
 //    public void fineAdjustments(){
 //        extension.setPosition(adjustmentPosition);

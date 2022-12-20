@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import android.drm.DrmUtils;
+
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -46,9 +48,9 @@ public class Turret {
         turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void setState(String desiredState, Lift lift){
+    public void setState(String desiredState, Lift lift, Extension extension){
         String currentState = getCurrentState();
-        if(isLiftTooLow(lift) || desiredState.equalsIgnoreCase(currentState)){
+        if(isLiftTooLow(lift, extension) || desiredState.equalsIgnoreCase(currentState)){
             turretMotor.setPower(0);
         }
         else{
@@ -56,7 +58,7 @@ public class Turret {
         }
     }
 
-    public boolean isLiftTooLow(Lift lift) {
+    public boolean isLiftTooLow(Lift lift, Extension extension) {
         boolean tooLow = lift.getPosition() < LIFT_MIN_HEIGHT_TO_MOVE_TURRET;
         return tooLow;
     }

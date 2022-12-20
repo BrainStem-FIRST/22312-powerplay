@@ -18,6 +18,7 @@ import static java.lang.Thread.sleep;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.util.Encoder;
+import org.java_websocket.extensions.IExtension;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -77,18 +78,18 @@ public class BrainStemRobot {
         //telemetry.addData("robotStateMap" , stateMap);
         stateMap.put(constants.SYSTEM_TIME, System.currentTimeMillis());
 
-        telemetry.addData("CONE_CYCLE:", stateMap.get(constants.CONE_CYCLE));
-        telemetry.addData("CONE_CYCLE_START_TIME:", stateMap.get(constants.CONE_CYCLE_START_TIME));
-        telemetry.addData("CYCLE_LIFT_DOWN:", stateMap.get(constants.CYCLE_LIFT_DOWN));
-        telemetry.addData("CYCLE_GRABBER:", stateMap.get(constants.CYCLE_GRABBER));
-        telemetry.addData("CYCLE_LIFT_UP:", stateMap.get(constants.CYCLE_LIFT_UP));
+//        telemetry.addData("CONE_CYCLE:", stateMap.get(constants.CONE_CYCLE));
+//        telemetry.addData("CONE_CYCLE_START_TIME:", stateMap.get(constants.CONE_CYCLE_START_TIME));
+//        telemetry.addData("CYCLE_LIFT_DOWN:", stateMap.get(constants.CYCLE_LIFT_DOWN));
+//        telemetry.addData("CYCLE_GRABBER:", stateMap.get(constants.CYCLE_GRABBER));
+//        telemetry.addData("CYCLE_LIFT_UP:", stateMap.get(constants.CYCLE_LIFT_UP));
 
 
         if(((String)stateMap.get(constants.CONE_CYCLE)).equalsIgnoreCase(constants.STATE_IN_PROGRESS)){
             coneCycle();
         } else {
             lift.setState();
-            turret.setState((String) stateMap.get(turret.SYSTEM_NAME), lift);
+            turret.setState((String) stateMap.get(turret.SYSTEM_NAME), lift, arm);
             arm.setState((String) stateMap.get(arm.SYSTEM_NAME));
             grabber.setState((String) stateMap.get(grabber.SYSTEM_NAME), lift);
         }
