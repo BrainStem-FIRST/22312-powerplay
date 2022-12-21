@@ -87,7 +87,6 @@ public class Auto extends LinearOpMode {
 
     Pose2d startingPose, pickupPose, parkingPose;
     Pose2d cornerPose;
-    TrajectorySequence trajectoryParkFromDeposit, trajectoryParkFromPickup;
 
     // Determine waypoints based on Alliance and Orientation
     double  XFORM_X, XFORM_Y;
@@ -142,7 +141,7 @@ public class Auto extends LinearOpMode {
 
         TrajectorySequence trajectoryDeposit;
 
-        trajectoryDeposit = robot.drive.trajectorySequenceBuilder(robot.drive.getPoseEstimate())
+        trajectoryDeposit = robot.drive.trajectorySequenceBuilder(pickupPose)
                 // This is an empty trajectory with just timer to operate the Gulliver's Tower
                 .waitSeconds(1.5)
 
@@ -167,7 +166,7 @@ public class Auto extends LinearOpMode {
 
         TrajectorySequence trajectoryPickup;
 
-        trajectoryPickup = robot.drive.trajectorySequenceBuilder(robot.drive.getPoseEstimate())
+        trajectoryPickup = robot.drive.trajectorySequenceBuilder(pickupPose)
                 // This is an empty trajectory for just timing the sequence of Gulliver's Tower moves
                 .waitSeconds(2.2)
 
@@ -365,6 +364,12 @@ public class Auto extends LinearOpMode {
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
 
+        // Build trajectory sequences before Start signal
+        TrajectorySequence startTrajectory   = buildStartTrajectory(robot);
+        TrajectorySequence pickupTrajectory  = buildPickupTrajectory(robot);
+        TrajectorySequence depositTrajectory = buildDepositTrajectory(robot);
+        Trajectory trajectoryPark;
+
         telemetry.clearAll();
         telemetry.addLine("Load Cone.  Driver 1 Hit A.");
         telemetry.update();
@@ -531,13 +536,10 @@ public class Auto extends LinearOpMode {
         }
 
 
-        Trajectory trajectoryPark;
-
-
         // initiate first trajectory asynchronous (go to pickup location) at the start of autonomous
         // Need to call drive.update() to make things move within the loop
         currentTrajectoryState = TrajectoryState.TRAJECTORY_START_STATE;
-        robot.drive.followTrajectorySequenceAsync(buildStartTrajectory(robot));
+        robot.drive.followTrajectorySequenceAsync(startTrajectory);
 
         while (opModeIsActive() && !isStopRequested()) {
 
@@ -551,7 +553,7 @@ public class Auto extends LinearOpMode {
 
                         // Start the next state
                         currentTrajectoryState = TrajectoryState.TRAJECTORY_PICKUP_STATE;
-                        robot.drive.followTrajectorySequenceAsync(buildPickupTrajectory(robot));
+                        robot.drive.followTrajectorySequenceAsync(pickupTrajectory);
                     }
                     break;
 
@@ -566,7 +568,7 @@ public class Auto extends LinearOpMode {
                         if(robot.lift.numCyclesCompleted < 5) {
                             // Start the pickup state
                             currentTrajectoryState = TrajectoryState.TRAJECTORY_PICKUP_STATE;
-                            robot.drive.followTrajectorySequenceAsync(buildPickupTrajectory(robot));
+                            robot.drive.followTrajectorySequenceAsync(pickupTrajectory);
                         }
                         else {
                             // the last cone was deposited, go to park.
@@ -592,19 +594,20 @@ public class Auto extends LinearOpMode {
 
                         // Start the next state
                         currentTrajectoryState = TrajectoryState.TRAJECTORY_DEPOSIT_STATE;
-                        robot.drive.followTrajectorySequenceAsync(buildDepositTrajectory(robot));
+                        robot.drive.followTrajectorySequenceAsync(depositTrajectory);
                     }
 
                     break;
 
                 case TRAJECTORY_PARKING_STATE:
+                    robot.arm.extendHome();
+                    robot.turret.moveTo(robot.turret.CENTER_POSITION_VALUE);
+
                     trajectoryPark = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate())
                             .lineToLinearHeading(parkingPose)
                             .build();
                     robot.drive.followTrajectory(trajectoryPark); // This is synchronous trajectory; code does not advance until the trajectory is complete
 
-                    robot.arm.extendHome();
-                    robot.turret.moveTo(robot.turret.CENTER_POSITION_VALUE);
                     robot.lift.raiseHeightTo(robot.lift.LIFT_POSITION_GROUND);
 
                     currentTrajectoryState = TrajectoryState.TRAJECTORY_IDLE;
