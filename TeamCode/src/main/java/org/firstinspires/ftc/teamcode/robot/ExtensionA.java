@@ -22,7 +22,7 @@ public class ExtensionA {
 
     // Servo Positions
     public final double EXTENSION_POSITION_HOME = 0;    // Fully retracted
-    public final double EXTENSION_POSITION_MAX  = 0.6;  // Fully extended
+    public final double EXTENSION_POSITION_MAX  = 0.6;  // Fully extended TODO: adjust for new extension
     public final double EXTENSION_POSITION_LEFT = 0.4;  // Extended to left position
 
 

@@ -189,31 +189,6 @@ public class Auto extends LinearOpMode {
         return trajectoryPickup;
     }
 
-    // Future utility function to convert degrees to radians and transforming them to appropriate quadrant.
-    public double xform_Rad(double degree) {
-        double rad= Math.toRadians(degree);
-
-        // Determine trajectory headings for all alliance combinations
-        if (isAllianceRED) {
-            if (isOrientationLEFT) {    // RED-LEFT
-                // No change to rad
-            }
-            else {                      // RED-RIGHT
-                // mirror on y axis
-            }
-        }
-        else {
-            if (isOrientationLEFT) {    // BLUE-LEFT
-                // mirror on x axis AND y axis
-            }
-            else {                      // BLUE-RIGHT
-                // mirror on x axis ONLY
-            }
-        }
-        return rad;
-    }
-
-
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -273,6 +248,7 @@ public class Auto extends LinearOpMode {
 
         double CONE_CYCLE_DURATION = 1.0;   // seconds to allow cone cycle to complete before moving again in trajectory
 
+        startingTangent = 120;
 
         // Determine trajectory headings for all alliance combinations
         if (isAllianceRED) {
@@ -281,7 +257,7 @@ public class Auto extends LinearOpMode {
                 XFORM_Y = -1;
 
                 startingHeading = 90;
-                startingTangent = 120;
+                startingTangent = startingTangent; //120
 
                 cornerHeading = -90;
                 cornerTangent = 90;
@@ -300,7 +276,7 @@ public class Auto extends LinearOpMode {
                 XFORM_Y = -1;
 
                 startingHeading = 90;
-                startingTangent = 60;
+                startingTangent = 180 - startingTangent; //60
 
                 cornerHeading = -90;
                 cornerTangent = 90;
@@ -321,7 +297,7 @@ public class Auto extends LinearOpMode {
                 XFORM_Y = 1;
 
                 startingHeading = -90;
-                startingTangent = -60;
+                startingTangent = startingTangent * -1; //-60
 
                 cornerHeading = 90;
                 cornerTangent = -90;
@@ -340,7 +316,7 @@ public class Auto extends LinearOpMode {
                 XFORM_Y = 1;
 
                 startingHeading = -90;
-                startingTangent = 240;
+                startingTangent = (180 - startingTangent) * -1; //240
 
                 cornerHeading = 90;
                 cornerTangent = -90;
