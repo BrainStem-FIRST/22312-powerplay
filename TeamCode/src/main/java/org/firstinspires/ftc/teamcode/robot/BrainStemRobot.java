@@ -85,14 +85,13 @@ public class BrainStemRobot {
 //        telemetry.addData("CYCLE_LIFT_UP:", stateMap.get(constants.CYCLE_LIFT_UP));
 
 
-        if(((String)stateMap.get(constants.CONE_CYCLE)).equalsIgnoreCase(constants.STATE_IN_PROGRESS)){
-            coneCycle();
-        } else {
+//        if(((String)stateMap.get(constants.CONE_CYCLE)).equalsIgnoreCase(constants.STATE_IN_PROGRESS)){
+//            coneCycle();
+//        } else {
             lift.setState();
             turret.setState((String) stateMap.get(turret.SYSTEM_NAME), lift, arm);
             arm.setState((String) stateMap.get(arm.SYSTEM_NAME));
             grabber.setState((String) stateMap.get(grabber.SYSTEM_NAME), lift);
-        }
 
     }
 
