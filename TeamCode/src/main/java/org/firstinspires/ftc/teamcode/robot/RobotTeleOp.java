@@ -44,7 +44,7 @@ public class RobotTeleOp extends LinearOpMode {
     private boolean leftTriggerPressed = false;
     private final double SLOWMODE  = 0.45;
 
-    Constants constants = new Constants();
+    ConstantsA constants = new ConstantsA();
 
 
 
@@ -67,7 +67,7 @@ public class RobotTeleOp extends LinearOpMode {
     public void runOpMode() {
 
         Map<String, String> stateMap = new HashMap<String, String>() {{ }};
-        BrainStemRobot robot = new BrainStemRobot(hardwareMap, telemetry, stateMap);
+        BrainStemRobotA robot = new BrainStemRobotA(hardwareMap, telemetry, stateMap);
 //        robot.initializeRobotPosition();
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

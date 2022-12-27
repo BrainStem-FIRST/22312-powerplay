@@ -33,7 +33,7 @@ public class GrabberA {
 
         grabber = (ServoImplEx) hwMap.servo.get("Grabber");
 
-        grabber.setPwmRange(new PwmControl.PwmRange(100,2522));
+        grabber.setPwmRange(new PwmControl.PwmRange(2055,2520));
         //grabberOpen();
     }
 

@@ -525,7 +525,7 @@ public class Auto extends LinearOpMode {
                     // Switch to trajectoryPickup once the starting trajectory is complete
                     if (!robot.drive.isBusy()) {
                         // Initial trajectory completed, drop the cone
-                        robot.grabber.grabberOpen();
+                        robot.dropCone();
                         sleep(200); // wait for cone to drop
 
                         // Start the next state
@@ -538,7 +538,7 @@ public class Auto extends LinearOpMode {
                     // Switch to Pickup once the deposit trajectory is complete
                     if (!robot.drive.isBusy()) {
                         // Deposit trajectory completed, drop the cone
-                        robot.grabber.grabberOpen();
+                        robot.dropCone();
                         sleep(200); // wait for cone to drop
 
                         // Continue the cycle until no more cones left
