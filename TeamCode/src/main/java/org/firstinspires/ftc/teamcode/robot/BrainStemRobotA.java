@@ -146,5 +146,18 @@ public class BrainStemRobotA {
                 ((String) stateMap.get(constants.CYCLE_GRABBER)).equalsIgnoreCase(constants.STATE_COMPLETE) &&
                 ((String) stateMap.get(constants.CYCLE_LIFT_UP)).equalsIgnoreCase(constants.STATE_COMPLETE));
     }
+
+    public void dropCone() throws InterruptedException {
+        lift.raiseHeightTo(lift.getPosition() - 75);
+        sleep(300);
+        grabber.grabberOpen();
+        lift.raiseHeightTo(lift.getPosition() + 75);
+    }
+
+    public void pickupCone() throws InterruptedException {
+        grabber.grabberClose();
+        sleep(300);
+        lift.raiseHeightTo(lift.getPosition() + 85);
+    }
 }
 

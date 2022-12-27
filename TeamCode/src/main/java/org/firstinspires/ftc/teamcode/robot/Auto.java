@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TRACK_WIDTH;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -113,12 +114,12 @@ public class Auto extends LinearOpMode {
                 //make sure the cone is lifted a little from the ground before robot starts moving
 
                 .setTangent(Math.toRadians(startingTangent))
-                .splineToLinearHeading(cornerPose,Math.toRadians(cornerTangent),
+                .splineToConstantHeading(new Vector2d(cornerPose.getX(), cornerPose.getY()), Math.toRadians(cornerTangent),
                         SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 3.5),
                         SampleMecanumDrive.getAccelerationConstraint(90))
 
                 .setTangent(Math.toRadians(pickupTangent))
-                .splineToLinearHeading(pickupPose,Math.toRadians(pickupTangent),
+                .splineToConstantHeading(new Vector2d(pickupPose.getX(), pickupPose.getY()),Math.toRadians(pickupTangent),
                         SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 3.5),
                         SampleMecanumDrive.getAccelerationConstraint(90))
 
@@ -248,7 +249,7 @@ public class Auto extends LinearOpMode {
 
         double CONE_CYCLE_DURATION = 1.0;   // seconds to allow cone cycle to complete before moving again in trajectory
 
-        startingTangent = 120;
+        startingTangent = 135;
 
         // Determine trajectory headings for all alliance combinations
         if (isAllianceRED) {
@@ -256,13 +257,13 @@ public class Auto extends LinearOpMode {
                 XFORM_X = -1;
                 XFORM_Y = -1;
 
-                startingHeading = 90;
+                startingHeading = -90;
                 startingTangent = startingTangent; //120
 
-                cornerHeading = -90;
+//                cornerHeading = -90;
                 cornerTangent = 90;
 
-                pickupHeading = 245;
+//                pickupHeading = 245;
                 pickupTangent = 90;
 
                 robot.turret.turret_PICKUP_POSITION_VALUE   = 185;
@@ -275,13 +276,13 @@ public class Auto extends LinearOpMode {
                 XFORM_X = 1;
                 XFORM_Y = -1;
 
-                startingHeading = 90;
+                startingHeading = -90;
                 startingTangent = 180 - startingTangent; //60
 
-                cornerHeading = -90;
+//                cornerHeading = -90;
                 cornerTangent = 90;
 
-                pickupHeading = -65;
+//                pickupHeading = -65;
                 pickupTangent = 90;
 
                 robot.turret.turret_PICKUP_POSITION_VALUE   = -180;
@@ -296,14 +297,14 @@ public class Auto extends LinearOpMode {
                 XFORM_X = 1;
                 XFORM_Y = 1;
 
-                startingHeading = -90;
-                startingTangent = startingTangent * -1; //-60
+                startingHeading = 90;
+                startingTangent = (180 - startingTangent) * -1; //-60
 
-                cornerHeading = 90;
+//                cornerHeading = 90;
                 cornerTangent = -90;
 
-                pickupHeading = 65;
-                pickupTangent = -90;
+//                pickupHeading = 65;
+                pickupTangent = 90;
 
                 robot.turret.turret_PICKUP_POSITION_VALUE   = 180;
                 robot.turret.turret_DEPOSIT_POSITION_VALUE  = -150;
@@ -316,12 +317,12 @@ public class Auto extends LinearOpMode {
                 XFORM_Y = 1;
 
                 startingHeading = -90;
-                startingTangent = (180 - startingTangent) * -1; //240
+                startingTangent = startingTangent * -1; //240
 
-                cornerHeading = 90;
+//                cornerHeading = 90;
                 cornerTangent = -90;
 
-                pickupHeading = 115;
+//                pickupHeading = 115;
                 pickupTangent = -90;
 
                 robot.turret.turret_PICKUP_POSITION_VALUE   = -180;
@@ -334,7 +335,7 @@ public class Auto extends LinearOpMode {
 
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 35.5, XFORM_Y * 63.75, Math.toRadians(startingHeading));
-        cornerPose      = new Pose2d(XFORM_X * (62 + cornerDeltaX), XFORM_Y * (57 + cornerDeltaY), Math.toRadians(cornerHeading));
+        cornerPose      = new Pose2d(XFORM_X * (58 + cornerDeltaX), XFORM_Y * (52 + cornerDeltaY), Math.toRadians(cornerHeading));
         pickupPose      = new Pose2d(XFORM_X * (58.9 + pickupDeltaX), XFORM_Y * (12 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 
@@ -629,6 +630,7 @@ public class Auto extends LinearOpMode {
 //            robot.updateSystems();
 //        }
     }
+
     //camera
     void tagToTelemetry(AprilTagDetection detection) {
         Ending_Location = detection.id;
