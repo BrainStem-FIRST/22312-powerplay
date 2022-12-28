@@ -28,10 +28,13 @@ public class Grabber {
     public final String SYSTEM_NAME = "GRABBER";
     public final String OPEN_STATE = "OPEN";
     public final String CLOSED_STATE = "CLOSED";
+    public final String FULLY_OPEN_STATE = " FULLY OPEN STATE";
     Constants constants = new Constants();
 
-    public final double OPEN_VALUE = 1;
-    public final double CLOSED_VALUE = 0.01;
+    public final double FULLY_OPEN_VALUE = 0.01;
+    private final double CONE_OPEN_VALUE = 0.65;
+    public final double CLOSED_VALUE = 1;
+
 
     private Map stateMap;
 
@@ -42,7 +45,7 @@ public class Grabber {
 
         grabber = (ServoImplEx) hwMap.servo.get("Grabber");
 
-        grabber.setPwmRange(new PwmControl.PwmRange(400,800));
+        grabber.setPwmRange(new PwmControl.PwmRange(2055,2520));
         //grabberOpen();
     }
 
@@ -52,7 +55,7 @@ public class Grabber {
             if (shouldGrab(lift)) {
                 grabber.setPosition(CLOSED_VALUE);
             } else {
-                grabber.setPosition(OPEN_VALUE);
+                grabber.setPosition(CONE_OPEN_VALUE);
             }
 
             if (stateMap.get(constants.GRABBER_START_TIME) == null) {
@@ -67,7 +70,13 @@ public class Grabber {
             }
 
         } else if (((String)stateMap.get(constants.CYCLE_GRABBER)).equalsIgnoreCase(constants.STATE_NOT_STARTED) && shouldGrab(lift)) {
-            grabber.setPosition(OPEN_VALUE);
+            grabber.setPosition(CONE_OPEN_VALUE);
+        } else if(((String)stateMap.get(SYSTEM_NAME)).equalsIgnoreCase(FULLY_OPEN_STATE)){
+            if(shouldGrabberFullyOpen(lift)) {
+                grabber.setPosition(FULLY_OPEN_VALUE);
+            } else {
+                grabber.setPosition(CONE_OPEN_VALUE);
+            }
         }
     }
     public boolean shouldGrab(Lift lift) {
@@ -79,11 +88,18 @@ public class Grabber {
 
     // Opens the claw
     public void grabberOpen() {
-        grabber.setPosition(OPEN_VALUE);
+        grabber.setPosition(CONE_OPEN_VALUE);
     }
 
     public void grabberClose() {
         grabber.setPosition(CLOSED_VALUE);
+    }
+
+    public static boolean shouldGrabberFullyOpen(Lift lift){
+        if(lift.getPosition() > 300){
+            return true;
+        }
+        return false;
     }
 
     // Returns current position of the grabber. 0 is wide open (dropped cone)

@@ -21,8 +21,8 @@ public class Extension {
     static final double MINIMUM_CLEARANCE_DISTANCE = 95.875 * MM_TO_INCHES;
 
     // Servo Positions
-    public final double EXTENSION_POSITION_HOME = 0;    // Fully retracted
-    public final double EXTENSION_POSITION_MAX  = 0.6;  // Fully extended
+    public final double EXTENSION_POSITION_MAX = 0;    // Fully retracted
+    public final double EXTENSION_POSITION_HOME = 1;  // Fully extended
     public final double EXTENSION_POSITION_LEFT = 0.4;  // Extended to left position
 
 
@@ -51,7 +51,7 @@ public class Extension {
         twoBar = (ServoImplEx) hwMap.servo.get("Two Bar");
 
         // Scale the operating range of Servos and set initial position
-        extension.setPwmRange(new PwmControl.PwmRange(1100,2300)); //low cap was 1250 and it was not retracting all the way
+        extension.setPwmRange(new PwmControl.PwmRange(565,640)); //low cap was 1250 and it was not retracting all the way
         extendHome();
 
         twoBar.setPwmRange(new PwmControl.PwmRange(1745,2400));
@@ -101,7 +101,7 @@ public class Extension {
 
     // Pulls the extension arm to its starting position (it is NOT in clear)
     public void extendHome() {
-        extension.setPosition(EXTENSION_POSITION_HOME + adjustmentPosition);
+        extension.setPosition(EXTENSION_POSITION_HOME);
     }
 
     public void joyStickExtension(double addedPosition){
@@ -109,12 +109,12 @@ public class Extension {
     }
     // Extends the arm to its maximum reach
     public void extendMax() {
-        extension.setPosition(EXTENSION_POSITION_MAX + adjustmentPosition);
+        extension.setPosition(EXTENSION_POSITION_MAX);
     }
 
     // Extends arm to left position
     public void extendLeft() {
-        extension.setPosition(EXTENSION_POSITION_LEFT + adjustmentPosition);
+        extension.setPosition(EXTENSION_POSITION_LEFT );
     }
 
     public void setAdjustmentPosition(){
@@ -122,10 +122,7 @@ public class Extension {
     }
 
     public void setState(String desiredState){
-        String currentState = getCurrentState();
-        if(!desiredState.equalsIgnoreCase(currentState)){
-            selectTransition(desiredState);
-        }
+        selectTransition(desiredState);
     }
 
     public String getCurrentState() {
