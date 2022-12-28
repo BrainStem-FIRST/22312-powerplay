@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import static java.lang.Thread.sleep;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -149,9 +150,13 @@ public class BrainStemRobotA {
 
     public void dropCone() throws InterruptedException {
         lift.raiseHeightTo(lift.getPosition() - 75);
-        sleep(300);
-        grabber.grabberOpen();
-        lift.raiseHeightTo(lift.getPosition() + 75);
+        sleep(100);
+        grabber.grabberOpenWide();
+//        lift.raiseHeightTo(lift.getPosition() + 75);
+
+        // move away from the pole so the grabber does not hit the pole when swinging back
+        // clip the retract position at the swing clearance position so it doesn't hit the motors when swinging back
+        arm.extendTo(Range.clip(arm.getExtensionPosition() - 0.05, arm.EXTENSION_POSITION_SWING_CLEARANCE, 1););
     }
 
     public void pickupCone() throws InterruptedException {

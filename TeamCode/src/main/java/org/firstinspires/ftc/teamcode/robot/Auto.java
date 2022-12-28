@@ -124,12 +124,12 @@ public class Auto extends LinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(90))
 
                 // Timer is from start of the trajectory; it is not an offset
-                .addTemporalMarker(2.0, () -> {
+                .addTemporalMarker(1.5, () -> {
                     robot.lift.goToLowPoleHeight();
                 })
-                .addTemporalMarker(2.5, () -> {
+                .addTemporalMarker(2.0, () -> {
                     robot.turret.goToDepositPosition();
-                    robot.arm.extendMax();
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
                 })
 
                 // Start trajectory ends with holding the cone above the pole
@@ -154,7 +154,7 @@ public class Auto extends LinearOpMode {
                 // Clear the pole before adjusting height. Lift move trails the turret move
                 .addTemporalMarker(0.2,()-> {
                     robot.lift.goToLowPoleHeight();
-                    robot.arm.extendMax();
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
                 })
 
                 // ConeCycle will be outside of trajectory
@@ -176,7 +176,7 @@ public class Auto extends LinearOpMode {
                 // and then delay-start lift
                 .addTemporalMarker(0,()->{
                     robot.turret.goToPickupPosition();
-                    robot.arm.extendMax();
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
                 // Clear the pole before adjusting height. Lift move trails the turret move
@@ -335,8 +335,8 @@ public class Auto extends LinearOpMode {
 
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 35.5, XFORM_Y * 63.75, Math.toRadians(startingHeading));
-        cornerPose      = new Pose2d(XFORM_X * (58 + cornerDeltaX), XFORM_Y * (52 + cornerDeltaY), Math.toRadians(cornerHeading));
-        pickupPose      = new Pose2d(XFORM_X * (58.9 + pickupDeltaX), XFORM_Y * (12 + pickupDeltaY), Math.toRadians(pickupHeading));
+        cornerPose      = new Pose2d(XFORM_X * (58.75 + cornerDeltaX), XFORM_Y * (52 + cornerDeltaY), Math.toRadians(cornerHeading));
+        pickupPose      = new Pose2d(XFORM_X * (58.75 + pickupDeltaX), XFORM_Y * (11.75 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
@@ -526,7 +526,7 @@ public class Auto extends LinearOpMode {
                     if (!robot.drive.isBusy()) {
                         // Initial trajectory completed, drop the cone
                         robot.dropCone();
-                        sleep(200); // wait for cone to drop
+                        sleep(100); // wait for cone to drop
 
                         // Start the next state
                         currentTrajectoryState = TrajectoryState.TRAJECTORY_PICKUP_STATE;
@@ -539,7 +539,7 @@ public class Auto extends LinearOpMode {
                     if (!robot.drive.isBusy()) {
                         // Deposit trajectory completed, drop the cone
                         robot.dropCone();
-                        sleep(200); // wait for cone to drop
+                        sleep(100); // wait for cone to drop
 
                         // Continue the cycle until no more cones left
                         if(robot.lift.numCyclesCompleted < 5) {
@@ -560,9 +560,9 @@ public class Auto extends LinearOpMode {
                     if (!robot.drive.isBusy()) {
                         // Pickup trajectory completed, pick the cone up
                         robot.grabber.grabberClose();
-                        sleep(300); // wait for servo to grab
+                        sleep(100); // wait for servo to grab
                         robot.lift.goToClear();
-                        sleep(300); // wait for lift to clear the stack
+                        sleep(100); // wait for lift to clear the stack
 
 
                         // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack

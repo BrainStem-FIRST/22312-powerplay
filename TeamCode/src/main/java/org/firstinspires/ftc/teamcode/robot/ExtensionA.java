@@ -19,11 +19,20 @@ public class ExtensionA {
 
     static final double MM_TO_INCHES = 0.0393700787;
     static final double MINIMUM_CLEARANCE_DISTANCE = 95.875 * MM_TO_INCHES;
+    static final double MAXIMUM_REACH = 10; // inches of extension from position 0 to 1.0
 
     // Servo Positions
-    public final double EXTENSION_POSITION_HOME = 0;    // Fully retracted
-    public final double EXTENSION_POSITION_MAX  = 0.6;  // Fully extended TODO: adjust for new extension
-    public final double EXTENSION_POSITION_LEFT = 0.4;  // Extended to left position
+    public final double EXTENSION_POSITION_HOME     = 0;    // Fully retracted
+    public final double EXTENSION_POSITION_MAX      = 1;    // Fully extended
+
+    public final double EXTENSION_POSITION_LEFT     = 0.4;  // Extend to the pole on the left from center of isle
+    public final double EXTENSION_POSITION_RIGHT    = 0.6;  // Extend to the pole on the right from center of isle
+
+    public final double EXTENSION_POSITION_PICKUP   = 0.4;  // Extend to the stack of cones from pickup position
+    public final double EXTENSION_POSITION_DEPOSIT  = 0.8;  // Extend to the low pole from pickup position
+
+    public final double EXTENSION_POSITION_SWING_CLEARANCE = MINIMUM_CLEARANCE_DISTANCE / MAXIMUM_REACH;
+
 
 
     public final double TWOBAR_POSITION_HOME    = 0;    // vertical position
@@ -71,7 +80,7 @@ public class ExtensionA {
 
     }
 
-    // Move the extension's position to the specified distance in inches
+    // Move the extension to the specified position
     // Predefined values can be passed by using class constants (to be defined later)
     // To go as far as it can, pass extension.EXTENSION_MAX_REACH as distance.
     // To go back home, pass 0 as distance.

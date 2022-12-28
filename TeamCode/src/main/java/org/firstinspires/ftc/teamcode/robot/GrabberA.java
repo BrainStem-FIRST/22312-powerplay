@@ -21,8 +21,9 @@ public class GrabberA {
     public final String CLOSED_STATE = "CLOSED";
     ConstantsA constants = new ConstantsA();
 
-    public final double OPEN_VALUE = 0.27;
-    public final double CLOSED_VALUE = 0.12;
+    public final double WIDE_OPEN_VALUE = 0.90;
+    public final double OPEN_VALUE      = 0.27;     // 0.27
+    public final double CLOSED_VALUE    = 0.12;     // 0.12
 
     private Map stateMap;
 
@@ -72,7 +73,9 @@ public class GrabberA {
     public void grabberOpen() {
         grabber.setPosition(OPEN_VALUE);
     }
-
+    public void grabberOpenWide() {
+        grabber.setPosition(WIDE_OPEN_VALUE);
+    }
     public void grabberClose() {
         grabber.setPosition(CLOSED_VALUE);
     }
