@@ -169,7 +169,7 @@ public class Auto extends LinearOpMode {
 
         trajectoryPickup = robot.drive.trajectorySequenceBuilder(pickupPose)
                 // This is an empty trajectory for just timing the sequence of Gulliver's Tower moves
-                .waitSeconds(2.2)
+                .waitSeconds(1.8)
 
                 // Cone dropped prior to this trajectory.
                 // All that is needed to move the tower to the pickup location starting with turret first
@@ -180,7 +180,7 @@ public class Auto extends LinearOpMode {
                 })
 
                 // Clear the pole before adjusting height. Lift move trails the turret move
-                .addTemporalMarker(1.3,()-> {
+                .addTemporalMarker(0.8,()-> {
                     robot.lift.goToPickupHeight();
                 })
 
@@ -343,8 +343,6 @@ public class Auto extends LinearOpMode {
         // grab the cone
         robot.grabber.grabberClose();
         sleep(500);
-        // lift off the ground for transportation
-        robot.lift.goToClear();
 
 
         // Determine trajectory segment positions based on Alliance and Orientation
@@ -517,6 +515,8 @@ public class Auto extends LinearOpMode {
                 }
         }
 
+        // lift off the ground for transportation
+        robot.pickupCone();
 
         // initiate first trajectory asynchronous (go to pickup location) at the start of autonomous
         // Need to call drive.update() to make things move within the loop
