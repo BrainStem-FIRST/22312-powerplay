@@ -22,8 +22,8 @@ public class ExtensionA {
     static final double MAXIMUM_REACH = 11; // inches of extension from position 0 to 1.0
 
     // Servo Positions
-    public final double EXTENSION_POSITION_HOME     = 0;     // Fully retracted
-    public final double EXTENSION_POSITION_MAX      = 1;     // Fully extended
+    public final double EXTENSION_POSITION_HOME     = 0.9;     // Fully retracted
+    public final double EXTENSION_POSITION_MAX      = 0;     // Fully extended
 
     public final double EXTENSION_POSITION_LEFT     = 0.5;   // Extend to the pole on the left from center of isle
     public final double EXTENSION_POSITION_RIGHT    = 0.61;  // Extend to the pole on the right from center of isle
@@ -32,7 +32,6 @@ public class ExtensionA {
     public final double EXTENSION_POSITION_DEPOSIT  = 0.5;  // Extend to the low pole from pickup position
 
     public final double EXTENSION_POSITION_SWING_CLEARANCE = MINIMUM_CLEARANCE_DISTANCE / MAXIMUM_REACH; // 0.63
-
 
 
     public final double TWOBAR_POSITION_HOME    = 0;    // vertical position
