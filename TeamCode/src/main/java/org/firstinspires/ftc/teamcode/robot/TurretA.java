@@ -51,7 +51,7 @@ public class TurretA {
         turretMotor = (DcMotorEx) hwMap.get("TurretMotor");
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //      liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //RUN_USING_ENCODER);
     }
 
     public void setState(String desiredState, LiftA lift){
