@@ -116,12 +116,12 @@ public class Auto extends LinearOpMode {
                 .setTangent(Math.toRadians(startingTangent))
                 .splineToConstantHeading(new Vector2d(cornerPose.getX(), cornerPose.getY()), Math.toRadians(cornerTangent),
                         SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 3.5),
-                        SampleMecanumDrive.getAccelerationConstraint(90))
+                        SampleMecanumDrive.getAccelerationConstraint(50))
 
-                .setTangent(Math.toRadians(pickupTangent))
+                //.setTangent(Math.toRadians(pickupTangent))
                 .splineToConstantHeading(new Vector2d(pickupPose.getX(), pickupPose.getY()),Math.toRadians(pickupTangent),
                         SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 3.5),
-                        SampleMecanumDrive.getAccelerationConstraint(90))
+                        SampleMecanumDrive.getAccelerationConstraint(50))
 
                 // Timer is from start of the trajectory; it is not an offset
                 .addTemporalMarker(1.5, () -> {
@@ -260,14 +260,14 @@ public class Auto extends LinearOpMode {
                 startingHeading = -90;
                 startingTangent = startingTangent; //120
 
-//                cornerHeading = -90;
+                cornerHeading = -90;
                 cornerTangent = 90;
 
-//                pickupHeading = 245;
+                pickupHeading = -90;
                 pickupTangent = 90;
 
-                robot.turret.turret_PICKUP_POSITION_VALUE   = 185;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -165;
+                robot.turret.turret_PICKUP_POSITION_VALUE   = 256;
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -105; //-165
 
                 pickupDeltaX = -4; // previously 0
                 pickupDeltaY = 2;  // previously 0
@@ -279,10 +279,10 @@ public class Auto extends LinearOpMode {
                 startingHeading = -90;
                 startingTangent = 180 - startingTangent; //60
 
-//                cornerHeading = -90;
+                cornerHeading = -90;
                 cornerTangent = 90;
 
-//                pickupHeading = -65;
+                pickupHeading = -90;
                 pickupTangent = 90;
 
                 robot.turret.turret_PICKUP_POSITION_VALUE   = -180;
@@ -300,11 +300,11 @@ public class Auto extends LinearOpMode {
                 startingHeading = 90;
                 startingTangent = (180 - startingTangent) * -1; //-60
 
-//                cornerHeading = 90;
+                cornerHeading = 90;
                 cornerTangent = -90;
 
-//                pickupHeading = 65;
-                pickupTangent = 90;
+                pickupHeading = 90;
+                pickupTangent = -90;
 
                 robot.turret.turret_PICKUP_POSITION_VALUE   = 180;
                 robot.turret.turret_DEPOSIT_POSITION_VALUE  = -150;
@@ -316,13 +316,13 @@ public class Auto extends LinearOpMode {
                 XFORM_X = -1;
                 XFORM_Y = 1;
 
-                startingHeading = -90;
+                startingHeading = 90;
                 startingTangent = startingTangent * -1; //240
 
-//                cornerHeading = 90;
+                cornerHeading = 90;
                 cornerTangent = -90;
 
-//                pickupHeading = 115;
+                pickupHeading = 90;
                 pickupTangent = -90;
 
                 robot.turret.turret_PICKUP_POSITION_VALUE   = -180;
@@ -332,20 +332,6 @@ public class Auto extends LinearOpMode {
                 pickupDeltaY = 0;
             }
         }
-
-        // Determine trajectory segment positions based on Alliance and Orientation
-        startingPose    = new Pose2d(XFORM_X * 35.5, XFORM_Y * 63.75, Math.toRadians(startingHeading));
-        cornerPose      = new Pose2d(XFORM_X * (58.75 + cornerDeltaX), XFORM_Y * (52 + cornerDeltaY), Math.toRadians(cornerHeading));
-        pickupPose      = new Pose2d(XFORM_X * (58.75 + pickupDeltaX), XFORM_Y * (11.75 + pickupDeltaY), Math.toRadians(pickupHeading));
-        parkingPose     = new Pose2d(); // to be defined after reading the signal cone
-
-        robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
-
-        // Build trajectory sequences before Start signal
-        TrajectorySequence startTrajectory   = buildStartTrajectory(robot);
-        TrajectorySequence pickupTrajectory  = buildPickupTrajectory(robot);
-        TrajectorySequence depositTrajectory = buildDepositTrajectory(robot);
-        Trajectory trajectoryPark;
 
         telemetry.clearAll();
         telemetry.addLine("Load Cone.  Driver 1 Hit A.");
@@ -359,6 +345,25 @@ public class Auto extends LinearOpMode {
         sleep(500);
         // lift off the ground for transportation
         robot.lift.goToClear();
+
+
+        // Determine trajectory segment positions based on Alliance and Orientation
+        startingPose    = new Pose2d(XFORM_X * 36, XFORM_Y * 63.75, Math.toRadians(startingHeading));
+        cornerPose      = new Pose2d(XFORM_X * (59 + cornerDeltaX), XFORM_Y * (52 + cornerDeltaY), Math.toRadians(cornerHeading));
+        pickupPose      = new Pose2d(XFORM_X * (59 + pickupDeltaX), XFORM_Y * (11.75 + pickupDeltaY), Math.toRadians(pickupHeading));
+        parkingPose     = new Pose2d(); // to be defined after reading the signal cone
+
+        robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
+
+        // Build trajectory sequences before Start signal
+        TrajectorySequence startTrajectory   = buildStartTrajectory(robot);
+        TrajectorySequence pickupTrajectory  = buildPickupTrajectory(robot);
+        TrajectorySequence depositTrajectory = buildDepositTrajectory(robot);
+        Trajectory trajectoryPark;
+
+        telemetry.clearAll();
+        telemetry.addLine("Load Cone.  Driver 1 Hit A.");
+        telemetry.update();
 
         telemetry.clearAll();
         telemetry.addLine("Robot is Ready!");
@@ -560,10 +565,9 @@ public class Auto extends LinearOpMode {
                     if (!robot.drive.isBusy()) {
                         // Pickup trajectory completed, pick the cone up
                         robot.grabber.grabberClose();
-                        sleep(100); // wait for servo to grab
+                        sleep(200); // wait for servo to grab
                         robot.lift.goToClear();
                         sleep(100); // wait for lift to clear the stack
-
 
                         // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
                         robot.lift.numCyclesCompleted++;

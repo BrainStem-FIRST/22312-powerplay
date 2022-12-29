@@ -156,7 +156,7 @@ public class BrainStemRobotA {
 
         // move away from the pole so the grabber does not hit the pole when swinging back
         // clip the retract position at the swing clearance position so it doesn't hit the motors when swinging back
-        arm.extendTo(Range.clip(arm.getExtensionPosition() - 0.05, arm.EXTENSION_POSITION_SWING_CLEARANCE, 1););
+        arm.extendTo(Range.clip(arm.getExtensionPosition() - 0.05, arm.EXTENSION_POSITION_SWING_CLEARANCE, 1));
     }
 
     public void pickupCone() throws InterruptedException {

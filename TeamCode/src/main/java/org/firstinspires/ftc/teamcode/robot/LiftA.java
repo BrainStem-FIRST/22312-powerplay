@@ -310,23 +310,23 @@ public class LiftA {
     public void updateLiftPickupPosition() {
         switch (numCyclesCompleted){
             case 0: {
-                liftPositionPickup = 175-LIFT_ADJUSTMENT; //170
+                liftPositionPickup = 235; //-LIFT_ADJUSTMENT; //175
                 break;
             }
             case 1: {
-                liftPositionPickup = 135-LIFT_ADJUSTMENT; //130
+                liftPositionPickup = 195; //LIFT_ADJUSTMENT; //135
                 break;
             }
             case 2: {
-                liftPositionPickup = 100-LIFT_ADJUSTMENT; //100
+                liftPositionPickup = 160; //LIFT_ADJUSTMENT; //100
                 break;
             }
             case 3: {
-                liftPositionPickup = 60-LIFT_ADJUSTMENT;
+                liftPositionPickup = 120; //LIFT_ADJUSTMENT; //60
                 break;
             }
             case 4: {
-                liftPositionPickup = 40-LIFT_ADJUSTMENT;
+                liftPositionPickup = 100; //LIFT_ADJUSTMENT; //40
                 break;
             }
             default: {

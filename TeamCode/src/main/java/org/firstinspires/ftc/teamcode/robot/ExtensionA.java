@@ -19,19 +19,19 @@ public class ExtensionA {
 
     static final double MM_TO_INCHES = 0.0393700787;
     static final double MINIMUM_CLEARANCE_DISTANCE = 95.875 * MM_TO_INCHES;
-    static final double MAXIMUM_REACH = 10; // inches of extension from position 0 to 1.0
+    static final double MAXIMUM_REACH = 11; // inches of extension from position 0 to 1.0
 
     // Servo Positions
-    public final double EXTENSION_POSITION_HOME     = 0;    // Fully retracted
-    public final double EXTENSION_POSITION_MAX      = 1;    // Fully extended
+    public final double EXTENSION_POSITION_HOME     = 0;     // Fully retracted
+    public final double EXTENSION_POSITION_MAX      = 1;     // Fully extended
 
-    public final double EXTENSION_POSITION_LEFT     = 0.4;  // Extend to the pole on the left from center of isle
-    public final double EXTENSION_POSITION_RIGHT    = 0.6;  // Extend to the pole on the right from center of isle
+    public final double EXTENSION_POSITION_LEFT     = 0.5;   // Extend to the pole on the left from center of isle
+    public final double EXTENSION_POSITION_RIGHT    = 0.61;  // Extend to the pole on the right from center of isle
 
-    public final double EXTENSION_POSITION_PICKUP   = 0.4;  // Extend to the stack of cones from pickup position
-    public final double EXTENSION_POSITION_DEPOSIT  = 0.8;  // Extend to the low pole from pickup position
+    public final double EXTENSION_POSITION_PICKUP   = 0.6;   // Extend to the stack of cones from pickup position
+    public final double EXTENSION_POSITION_DEPOSIT  = 0.5;  // Extend to the low pole from pickup position
 
-    public final double EXTENSION_POSITION_SWING_CLEARANCE = MINIMUM_CLEARANCE_DISTANCE / MAXIMUM_REACH;
+    public final double EXTENSION_POSITION_SWING_CLEARANCE = MINIMUM_CLEARANCE_DISTANCE / MAXIMUM_REACH; // 0.63
 
 
 
@@ -85,7 +85,7 @@ public class ExtensionA {
     // To go as far as it can, pass extension.EXTENSION_MAX_REACH as distance.
     // To go back home, pass 0 as distance.
     public void extendTo(double position) {
-        extension.setPosition (position);
+        extension.setPosition(position);
     }
 
 /**************************************************************************************
@@ -124,13 +124,8 @@ public class ExtensionA {
         extension.setPosition(EXTENSION_POSITION_LEFT);
     }
 
-
-
     public void setState(String desiredState){
-        String currentState = getCurrentState();
-        if(!desiredState.equalsIgnoreCase(currentState)){
-            selectTransition(desiredState);
-        }
+        selectTransition(desiredState);
     }
 
     public String getCurrentState() {
