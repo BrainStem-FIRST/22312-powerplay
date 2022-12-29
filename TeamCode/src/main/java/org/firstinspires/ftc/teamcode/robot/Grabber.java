@@ -45,7 +45,7 @@ public class Grabber {
 
         grabber = (ServoImplEx) hwMap.servo.get("Grabber");
 
-        grabber.setPwmRange(new PwmControl.PwmRange(2055,2520));
+        grabber.setPwmRange(new PwmControl.PwmRange(2055,2470));
         //grabberOpen();
     }
 
@@ -77,6 +77,10 @@ public class Grabber {
             } else {
                 grabber.setPosition(CONE_OPEN_VALUE);
             }
+        } else if(((String)stateMap.get(SYSTEM_NAME)).equalsIgnoreCase(OPEN_STATE)){
+            grabber.setPosition(CONE_OPEN_VALUE);
+        } else if(((String)stateMap.get(SYSTEM_NAME)).equalsIgnoreCase(CLOSED_STATE)){
+            grabber.setPosition(CLOSED_VALUE);
         }
     }
     public boolean shouldGrab(Lift lift) {
