@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot;
+package org.firstinspires.ftc.teamcode.robot.autoclasses;
 
 public class ConstantsA {
     public final String STATE_IN_PROGRESS = "IN PROGRESS";

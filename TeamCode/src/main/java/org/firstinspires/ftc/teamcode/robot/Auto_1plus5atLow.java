@@ -1,9 +1,5 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_VEL;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TRACK_WIDTH;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -15,6 +11,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.robot.Vision.imagecv.AprilTagDetectionPipeline;
+import org.firstinspires.ftc.teamcode.robot.autoclasses.BrainStemRobotA;
+import org.firstinspires.ftc.teamcode.robot.autoclasses.ConstantsA;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -26,8 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Config
-@Autonomous(name="Robot: Auto", group="Robot")
-public class Auto extends LinearOpMode {
+@Autonomous(name="Robot: Auto 1+5 at Low", group="Robot")
+public class Auto_1plus5atLow extends LinearOpMode {
     //camera
     public OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
