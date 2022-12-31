@@ -35,7 +35,7 @@ public class Lift {
     public final int LIFT_POSITION_LOWPOLE = 450;
     public final int LIFT_POSITION_MIDPOLE = 700;   //685;
     public final int LIFT_POSITION_HIGHPOLE = 960;
-
+    public final int LIFT_POSITION_MOVING = 10;
 
     // Lift pick up position is only 4 cone bases higher than the starting position,
     // which is reset to 0 ticks at the start of Auto when lift is positioned on top of a single cone
@@ -60,6 +60,7 @@ public class Lift {
     public final String PLACEMENT_HEIGHT = "PLACEMENT_HEIGHT";
     public final String LIFT_SUBHEIGHT = "SUB_HEIGHT";
     public final String LIFT_CHECK_STATE = "LIFT_CHECK";
+    public final String LIFT_UP_MOVING_STATE = "LIFT_UP_MOVING_STATE";
 
     // Used in Auto to determine the lift's position high enough to unstack the cones during pickup
     public final String LIFT_POSITION_CLEAR = "LIFT_CLEAR_HEIGHT";
@@ -124,23 +125,27 @@ public class Lift {
     }
 
     private boolean shouldLiftMove(String level, String currentState) {
-        return ((String)stateMap.get(constants.CYCLE_LIFT_DOWN)).equalsIgnoreCase(constants.STATE_IN_PROGRESS) ||
-                ((String)stateMap.get(constants.CYCLE_LIFT_UP)).equalsIgnoreCase(constants.STATE_IN_PROGRESS) ||
-                !level.equalsIgnoreCase(currentState);
+        return (((String)stateMap.get(constants.CYCLE_LIFT_UP)).equalsIgnoreCase(constants.STATE_IN_PROGRESS) ||
+                !level.equalsIgnoreCase(currentState));
     }
 
     private void updateConeCycleState() {
         int position = getStateValue();
-        if (isCycleInProgress(constants.CYCLE_LIFT_DOWN) && isSubheightPlacement()) {
-            if (inHeightTolerance(getPosition(), position + LIFT_ADJUSTMENT)) {
-                stateMap.put(constants.CYCLE_LIFT_DOWN, constants.STATE_COMPLETE);
-            }
-        } else if (isCycleInProgress(constants.CYCLE_LIFT_UP) && inHeightTolerance(getPosition(), position)) {
+//        if (isCycleInProgress(constants.CYCLE_LIFT_DOWN) && isSubheightPlacement()) {
+//            if (inHeightTolerance(getPosition(), position + LIFT_ADJUSTMENT)) {
+//                stateMap.put(constants.CYCLE_LIFT_DOWN, constants.STATE_COMPLETE);
+//            }
+//        } else if (isCycleInProgress(constants.CYCLE_LIFT_UP) && inHeightTolerance(getPosition(), position)) {
+//            stateMap.put(constants.CYCLE_LIFT_UP, constants.STATE_COMPLETE);
+//        } else if (isCycleInProgress(constants.CYCLE_LIFT_UP) && coneCycleStepTimeExpired(constants.GRABBER_CYCLE_TIME + constants.LIFT_DOWN_CYCLE_TIME + constants.LIFT_UP_CYCLE_TIME)) {
+//            stateMap.put(constants.CYCLE_LIFT_UP, constants.STATE_COMPLETE);
+//        } else if (isCycleInProgress(constants.CYCLE_LIFT_DOWN) && coneCycleStepTimeExpired(constants.GRABBER_CYCLE_TIME + constants.LIFT_DOWN_CYCLE_TIME)) {
+//            stateMap.put(constants.CYCLE_LIFT_DOWN, constants.STATE_COMPLETE);
+//        }
+        if( isCycleInProgress(constants.CYCLE_LIFT_UP) && inHeightTolerance(getPosition(), position) ){
             stateMap.put(constants.CYCLE_LIFT_UP, constants.STATE_COMPLETE);
-        } else if (isCycleInProgress(constants.CYCLE_LIFT_UP) && coneCycleStepTimeExpired(constants.GRABBER_CYCLE_TIME + constants.LIFT_DOWN_CYCLE_TIME + constants.LIFT_UP_CYCLE_TIME)) {
-            stateMap.put(constants.CYCLE_LIFT_UP, constants.STATE_COMPLETE);
-        } else if (isCycleInProgress(constants.CYCLE_LIFT_DOWN) && coneCycleStepTimeExpired(constants.GRABBER_CYCLE_TIME + constants.LIFT_DOWN_CYCLE_TIME)) {
-            stateMap.put(constants.CYCLE_LIFT_DOWN, constants.STATE_COMPLETE);
+        } else if(isCycleInProgress(constants.CYCLE_LIFT_UP) && !((String)(stateMap.get(LIFT_SYSTEM_NAME))).equalsIgnoreCase(LIFT_UP_MOVING_STATE)){
+            stateMap.put(LIFT_SYSTEM_NAME, LIFT_UP_MOVING_STATE);
         }
     }
 
@@ -192,6 +197,10 @@ public class Lift {
                 position = liftPositionPickup;
                 break;
             }
+            case LIFT_UP_MOVING_STATE:{
+                position = LIFT_POSITION_MOVING;
+                break;
+            }
         }
         // this function can return position 0 if lift is in transition between heights (as reported by getCurrentState() function)
 //        telemetry.addData("Lift State Position =", position);
@@ -229,6 +238,10 @@ public class Lift {
                 checkLift();
                 break;
             }
+            case LIFT_UP_MOVING_STATE:{
+                transitionToLiftPosition(LIFT_POSITION_MOVING);
+                break;
+            }
         }
 
     }
@@ -254,6 +267,8 @@ public class Lift {
             state = LIFT_POSITION_CLEAR;
         } else if (inHeightTolerance(currentPosition, liftPositionPickup + deliveryHeight(subheight))) {
             state = LIFT_PICKUP; //accounted for pickup
+        } else if(inHeightTolerance(currentPosition, LIFT_POSITION_MOVING)){
+            state = LIFT_UP_MOVING_STATE;
         }
         return state;
     }
