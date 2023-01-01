@@ -264,7 +264,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
                 pickupHeading = -90;
                 pickupTangent = 90;
 
-                robot.turret.turret_PICKUP_POSITION_VALUE   = 256;
+                robot.turret.turret_PICKUP_POSITION_VALUE   = 245;
                 robot.turret.turret_DEPOSIT_POSITION_VALUE  = -107; //-165
 
                 cornerDeltaX = 0;
@@ -332,13 +332,13 @@ public class Auto_1plus5atLow extends LinearOpMode {
                 pickupHeading = 90;
                 pickupTangent = -90;
 
-                robot.turret.turret_PICKUP_POSITION_VALUE   = -240;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 95;
+                robot.turret.turret_PICKUP_POSITION_VALUE   = -225;
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 115;
 
-                cornerDeltaX = 0;
+                cornerDeltaX = 4;
                 cornerDeltaY = 0;
 
-                pickupDeltaX = -1;
+                pickupDeltaX = -0.8;
                 pickupDeltaY = -1;
             }
         }
@@ -358,7 +358,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 36, XFORM_Y * 63.75, Math.toRadians(startingHeading));
         cornerPose      = new Pose2d(XFORM_X * (60 + cornerDeltaX), XFORM_Y * (52 + cornerDeltaY), Math.toRadians(cornerHeading));
-        pickupPose      = new Pose2d(XFORM_X * (56.25 + pickupDeltaX), XFORM_Y * (13.75 + pickupDeltaY), Math.toRadians(pickupHeading));
+        pickupPose      = new Pose2d(XFORM_X * (56.26 + pickupDeltaX), XFORM_Y * (13.75 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
@@ -625,6 +625,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
 
                 // Continue executing trajectory following
                 robot.drive.update();
+//                robot.turret.setTurretPower();
 
                 // Execute systems based on stateMap
 //                robot.updateSystems();

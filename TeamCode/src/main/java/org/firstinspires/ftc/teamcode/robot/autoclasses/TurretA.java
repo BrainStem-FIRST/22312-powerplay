@@ -24,8 +24,7 @@ public class TurretA {
     public final String     PICKUP_POSITION = "PICKUP_STATE";
     public final String     DEPOSIT_POSITION = "DEPOSIT_STATE";
 
-
-
+    private PIDController turretPIDController;
 
     // Turret position values when the initial position is on the CENTER
     public final int        LEFT_POSITION_VALUE = -256; // 8 -> 0 - (264-8)
@@ -51,7 +50,11 @@ public class TurretA {
         turretMotor = (DcMotorEx) hwMap.get("TurretMotor");
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //      liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); //RUN_USING_ENCODER);
+        turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        turretPIDController = new PIDController(3, 0, 0);
+        turretPIDController.setInputBounds(-256, 256);
+        turretPIDController.setOutputBounds(0, 1);
     }
 
     public void setState(String desiredState, LiftA lift){
@@ -96,10 +99,27 @@ public class TurretA {
 
     public void moveTo (int positionInTicks) {
         // move to desired tick position
+//        currentTargetPosition = positionInTicks;
+        int error = Math.abs(getPosition() - positionInTicks);
         turretMotor.setTargetPosition(positionInTicks);
         turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turretMotor.setPower(0.6);  // 0.85
+        turretMotor.setPower(turretPIDController.updateWithError(error));
+//        turretMotor.setPower(0.6);  // 0.85
     }
+
+//    public int currentTargetPosition = 0;
+//
+//    public void setTurretPower() {
+//        int error = Math.abs(getPosition() - currentTargetPosition);
+//        if (error < 3)
+//            turretMotor.setPower(0);
+//        else
+//            turretMotor.setPower(turretPIDController.updateWithError(error));
+//
+//        telemetry.addData("Turret Error=", error);
+//        telemetry.addData("Turret Power=", turretMotor.getPower());
+//
+//    }
 
     public String getCurrentState() {
         String state = TRANSITION_STATE;
