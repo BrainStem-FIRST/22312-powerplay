@@ -55,6 +55,8 @@ public class RobotTeleOp extends LinearOpMode {
 
     Constants constants = new Constants();
 
+    private ElapsedTime grabberCycleTime = new ElapsedTime();
+    private boolean grabberCycleInProgress = false;
 
 
     Map<String, Boolean> toggleMap = new HashMap<String, Boolean>() {{
@@ -107,7 +109,7 @@ public class RobotTeleOp extends LinearOpMode {
           robot.turret.resetEncoders();
       } else {
         setButtons();
-//        telemetry.addData("State Map", stateMap);
+        telemetry.addData("State Map", stateMap);
         if (toggleMap.get(GAMEPAD_1_B_STATE)) {
             stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
         } else {
@@ -172,8 +174,18 @@ public class RobotTeleOp extends LinearOpMode {
                   robot.lift.setAdjustmentHeight(0);
               }
           } else if(gamepad1.right_trigger > 0.5){
-            stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS);
-            stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_STATE);
+              grabberCycleTime.reset();
+              stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_STATE);
+              grabberCycleInProgress = true;
+          }
+
+
+          if(grabberCycleInProgress){
+              if(grabberCycleTime.milliseconds() > 300){
+                  stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_MEDIUM);
+                  telemetry.addData("Robot Lift", stateMap.get(robot.lift.LIFT_SYSTEM_NAME));
+                  grabberCycleInProgress = false;
+              }
           }
 //        if(gamepad1.left_trigger > 0.2){
 //            stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_CHECK_STATE);
@@ -247,7 +259,10 @@ public class RobotTeleOp extends LinearOpMode {
         drive.update();
 
         robot.updateSystems();
-//        telemetry.addData("State Map", stateMap);
+        telemetry.addData("Started Grabber Action", robot.startGrabberAction());
+        telemetry.addData("Started Lift Up action", robot.startLiftUp());
+        telemetry.addData("Cycle Lift up", stateMap.get(constants.CYCLE_LIFT_UP));
+        telemetry.addData("Lift selected", stateMap.get(robot.lift.LIFT_SYSTEM_NAME));
         telemetry.update();
         }
       }

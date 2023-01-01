@@ -40,6 +40,7 @@ public class BrainStemRobot {
     public Grabber grabber;
     private Map stateMap;
     Constants constants = new Constants();
+    private ElapsedTime coneCycleTimer = new ElapsedTime();
 
     public BrainStemRobot(HardwareMap hwMap, Telemetry telemetry, Map stateMap) {
         this.telemetry = telemetry;
@@ -117,14 +118,13 @@ public class BrainStemRobot {
 
 
     public void ConeCycleVersion2() {
-        if (stateMap.get(constants.CONE_CYCLE_START_TIME) == null) {
-            stateMap.put(constants.CONE_CYCLE_START_TIME, System.currentTimeMillis());
-        }
-
+        coneCycleTimer.reset();
         if (startGrabberAction()) {
             stateMap.put(constants.CYCLE_GRABBER, constants.STATE_IN_PROGRESS);
         } else if (startLiftUp()) {
+            telemetry.addData("Cycle Lift up", stateMap.get(constants.CYCLE_LIFT_UP));
             stateMap.put(constants.CYCLE_LIFT_UP, constants.STATE_IN_PROGRESS);
+            telemetry.addData("Cycle Lift up", stateMap.get(constants.CYCLE_LIFT_UP));
         } else if (isConeCycleComplete()) {
             resetConeCycle();
         }
@@ -137,25 +137,27 @@ public class BrainStemRobot {
         stateMap.put(constants.CYCLE_GRABBER, constants.STATE_NOT_STARTED);
         stateMap.put(constants.CYCLE_LIFT_UP, constants.STATE_NOT_STARTED);
         stateMap.put(constants.CONE_CYCLE, constants.STATE_NOT_STARTED);
-        stateMap.put(constants.CONE_CYCLE_START_TIME, null);
+        coneCycleTimer.reset();
     }
-    private void setConeCycleSystems() {
+    public void setConeCycleSystems() {
         lift.setState();
         grabber.setState((String) stateMap.get(grabber.SYSTEM_NAME), lift);
         arm.setState((String) stateMap.get(arm.SYSTEM_NAME));
     }
 
-    private long coneCycleStartTime() {
+    public long coneCycleStartTime() {
         return (long) stateMap.get(constants.CONE_CYCLE_START_TIME);
     }
 
-    private boolean coneCycleStepTimeExpired(long expirationTime) {
+    public boolean coneCycleStepTimeExpired(long expirationTime) {
         return (expirationTime + coneCycleStartTime()) < System.currentTimeMillis();
     }
 
-    private boolean startLiftUp() {
-        return ((String) stateMap.get(constants.CYCLE_GRABBER)).equalsIgnoreCase(constants.STATE_COMPLETE) &&
-                ((String) stateMap.get(constants.CYCLE_LIFT_UP)).equalsIgnoreCase(constants.STATE_NOT_STARTED);
+    public boolean startLiftUp() {
+        if(stateMap.get(constants.CYCLE_GRABBER).equals(constants.STATE_COMPLETE) && stateMap.get(constants.CYCLE_LIFT_UP).equals(constants.STATE_NOT_STARTED)){
+            return true;
+        }
+        return false;
     }
 
     private boolean startLiftDown() {
@@ -164,12 +166,14 @@ public class BrainStemRobot {
                 ((String)(stateMap.get(constants.CYCLE_LIFT_DOWN))).equalsIgnoreCase(constants.STATE_NOT_STARTED));
     }
 
-    private boolean startGrabberAction() {
-        return ((String) stateMap.get(constants.CONE_CYCLE)).equalsIgnoreCase(constants.STATE_IN_PROGRESS) &&
-                ((String) stateMap.get(constants.CYCLE_GRABBER)).equalsIgnoreCase(constants.STATE_NOT_STARTED);
+    public boolean startGrabberAction() {
+        if(stateMap.get(constants.CONE_CYCLE).equals(constants.STATE_IN_PROGRESS) && stateMap.get(constants.CONE_CYCLE).equals(constants.STATE_IN_PROGRESS)){
+            return true;
+        }
+        return false;
     }
 
-    private boolean isConeCycleComplete() {
+    public boolean isConeCycleComplete() {
         return (((String) stateMap.get(constants.CYCLE_GRABBER)).equalsIgnoreCase(constants.STATE_COMPLETE) &&
                 ((String) stateMap.get(constants.CYCLE_LIFT_UP)).equalsIgnoreCase(constants.STATE_COMPLETE));
     }

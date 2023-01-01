@@ -35,7 +35,7 @@ public class Lift {
     public final int LIFT_POSITION_LOWPOLE = 450;
     public final int LIFT_POSITION_MIDPOLE = 700;   //685;
     public final int LIFT_POSITION_HIGHPOLE = 960;
-    public final int LIFT_POSITION_MOVING = 10;
+    public final int LIFT_POSITION_MOVING = 100;
 
     // Lift pick up position is only 4 cone bases higher than the starting position,
     // which is reset to 0 ticks at the start of Auto when lift is positioned on top of a single cone
@@ -142,9 +142,9 @@ public class Lift {
 //        } else if (isCycleInProgress(constants.CYCLE_LIFT_DOWN) && coneCycleStepTimeExpired(constants.GRABBER_CYCLE_TIME + constants.LIFT_DOWN_CYCLE_TIME)) {
 //            stateMap.put(constants.CYCLE_LIFT_DOWN, constants.STATE_COMPLETE);
 //        }
-        if( isCycleInProgress(constants.CYCLE_LIFT_UP) && inHeightTolerance(getPosition(), position) ){
+        if(isCycleInProgress(constants.CYCLE_LIFT_UP) && inHeightTolerance(getPosition(), position) ){
             stateMap.put(constants.CYCLE_LIFT_UP, constants.STATE_COMPLETE);
-        } else if(isCycleInProgress(constants.CYCLE_LIFT_UP) && !((String)(stateMap.get(LIFT_SYSTEM_NAME))).equalsIgnoreCase(LIFT_UP_MOVING_STATE)){
+        } else if(isCycleInProgress(constants.CYCLE_LIFT_UP) && !stateMap.get(LIFT_SYSTEM_NAME).equals(LIFT_UP_MOVING_STATE)){
             stateMap.put(LIFT_SYSTEM_NAME, LIFT_UP_MOVING_STATE);
         }
     }
