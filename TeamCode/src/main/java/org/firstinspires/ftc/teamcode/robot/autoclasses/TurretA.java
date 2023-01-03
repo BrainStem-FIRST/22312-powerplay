@@ -52,7 +52,7 @@ public class TurretA {
 //      liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        turretPIDController = new PIDController(3, 0, 0);
+        turretPIDController = new PIDController(0.03, 0, 0);
         turretPIDController.setInputBounds(-256, 256);
         turretPIDController.setOutputBounds(0, 1);
     }
@@ -99,27 +99,28 @@ public class TurretA {
 
     public void moveTo (int positionInTicks) {
         // move to desired tick position
-//        currentTargetPosition = positionInTicks;
-        int error = Math.abs(getPosition() - positionInTicks);
+        currentTargetPosition = positionInTicks;
+//        int error = Math.abs(getPosition() - positionInTicks);
+        turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         turretMotor.setTargetPosition(positionInTicks);
         turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turretMotor.setPower(turretPIDController.updateWithError(error));
-//        turretMotor.setPower(0.85);  // 0.6
+//        turretMotor.setPower(turretPIDController.updateWithError(error));
+        turretMotor.setPower(0.85);  // 0.6
     }
 
-//    public int currentTargetPosition = 0;
-//
-//    public void setTurretPower() {
-//        int error = Math.abs(getPosition() - currentTargetPosition);
-//        if (error < 3)
-//            turretMotor.setPower(0);
-//        else
-//            turretMotor.setPower(turretPIDController.updateWithError(error));
-//
-//        telemetry.addData("Turret Error=", error);
-//        telemetry.addData("Turret Power=", turretMotor.getPower());
-//
-//    }
+    public int currentTargetPosition = 0;
+
+    public void setTurretPower() {
+        int error = Math.abs(getPosition() - currentTargetPosition);
+        if (error < 5)
+            turretMotor.setPower(0);
+        else
+            turretMotor.setPower(0.85 * turretPIDController.updateWithError(error));
+
+        telemetry.addData("Turret Error=", error);
+        telemetry.addData("Turret Power=", turretMotor.getPower());
+
+    }
 
     public String getCurrentState() {
         String state = TRANSITION_STATE;

@@ -142,7 +142,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
 
         trajectoryDeposit = robot.drive.trajectorySequenceBuilder(pickupPose)
                 // This is an empty trajectory with just timer to operate the Gulliver's Tower
-                .waitSeconds(1.8)
+                .waitSeconds(1.5)
 
                 // Cone picked up outside of the trajectory. Cone is at hand at clearing height
                 // Start moving turret first, and then lift to avoid kicking the stack
@@ -167,7 +167,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
 
         trajectoryPickup = robot.drive.trajectorySequenceBuilder(pickupPose)
                 // This is an empty trajectory for just timing the sequence of Gulliver's Tower moves
-                .waitSeconds(1.8)
+                .waitSeconds(1.5)
 
                 // Cone dropped prior to this trajectory.
                 // All that is needed to move the tower to the pickup location starting with turret first
