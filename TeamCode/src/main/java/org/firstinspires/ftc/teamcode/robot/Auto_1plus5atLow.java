@@ -113,12 +113,12 @@ public class Auto_1plus5atLow extends LinearOpMode {
 
                 .setTangent(Math.toRadians(startingTangent))
                 .splineToConstantHeading(new Vector2d(cornerPose.getX(), cornerPose.getY()), Math.toRadians(cornerTangent),
-                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 3.5),
+                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75), //3.5),
                         SampleMecanumDrive.getAccelerationConstraint(90))
 
                 //.setTangent(Math.toRadians(pickupTangent))
                 .splineToConstantHeading(new Vector2d(pickupPose.getX(), pickupPose.getY()),Math.toRadians(pickupTangent),
-                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 3.5),
+                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75), //3.5),
                         SampleMecanumDrive.getAccelerationConstraint(90))
 
                 // Timer is from start of the trajectory; it is not an offset
@@ -142,7 +142,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
 
         trajectoryDeposit = robot.drive.trajectorySequenceBuilder(pickupPose)
                 // This is an empty trajectory with just timer to operate the Gulliver's Tower
-                .waitSeconds(1.5)
+                .waitSeconds(1.8)
 
                 // Cone picked up outside of the trajectory. Cone is at hand at clearing height
                 // Start moving turret first, and then lift to avoid kicking the stack
@@ -167,7 +167,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
 
         trajectoryPickup = robot.drive.trajectorySequenceBuilder(pickupPose)
                 // This is an empty trajectory for just timing the sequence of Gulliver's Tower moves
-                .waitSeconds(1.5)
+                .waitSeconds(1.8)
 
                 // Cone dropped prior to this trajectory.
                 // All that is needed to move the tower to the pickup location starting with turret first
@@ -286,14 +286,14 @@ public class Auto_1plus5atLow extends LinearOpMode {
                 pickupHeading = -90;
                 pickupTangent = 90;
 
-                robot.turret.turret_PICKUP_POSITION_VALUE   = -180;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 165;
+                robot.turret.turret_PICKUP_POSITION_VALUE   = -245;
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 100;
 
                 cornerDeltaX = 0;
                 cornerDeltaY = 0;
 
-                pickupDeltaX = 0;
-                pickupDeltaY = 0;
+                pickupDeltaX = 1;
+                pickupDeltaY = -1;
             }
         }
         else {
@@ -310,14 +310,14 @@ public class Auto_1plus5atLow extends LinearOpMode {
                 pickupHeading = 90;
                 pickupTangent = -90;
 
-                robot.turret.turret_PICKUP_POSITION_VALUE   = 180;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -150;
+                robot.turret.turret_PICKUP_POSITION_VALUE   = 245;
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -120;
 
                 cornerDeltaX = 0;
                 cornerDeltaY = 0;
 
                 pickupDeltaX = 0;
-                pickupDeltaY = 0;
+                pickupDeltaY = 1;
             }
             else {                  // BLUE-RIGHT
                 XFORM_X = -1;
