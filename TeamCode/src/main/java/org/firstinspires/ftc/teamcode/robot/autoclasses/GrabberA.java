@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot;
+package org.firstinspires.ftc.teamcode.robot.autoclasses;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -21,8 +21,9 @@ public class GrabberA {
     public final String CLOSED_STATE = "CLOSED";
     ConstantsA constants = new ConstantsA();
 
-    public final double OPEN_VALUE = 0.27;
-    public final double CLOSED_VALUE = 0.12;
+    public final double WIDE_OPEN_VALUE = 0.0;
+    public final double OPEN_VALUE      = 0.66;     // 0.27
+    public final double CLOSED_VALUE    = 1.0;     // 0.12
 
     private Map stateMap;
 
@@ -33,7 +34,7 @@ public class GrabberA {
 
         grabber = (ServoImplEx) hwMap.servo.get("Grabber");
 
-        grabber.setPwmRange(new PwmControl.PwmRange(400,800));
+        grabber.setPwmRange(new PwmControl.PwmRange(2055,2470));
         //grabberOpen();
     }
 
@@ -72,7 +73,9 @@ public class GrabberA {
     public void grabberOpen() {
         grabber.setPosition(OPEN_VALUE);
     }
-
+    public void grabberOpenWide() {
+        grabber.setPosition(WIDE_OPEN_VALUE);
+    }
     public void grabberClose() {
         grabber.setPosition(CLOSED_VALUE);
     }

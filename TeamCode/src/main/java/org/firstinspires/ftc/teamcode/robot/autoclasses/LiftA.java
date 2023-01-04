@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot;
+package org.firstinspires.ftc.teamcode.robot.autoclasses;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -27,11 +27,11 @@ public class LiftA {
     // TODO: Pole heights might need to be recalculated because the lift starting position (encoder values reset) is now the height of single cone at hand
     public final int LIFT_POSITION_RESET = 0;
 
-    public final int LIFT_ADJUSTMENT = -70;
+    public final int LIFT_ADJUSTMENT = -75;
 
     // Empirical numbers are for holding the cone above the pole prior to coneCycle drop
     public final int LIFT_POSITION_GROUND = 125;
-    public final int LIFT_POSITION_LOWPOLE = 450;
+    public final int LIFT_POSITION_LOWPOLE = 380;   // 450
     public final int LIFT_POSITION_MIDPOLE = 700;   //685;
     public final int LIFT_POSITION_HIGHPOLE = 960;
 
@@ -264,8 +264,8 @@ public class LiftA {
         liftMotor2.setTargetPosition(heightInTicks);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        liftMotor.setPower(0.5);    //1.0
-        liftMotor2.setPower(0.5);   //1.0
+        liftMotor.setPower(1.0);    //1.0
+        liftMotor2.setPower(1.0);   //1.0
 
     }
 
@@ -310,28 +310,29 @@ public class LiftA {
     public void updateLiftPickupPosition() {
         switch (numCyclesCompleted){
             case 0: {
-                liftPositionPickup = 185-LIFT_ADJUSTMENT; //170
+                liftPositionPickup = 235; //-LIFT_ADJUSTMENT; //175
                 break;
             }
             case 1: {
-                liftPositionPickup = 140-LIFT_ADJUSTMENT; //130
+                liftPositionPickup = 195; //LIFT_ADJUSTMENT; //135
                 break;
             }
             case 2: {
-                liftPositionPickup = 110-LIFT_ADJUSTMENT; //100
+                liftPositionPickup = 160; //LIFT_ADJUSTMENT; //100
                 break;
             }
             case 3: {
-                liftPositionPickup = 70-LIFT_ADJUSTMENT;
+                liftPositionPickup = 120; //LIFT_ADJUSTMENT; //60
                 break;
             }
             case 4: {
-                liftPositionPickup = 40-LIFT_ADJUSTMENT;
+                liftPositionPickup = 100; //LIFT_ADJUSTMENT; //40
                 break;
             }
-            case 5: {
+            default: {
                 // No cones left, congratulations.
-                liftPositionPickup = 40-LIFT_ADJUSTMENT;
+                //41 so it's not case 4 and doesn't have yellow line (to look clean)
+                liftPositionPickup = 41-LIFT_ADJUSTMENT;
                 break;
             }
         }
@@ -341,13 +342,17 @@ public class LiftA {
         liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
-    public void checkCone(int encoderTicks){
-        liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        liftMotor.setTargetPosition(getPosition() + encoderTicks);
-        liftMotor2.setTargetPosition(getPosition() + encoderTicks);
-        liftMotor.setPower(0.5);
-        liftMotor2.setPower(0.5);
 
+    public void goToLowPoleHeight() {
+        raiseHeightTo(LIFT_POSITION_LOWPOLE);
+    }
+
+    public void goToPickupHeight() {
+        // For pickups from stack, negate the approach height adjustment
+        raiseHeightTo(liftPositionPickup + LIFT_ADJUSTMENT);
+    }
+
+    public void goToClear() {
+        raiseHeightTo(LIFT_CLEAR_HEIGHT);
     }
 }

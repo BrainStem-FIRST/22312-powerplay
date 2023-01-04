@@ -1,9 +1,10 @@
-package org.firstinspires.ftc.teamcode.robot;
+package org.firstinspires.ftc.teamcode.robot.autoclasses;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import static java.lang.Thread.sleep;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -50,15 +51,6 @@ public class BrainStemRobotA {
 
         telemetry.addData("Robot", " Is Ready");
         telemetry.update();
-    }
-
-    // Not used -> DELETE
-    public void initializeRobotPosition(){
-        lift.initializePosition();
-        lift.moveToMinHeight();  // Raise lift to clear side panels. This does not clear the arm holding cone.
-        // Extend the arm so it clears corner of the robot when swinging
-        turret.initializePosition();
-        lift.raiseHeightTo(0);
     }
 
     public void updateSystems() {
@@ -145,6 +137,26 @@ public class BrainStemRobotA {
         return (((String) stateMap.get(constants.CYCLE_LIFT_DOWN)).equalsIgnoreCase(constants.STATE_COMPLETE) &&
                 ((String) stateMap.get(constants.CYCLE_GRABBER)).equalsIgnoreCase(constants.STATE_COMPLETE) &&
                 ((String) stateMap.get(constants.CYCLE_LIFT_UP)).equalsIgnoreCase(constants.STATE_COMPLETE));
+    }
+
+    public void dropCone() throws InterruptedException {
+        lift.raiseHeightTo(lift.getPosition() - 75);
+        sleep(100);
+        grabber.grabberOpenWide();
+//        lift.raiseHeightTo(lift.getPosition() + 75);
+
+        // move away from the pole so the grabber does not hit the pole when swinging back
+        // clip the retract position at the swing clearance position so it doesn't hit the motors when swinging back
+        // Arm extends with the lower numbers, retracts with higher numbers
+        arm.extendTo(Range.clip(arm.getExtensionPosition() + 0.05, arm.EXTENSION_POSITION_SWING_CLEARANCE, 0));
+    }
+
+    public void pickupCone() throws InterruptedException {
+        grabber.grabberClose();
+        sleep(220);
+//        lift.goToClear();
+        lift.raiseHeightTo(lift.getPosition() + 100);
+        sleep(200);
     }
 }
 

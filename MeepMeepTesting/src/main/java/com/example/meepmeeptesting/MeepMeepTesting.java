@@ -15,79 +15,65 @@ public class MeepMeepTesting {
 
         // Bring in components from Auto class
         // Determine waypoints based on Alliance and Orientation
-        double  XFORM_X=-1, XFORM_Y=-1;
-        double  pickupDeltaX=0, pickupDeltaY=0,
-                depositDeltaX=0, depositDeltaY=0,
-                preloadDeltaX=0, preloadDeltaY=0,
-                cornerDeltaX=0, cornerDeltaY=0;
-        double  startingHeading=90, deliveryHeading=180, pickupHeading=180;
+        //------------------------------------------------------
+        //            Variable used for trajectories
+        //------------------------------------------------------
 
-        Pose2d startingPose, pickupPose, depositPose, parkingPose;
+        Pose2d startingPose, pickupPose, parkingPose;
         Pose2d cornerPose;
 
-//        startingPose    = new Pose2d(XFORM_X * 35.5, XFORM_Y * 63.75, Math.toRadians(startingHeading));
-//        cornerPose      = new Pose2d(XFORM_X * (56 + cornerDeltaX), XFORM_Y * (59 + pickupDeltaY), Math.toRadians(0));
-//        pickupPose      = new Pose2d(XFORM_X * (55.75 + pickupDeltaX), XFORM_Y * (12 + pickupDeltaY), Math.toRadians(240));
+        // Determine waypoints based on Alliance and Orientation
+        double  XFORM_X, XFORM_Y;
+        double  pickupDeltaX, pickupDeltaY,
+                cornerDeltaX, cornerDeltaY;
+        double  startingHeading, startingTangent,
+                pickupHeading, pickupTangent,
+                cornerHeading, cornerTangent;
 
-        startingPose    = new Pose2d(XFORM_X * 35.5, XFORM_Y * 63.75, Math.toRadians(startingHeading));
-        cornerPose      = new Pose2d(XFORM_X * (60 + cornerDeltaX), XFORM_Y * (55 + pickupDeltaY), Math.toRadians(-90));
-        pickupPose      = new Pose2d(XFORM_X * (56.75 + pickupDeltaX), XFORM_Y * (12 + pickupDeltaY), Math.toRadians(240));
-//        depositPose     = new Pose2d(XFORM_X * (24 + depositDeltaX), XFORM_Y * (10 + depositDeltaY), Math.toRadians(deliveryHeading));
+        // Orientation Adjustments
+        XFORM_X = -1;
+        XFORM_Y = -1;
+
+        startingHeading = -90;
+        startingTangent = 135;
+
+        cornerHeading = -90;
+        cornerTangent = 90;
+
+        pickupHeading = -90;
+        pickupTangent = 90;
+
+        cornerDeltaX = 0;
+        cornerDeltaY = 0;
+
+        pickupDeltaX = 0; // previously 0
+        pickupDeltaY = 0;  // previously 0
+
+
+        // Poses
+        startingPose    = new Pose2d(XFORM_X * 36, XFORM_Y * 63.75, Math.toRadians(startingHeading));
+        cornerPose      = new Pose2d(XFORM_X * (60 + cornerDeltaX), XFORM_Y * (52 + cornerDeltaY), Math.toRadians(cornerHeading));
+        pickupPose      = new Pose2d(XFORM_X * (56.26 + pickupDeltaX), XFORM_Y * (13.75 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(28, 30, Math.toRadians(180), Math.toRadians(60), 3.5)
+                .setConstraints(60, 30, Math.toRadians(180), Math.toRadians(60), 3.5)
                 .setDimensions(12.25,14.25)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder((startingPose))
 
-                                .setTangent(Math.toRadians(120))
-                                .splineToLinearHeading(cornerPose,Math.toRadians(90),
-                                        SampleMecanumDrive.getVelocityConstraint(60, Math.toRadians(180), 3.5),
-                                        SampleMecanumDrive.getAccelerationConstraint(30))
-                                .setTangent(Math.toRadians(90))
-                                .lineToLinearHeading(pickupPose) //,Math.toRadians(60))
+                                ///////////// Best Time: 3.34 sec ///////////////
+                                .setTangent(Math.toRadians(startingTangent))
+                                .splineToConstantHeading(new Vector2d(cornerPose.getX(), cornerPose.getY()), Math.toRadians(cornerTangent),
+                                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75), //3.5),
+                                        SampleMecanumDrive.getAccelerationConstraint(90))
 
-
-
-
-
-
-                                //moves forward in a line facing 90 degrees away (positioned in between two poles)
-//                                .lineToLinearHeading(new Pose2d(cornerPose.getX()+(XFORM_X*cornerDeltaX), cornerPose.getY()+(XFORM_Y*(cornerDeltaY)), 180))
-//                                        .lineToLinearHeading(new Pose2d(startingPose.getX()+(XFORM_X*preloadDeltaX), XFORM_Y * (19+preloadDeltaY), pickupPose.getHeading()),
-//                                        SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
-//                                        SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL))
-
-//                                .addTemporalMarker(0.3, () -> {    // Start positioning scaffolding
-//                                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_LOW);
-//                                    robot.lift.raiseHeightTo(robot.lift.LIFT_POSITION_LOWPOLE);
-//                                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
-//                                    robot.turret.moveTo(-200); //TODO: Add states for auto pickup and delivery
-//                                })
-
-//                                .lineToLinearHeading(new Pose2d(pickupPose.getX() + XFORM_X * 2, pickupPose.getY() + XFORM_Y * 2, pickupPose.getHeading()))
-//                                        SampleMecanumDrive.getVelocityConstraint(SPEED, MAX_ANG_VEL, TRACK_WIDTH),
-//                                        SampleMecanumDrive.getAccelerationConstraint(MAX_ACCEL)) //TODO: FIX PICKUP POSE
-
-                                // stop swinging
-//                                .waitSeconds(.1)
-
-//                                 Drop off the cone at hand on the Low pole on the left
-//                                .addTemporalMarker(() -> {
-//                                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.PLACEMENT_HEIGHT);
-//                                    robot.grabber.grabberOpen();
-//                                    stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.APPROACH_HEIGHT);
-//                                })
-//
-//
-//                                .UNSTABLE_addTemporalMarkerOffset(1, () -> {
-//                                    stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
-//                                    robot.lift.raiseHeightTo(robot.lift.liftPositionPickup);
-//                                    robot.turret.moveTo(200); //TODO: Add states for auto pickup and delivery
-//                                })
+//                                .setTangent(Math.toRadians(pickupTangent))
+                                .splineToConstantHeading(new Vector2d(pickupPose.getX(), pickupPose.getY()),Math.toRadians(pickupTangent),
+                                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75), //3.5),
+                                        SampleMecanumDrive.getAccelerationConstraint(90))
 
                                 .build()
                 );

@@ -20,8 +20,9 @@ public class DriveConstants {
     /*
      * These are motor constants that should be listed online for your motors.
      */
-    public static final double TICKS_PER_REV = 8192;
-    public static final double MAX_RPM = 1;
+    public static final double TICKS_PER_REV = 28;      // per REV-41-1291 specs. Previously was 8192;
+    public static final double MAX_RPM = 6000;          // rpm of the bare motor. Apply Gear_Ratio of ~10.5 for 4:1 + 3:1.  The MAX_RPM value was originally 1;
+                                                        // The above values makes theorethical max speed 70.
 
     /*
      * Set RUN_USING_ENCODER to true to enable built-in hub velocity control using drive encoders.
@@ -44,8 +45,9 @@ public class DriveConstants {
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
     public static double WHEEL_RADIUS = 1.1811; // in
-    public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 3.5; // in
+    public static double GEAR_RATIO = 1.0 / (3.61 * 2.89); // output (wheel) speed / input (motor) speed
+                                                     // =10.4329 for 4:1 + 3:1.  Previously was 1 (but the gear ratio had been applied to MAX_RPM).
+    public static double TRACK_WIDTH = 9.75;         // previously was 3.5 in
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -53,8 +55,8 @@ public class DriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = 0.01325;
-    public static double kA = 0.0027;
+    public static double kV = 0.01375;
+    public static double kA = 0.0028;
     public static double kStatic = 0;
 
     /*
@@ -64,12 +66,12 @@ public class DriveConstants {
      * small and gradually increase them later after everything is working. All distance units are
      * inches.
      */
-    public static double MAX_VEL = 28;      // TODO: Why is this so low?
+    public static double MAX_VEL = 30;      // TODO: Why is this so low?
     public static double HI_MAX_VEL = 60;
     public static double MAX_ACCEL = 30;
     public static double HI_MAX_ACCEL = 30;
     public static double MAX_ANG_VEL = Math.toRadians(180);
-    public static double MAX_ANG_ACCEL = Math.toRadians(60);    // TODO: Default value was supposed to be 180 deg/sec2. This value affects turning speed
+    public static double MAX_ANG_ACCEL = Math.toRadians(180);    // Default value per documentation. Previously was 60
 
 
     public static double encoderTicksToInches(double ticks) {

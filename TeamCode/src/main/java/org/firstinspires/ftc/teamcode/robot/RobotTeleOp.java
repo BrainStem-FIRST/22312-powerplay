@@ -10,9 +10,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
-
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.robot.autoclasses.BrainStemRobotA;
+import org.firstinspires.ftc.teamcode.robot.autoclasses.ConstantsA;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +48,7 @@ public class RobotTeleOp extends LinearOpMode {
     private boolean leftTriggerPressed = false;
     private final double SLOWMODE  = 0.45;
 
-    Constants constants = new Constants();
+    ConstantsA constants = new ConstantsA();
 
 
 
@@ -72,7 +73,7 @@ public class RobotTeleOp extends LinearOpMode {
     public void runOpMode() {
 
         Map<String, String> stateMap = new HashMap<String, String>() {{ }};
-        BrainStemRobot robot = new BrainStemRobot(hardwareMap, telemetry, stateMap);
+        BrainStemRobotA robot = new BrainStemRobotA(hardwareMap, telemetry, stateMap);
 //        robot.initializeRobotPosition();
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -134,9 +135,9 @@ public class RobotTeleOp extends LinearOpMode {
         }
 
         if(gamepad2.dpad_right){
-            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.RIGHT_POSITION);
+            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.PICKUP_POSITION);
         } else if(gamepad2.dpad_left){
-            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.LEFT_POSITION);
+            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.DEPOSIT_POSITION);
         }else if(gamepad2.dpad_up){
             stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
         }
@@ -208,7 +209,9 @@ public class RobotTeleOp extends LinearOpMode {
 
         robot.updateSystems();
 //        telemetry.addData("State Map", stateMap);
-        telemetry.update();
+          telemetry.addData("Turret Position=", robot.turret.getPosition());
+          telemetry.addData("Turret Power=", robot.turret.turretMotor.getPower());
+          telemetry.update();
         }
       }
     }

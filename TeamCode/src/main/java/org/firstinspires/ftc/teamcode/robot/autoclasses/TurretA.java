@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot;
+package org.firstinspires.ftc.teamcode.robot.autoclasses;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -24,8 +24,7 @@ public class TurretA {
     public final String     PICKUP_POSITION = "PICKUP_STATE";
     public final String     DEPOSIT_POSITION = "DEPOSIT_STATE";
 
-
-
+    private PIDController turretPIDController;
 
     // Turret position values when the initial position is on the CENTER
     public final int        LEFT_POSITION_VALUE = -256; // 8 -> 0 - (264-8)
@@ -33,8 +32,8 @@ public class TurretA {
     public final int        RIGHT_POSITION_VALUE = 256; // 500 -> 0 + (500-264)
 
     // Needed for Autonomous
-    public int              turret_PICKUP_POSITION_VALUE = 180;  // 150
-    public int              turret_DEPOSIT_POSITION_VALUE = -170;  // 150
+    public int              turret_PICKUP_POSITION_VALUE = 245;  // These initial values are overwritten by Auto
+    public int              turret_DEPOSIT_POSITION_VALUE = -107;
 
     public final int        ANGLE_TOLERANCE = 5;
     public final int        LIFT_MIN_HEIGHT_TO_MOVE_TURRET = 60;
@@ -42,16 +41,18 @@ public class TurretA {
     public Telemetry telemetry;
     public DcMotorEx turretMotor;
 
-    public ExtensionA extension;
     public TurretA(HardwareMap hwMap, Telemetry telemetry) {
         this.telemetry = telemetry;
         //getting turret motor from the hardware map
-        
-
         turretMotor = (DcMotorEx) hwMap.get("TurretMotor");
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //      liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // PID controller setup
+//        turretPIDController = new PIDController(0.03, 0, 0);
+//        turretPIDController.setInputBounds(-256, 256);
+//        turretPIDController.setOutputBounds(0, 1);
     }
 
     public void setState(String desiredState, LiftA lift){
@@ -60,6 +61,8 @@ public class TurretA {
             turretMotor.setPower(0);
         }
         else{
+//            telemetry.addData("Desired:", desiredState);
+//            telemetry.addData("Current", currentState);
             selectTransition(desiredState, currentState);
         }
     }
@@ -72,18 +75,23 @@ public class TurretA {
     private void selectTransition(String desiredLevel, String currentState){
         switch(desiredLevel){
             case LEFT_POSITION: {
+                telemetry.addData("Left at: ", LEFT_POSITION_VALUE);
                 transitionToPosition(LEFT_POSITION_VALUE);
                 break;
             } case CENTER_POSITION:{
+                telemetry.addData("Center at: ", CENTER_POSITION_VALUE);
                 transitionToPosition(CENTER_POSITION_VALUE);
                 break;
             } case RIGHT_POSITION:{
+                telemetry.addData("Right at: ", RIGHT_POSITION_VALUE);
                 transitionToPosition(RIGHT_POSITION_VALUE);
                 break;
             } case PICKUP_POSITION:{
+                telemetry.addData("Pickup at: ", turret_PICKUP_POSITION_VALUE);
                 transitionToPosition(turret_PICKUP_POSITION_VALUE);
                 break;
             } case DEPOSIT_POSITION:{
+                telemetry.addData("Deposit at: ", turret_DEPOSIT_POSITION_VALUE);
                 transitionToPosition(turret_DEPOSIT_POSITION_VALUE);
                 break;
             }
@@ -96,9 +104,25 @@ public class TurretA {
 
     public void moveTo (int positionInTicks) {
         // move to desired tick position
+//        currentTargetPosition = positionInTicks;
         turretMotor.setTargetPosition(positionInTicks);
         turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turretMotor.setPower(0.2);
+
+        turretMotor.setPower(0.75);  // 0.6
+    }
+
+    public int currentTargetPosition = 0;
+
+    public void setTurretPower() {
+        int error = Math.abs(getPosition() - currentTargetPosition);
+        if (error < 5)
+            turretMotor.setPower(0);
+        else
+            turretMotor.setPower(0.85 * turretPIDController.updateWithError(error));
+
+        telemetry.addData("Turret Error=", error);
+        telemetry.addData("Turret Power=", turretMotor.getPower());
+
     }
 
     public String getCurrentState() {
@@ -137,5 +161,13 @@ public class TurretA {
 
     public void resetEncoders() {
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+    public void goToDepositPosition() {
+        transitionToPosition(turret_DEPOSIT_POSITION_VALUE);
+    }
+
+    public void goToPickupPosition() {
+        transitionToPosition(turret_PICKUP_POSITION_VALUE);
     }
 }

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot;
+package org.firstinspires.ftc.teamcode.robot.autoclasses;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -19,11 +19,19 @@ public class ExtensionA {
 
     static final double MM_TO_INCHES = 0.0393700787;
     static final double MINIMUM_CLEARANCE_DISTANCE = 95.875 * MM_TO_INCHES;
+    static final double MAXIMUM_REACH = 11; // inches of extension from position 0 to 1.0
 
     // Servo Positions
-    public final double EXTENSION_POSITION_HOME = 0;    // Fully retracted
-    public final double EXTENSION_POSITION_MAX  = 0.6;  // Fully extended
-    public final double EXTENSION_POSITION_LEFT = 0.4;  // Extended to left position
+    public final double EXTENSION_POSITION_HOME     = 1.0;   // Fully retracted
+    public final double EXTENSION_POSITION_MAX      = 0;     // Fully extended
+
+    public final double EXTENSION_POSITION_LEFT     = 0.5;   // Extend to the pole on the left from center of isle
+    public final double EXTENSION_POSITION_RIGHT    = 0.61;  // Extend to the pole on the right from center of isle
+
+    public final double EXTENSION_POSITION_PICKUP   = 0.65;   // Extend to the stack of cones from pickup position
+    public final double EXTENSION_POSITION_DEPOSIT  = 0.5;  // Extend to the low pole from pickup position
+
+    public final double EXTENSION_POSITION_SWING_CLEARANCE = 1.0 - (MINIMUM_CLEARANCE_DISTANCE / MAXIMUM_REACH); // 0.63
 
 
     public final double TWOBAR_POSITION_HOME    = 0;    // vertical position
@@ -46,14 +54,14 @@ public class ExtensionA {
         this.telemetry = telemetry;
         this.stateMap = stateMap;
         extension = (ServoImplEx) hwMap.servo.get("Extension");
-        twoBar = (ServoImplEx) hwMap.servo.get("Two Bar");
+//        twoBar = (ServoImplEx) hwMap.servo.get("Two Bar");
 
         // Scale the operating range of Servos and set initial position
-        extension.setPwmRange(new PwmControl.PwmRange(1150,2522)); //low cap was 1250 and it was not retracting all the way
+        extension.setPwmRange(new PwmControl.PwmRange(400,644)); //low cap was 1250 and it was not retracting all the way
         extendHome();
 
-        twoBar.setPwmRange(new PwmControl.PwmRange(1745,2400));
-        tiltDown();
+//        twoBar.setPwmRange(new PwmControl.PwmRange(1745,2400));
+//        tiltDown();
 
     }
 
@@ -71,12 +79,12 @@ public class ExtensionA {
 
     }
 
-    // Move the extension's position to the specified distance in inches
+    // Move the extension to the specified position
     // Predefined values can be passed by using class constants (to be defined later)
     // To go as far as it can, pass extension.EXTENSION_MAX_REACH as distance.
     // To go back home, pass 0 as distance.
     public void extendTo(double position) {
-        extension.setPosition (position);
+        extension.setPosition(position);
     }
 
 /**************************************************************************************
@@ -115,13 +123,8 @@ public class ExtensionA {
         extension.setPosition(EXTENSION_POSITION_LEFT);
     }
 
-
-
     public void setState(String desiredState){
-        String currentState = getCurrentState();
-        if(!desiredState.equalsIgnoreCase(currentState)){
-            selectTransition(desiredState);
-        }
+        selectTransition(desiredState);
     }
 
     public String getCurrentState() {
