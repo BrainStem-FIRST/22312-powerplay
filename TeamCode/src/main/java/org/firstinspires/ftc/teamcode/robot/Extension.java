@@ -21,8 +21,8 @@ public class Extension {
     static final double MINIMUM_CLEARANCE_DISTANCE = 95.875 * MM_TO_INCHES;
 
     // Servo Positions
-    public final double EXTENSION_POSITION_HOME = 0;    // Fully retracted
-    public final double EXTENSION_POSITION_MAX  = 0.6;  // Fully extended
+    public final double EXTENSION_POSITION_MAX = 0;    // Fully retracted
+    public final double EXTENSION_POSITION_HOME = 1;  // Fully extended
     public final double EXTENSION_POSITION_LEFT = 0.4;  // Extended to left position
 
 
@@ -34,7 +34,9 @@ public class Extension {
     public final String DEFAULT_VALUE = "RETRACTED";
     public final String FULL_EXTEND = "EXTENDED_R";
     public final String EXTEND_LEFT = "EXTENDED_L";
+    public final String FINE_ADJUSTMENTS = "FINE_ADJUSTMENTS";
     public final String TRANSITION_STATE = "TRANSITION";
+    public int adjustmentPosition = 0;
 
     private Map stateMap;
 
@@ -49,7 +51,7 @@ public class Extension {
         twoBar = (ServoImplEx) hwMap.servo.get("Two Bar");
 
         // Scale the operating range of Servos and set initial position
-        extension.setPwmRange(new PwmControl.PwmRange(1150,2522)); //low cap was 1250 and it was not retracting all the way
+        extension.setPwmRange(new PwmControl.PwmRange(565,640)); //low cap was 1250 and it was not retracting all the way
         extendHome();
 
         twoBar.setPwmRange(new PwmControl.PwmRange(1745,2400));
@@ -112,16 +114,15 @@ public class Extension {
 
     // Extends arm to left position
     public void extendLeft() {
-        extension.setPosition(EXTENSION_POSITION_LEFT);
+        extension.setPosition(EXTENSION_POSITION_LEFT );
     }
 
-
+    public void setAdjustmentPosition(){
+        adjustmentPosition += 0.025;
+    }
 
     public void setState(String desiredState){
-        String currentState = getCurrentState();
-        if(!desiredState.equalsIgnoreCase(currentState)){
-            selectTransition(desiredState);
-        }
+        selectTransition(desiredState);
     }
 
     public String getCurrentState() {
@@ -152,6 +153,10 @@ public class Extension {
                 extendLeft();
                 break;
             }
+//            case FINE_ADJUSTMENTS:{
+//                fineAdjustments();
+//                break;
+//            }
         }
     }
 
@@ -174,7 +179,10 @@ public class Extension {
     }
 
     public boolean isExtensionOut(){
-        return extensionGetPosition() > 0;
+        return extensionGetPosition() > EXTENSION_POSITION_HOME;
     }
+//    public void fineAdjustments(){
+//        extension.setPosition(adjustmentPosition);
+//    }
 
 }

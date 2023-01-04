@@ -10,13 +10,15 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.robot.autoclasses.BrainStemRobotA;
-import org.firstinspires.ftc.teamcode.robot.autoclasses.ConstantsA;
 
 import java.util.HashMap;
 import java.util.Map;
+
 
 @TeleOp(name="Robot: 22312Tele", group="Robot")
 public class RobotTeleOp extends LinearOpMode {
@@ -37,6 +39,8 @@ public class RobotTeleOp extends LinearOpMode {
     private final String GAMEPAD_1_LEFT_BUTTON_STATE = "GAMEPAD_1_LEFT_BUTTON_STATE";
     private final String GAMEPAD_1_LEFT_BUTTON_PRESSED = "GAMEPAD_1_LEFT_BUTTON_PRESSED";
 
+    private ElapsedTime elapsedTime = new ElapsedTime();
+
 
     private double extensionPosition = 0.01;
 
@@ -46,10 +50,13 @@ public class RobotTeleOp extends LinearOpMode {
     private final int checkTicks = 10;
 
     private boolean leftTriggerPressed = false;
+    private boolean retractionInProgress = false;
     private final double SLOWMODE  = 0.45;
 
-    ConstantsA constants = new ConstantsA();
+    Constants constants = new Constants();
 
+    private ElapsedTime grabberCycleTime = new ElapsedTime();
+    private boolean grabberCycleInProgress = false;
 
 
     Map<String, Boolean> toggleMap = new HashMap<String, Boolean>() {{
@@ -73,7 +80,7 @@ public class RobotTeleOp extends LinearOpMode {
     public void runOpMode() {
 
         Map<String, String> stateMap = new HashMap<String, String>() {{ }};
-        BrainStemRobotA robot = new BrainStemRobotA(hardwareMap, telemetry, stateMap);
+        BrainStemRobot robot = new BrainStemRobot(hardwareMap, telemetry, stateMap);
 //        robot.initializeRobotPosition();
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -96,13 +103,13 @@ public class RobotTeleOp extends LinearOpMode {
           robot.lift.setMotor(1.0);
       } else if(gamepad2.left_bumper) {
           robot.lift.resetEncoders();
-          robot.resetConeCycle();
       } else if(gamepad2.left_trigger > 0.1) {
           robot.lift.setMotor(-1.0);
       } else if(gamepad2.x){
           robot.turret.resetEncoders();
       } else {
         setButtons();
+        telemetry.addData("State Map", stateMap);
         if (toggleMap.get(GAMEPAD_1_B_STATE)) {
             stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
         } else {
@@ -124,26 +131,70 @@ public class RobotTeleOp extends LinearOpMode {
             stateMap.put(constants.DRIVER_2_SELECTED_LIFT, robot.lift.LIFT_POLE_HIGH);
         }
         if(gamepad1.right_bumper){
-            robot.grabber.grabberOpen();
-            stateMap.put(constants.CYCLE_LIFT_DOWN, constants.STATE_COMPLETE);
-            stateMap.put(constants.CYCLE_GRABBER, constants.STATE_COMPLETE);
-            stateMap.put(constants.CYCLE_LIFT_UP, constants.STATE_COMPLETE);
+            telemetry.addData("time", elapsedTime);
+            if(((String)stateMap.get(robot.lift.LIFT_SYSTEM_NAME)).equalsIgnoreCase(robot.lift.LIFT_POLE_GROUND)){
+                stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
+            }else{
+                elapsedTime.reset();
+                elapsedTime.startTime();
+                retractionInProgress = true;
+                stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.FULLY_OPEN_STATE);
+                toggleMap.put(GAMEPAD_1_B_STATE, false);
+            }
+
         }
-        if(gamepad1.left_trigger > 0.2){
-            robot.lift.checkCone((-1  * checkTicks));
-            telemetry.addData("Check Cone Ticks", true);
+
+        if (retractionInProgress) {
+            if (elapsedTime.seconds() > 0.3) {
+                stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
+                toggleMap.put(GAMEPAD_1_A_STATE, false);
+                telemetry.addData("timer in ", true);
+                retractionInProgress = false;
+                elapsedTime.reset();
+            } else if (elapsedTime.seconds() > 0.2) {
+                stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
+            }
         }
 
         if(gamepad2.dpad_right){
-            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.PICKUP_POSITION);
+            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.RIGHT_POSITION);
         } else if(gamepad2.dpad_left){
-            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.DEPOSIT_POSITION);
+            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.LEFT_POSITION);
         }else if(gamepad2.dpad_up){
             stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
         }
-        if(gamepad1.right_trigger > 0.5 && stateMap.get(constants.CONE_CYCLE).equalsIgnoreCase(constants.STATE_NOT_STARTED)){
-            stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS);
-        }
+
+          if (stateMap.get(robot.lift.LIFT_SYSTEM_NAME) != robot.lift.LIFT_POLE_GROUND) {
+              if (gamepad1.right_trigger > 0.05) {
+                  robot.lift.setAdjustmentHeight(gamepad1.right_trigger);
+//              } else if (gamepad1.right_trigger >= 0.9) {
+//                  stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
+//                  robot.grabber.grabberOpen();
+              } else {
+                  robot.lift.setAdjustmentHeight(0);
+              }
+          } else if(gamepad1.right_trigger > 0.5){
+              grabberCycleTime.reset();
+              stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_STATE);
+              grabberCycleInProgress = true;
+          }
+
+
+          if(grabberCycleInProgress){
+              if(grabberCycleTime.milliseconds() > 300){
+                  stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_MEDIUM);
+                  telemetry.addData("Robot Lift", stateMap.get(robot.lift.LIFT_SYSTEM_NAME));
+                  grabberCycleInProgress = false;
+              }
+          }
+//        if(gamepad1.left_trigger > 0.2){
+//            stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_CHECK_STATE);
+//        }
+          if(gamepad2.left_stick_y > 0.2){
+              toggleMap.put(GAMEPAD_1_B_STATE, false);
+              robot.arm.setAdjustmentPosition();
+              telemetry.addData("Adjustment", robot.arm.adjustmentPosition);
+          }
         if(stateMap.get(DRIVE_MODE).equalsIgnoreCase(MANUAL_DRIVE_MODE)){
             if (gamepad1.dpad_down) {
                 stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
@@ -208,10 +259,11 @@ public class RobotTeleOp extends LinearOpMode {
         drive.update();
 
         robot.updateSystems();
-//        telemetry.addData("State Map", stateMap);
-          telemetry.addData("Turret Position=", robot.turret.getPosition());
-          telemetry.addData("Turret Power=", robot.turret.turretMotor.getPower());
-          telemetry.update();
+        telemetry.addData("Started Grabber Action", robot.startGrabberAction());
+        telemetry.addData("Started Lift Up action", robot.startLiftUp());
+        telemetry.addData("Cycle Lift up", stateMap.get(constants.CYCLE_LIFT_UP));
+        telemetry.addData("Lift selected", stateMap.get(robot.lift.LIFT_SYSTEM_NAME));
+        telemetry.update();
         }
       }
     }
