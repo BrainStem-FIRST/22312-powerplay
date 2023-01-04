@@ -31,7 +31,7 @@ public class ExtensionA {
     public final double EXTENSION_POSITION_PICKUP   = 0.65;   // Extend to the stack of cones from pickup position
     public final double EXTENSION_POSITION_DEPOSIT  = 0.5;  // Extend to the low pole from pickup position
 
-    public final double EXTENSION_POSITION_SWING_CLEARANCE = MINIMUM_CLEARANCE_DISTANCE / MAXIMUM_REACH; // 0.63
+    public final double EXTENSION_POSITION_SWING_CLEARANCE = 1.0 - (MINIMUM_CLEARANCE_DISTANCE / MAXIMUM_REACH); // 0.63
 
 
     public final double TWOBAR_POSITION_HOME    = 0;    // vertical position

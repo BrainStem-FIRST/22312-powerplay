@@ -53,15 +53,6 @@ public class BrainStemRobotA {
         telemetry.update();
     }
 
-    // Not used -> DELETE
-    public void initializeRobotPosition(){
-        lift.initializePosition();
-        lift.moveToMinHeight();  // Raise lift to clear side panels. This does not clear the arm holding cone.
-        // Extend the arm so it clears corner of the robot when swinging
-        turret.initializePosition();
-        lift.raiseHeightTo(0);
-    }
-
     public void updateSystems() {
         //telemetry.addData("robotStateMap" , stateMap);
         stateMap.put(constants.SYSTEM_TIME, System.currentTimeMillis());
@@ -156,13 +147,15 @@ public class BrainStemRobotA {
 
         // move away from the pole so the grabber does not hit the pole when swinging back
         // clip the retract position at the swing clearance position so it doesn't hit the motors when swinging back
-        arm.extendTo(Range.clip(arm.getExtensionPosition() - 0.05, arm.EXTENSION_POSITION_SWING_CLEARANCE, 1));
+        // Arm extends with the lower numbers, retracts with higher numbers
+        arm.extendTo(Range.clip(arm.getExtensionPosition() + 0.05, arm.EXTENSION_POSITION_SWING_CLEARANCE, 0));
     }
 
     public void pickupCone() throws InterruptedException {
         grabber.grabberClose();
-        sleep(300);
+        sleep(220);
         lift.raiseHeightTo(lift.getPosition() + 85);
+        sleep(100);
     }
 }
 
