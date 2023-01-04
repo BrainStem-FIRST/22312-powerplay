@@ -128,7 +128,7 @@ public class Auto_1plus5high extends LinearOpMode {
                 })
 
                 // Testing statemap approach for Turret
-                .addTemporalMarker(1.8, () -> {
+                .addTemporalMarker(2.0, () -> {   //was 1.7
                     stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.DEPOSIT_POSITION);
                 })
 
@@ -148,7 +148,7 @@ public class Auto_1plus5high extends LinearOpMode {
 
         trajectoryDeposit = robot.drive.trajectorySequenceBuilder(pickupPose)
                 // This is an empty trajectory with just timer to operate the Gulliver's Tower
-                .waitSeconds(1.8)
+                .waitSeconds(1.6)
 
                 // Cone picked up outside of the trajectory. Cone is at hand at clearing height
                 // Start moving turret first, and then lift to avoid kicking the stack
@@ -179,7 +179,7 @@ public class Auto_1plus5high extends LinearOpMode {
 
         trajectoryPickup = robot.drive.trajectorySequenceBuilder(pickupPose)
                 // This is an empty trajectory for just timing the sequence of Gulliver's Tower moves
-                .waitSeconds(1.8)
+                .waitSeconds(1.5)
 
                 // Cone dropped prior to this trajectory.
                 // All that is needed to move the tower to the pickup location starting with turret first
@@ -646,6 +646,15 @@ public class Auto_1plus5high extends LinearOpMode {
             }
             else {
 
+                telemetry.addData("Trajectory State:",currentTrajectoryState);
+                telemetry.addData("Lift Position=",robot.lift.getPosition());
+                telemetry.addData("Turret Target State :",stateMap.get(robot.turret.SYSTEM_NAME));
+                telemetry.addData("Turret Current State:",robot.turret.getCurrentState());
+                telemetry.addData("Turret Position=", robot.turret.getPosition());
+                telemetry.addData("Turret Power=", robot.turret.turretMotor.getPower());
+
+                telemetry.update();
+
                 // Continue executing trajectory following
                 robot.drive.update();
                 // Experimenting state map with Turret
@@ -656,13 +665,6 @@ public class Auto_1plus5high extends LinearOpMode {
 //                robot.updateSystems();
             }
 
-            telemetry.addData("Trajectory State:",currentTrajectoryState);
-            telemetry.addData("Lift Position=",robot.lift.getPosition());
-            telemetry.addData("Turret Position=", robot.turret.getPosition());
-            telemetry.addData("Turret Power=", robot.turret.turretMotor.getPower());
-            telemetry.addData("Turret Target Tolerance=", robot.turret.turretMotor.getTargetPositionTolerance());
-
-            telemetry.update();
         }
     }
 

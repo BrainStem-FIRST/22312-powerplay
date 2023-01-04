@@ -61,8 +61,8 @@ public class TurretA {
             turretMotor.setPower(0);
         }
         else{
-            telemetry.addData("Desired:", desiredState);
-            telemetry.addData("Current", currentState);
+//            telemetry.addData("Desired:", desiredState);
+//            telemetry.addData("Current", currentState);
             selectTransition(desiredState, currentState);
         }
     }
@@ -108,7 +108,7 @@ public class TurretA {
         turretMotor.setTargetPosition(positionInTicks);
         turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        turretMotor.setPower(0.85);  // 0.6
+        turretMotor.setPower(0.75);  // 0.6
     }
 
     public int currentTargetPosition = 0;

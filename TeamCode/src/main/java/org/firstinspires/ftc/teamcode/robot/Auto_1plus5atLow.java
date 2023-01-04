@@ -142,7 +142,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
 
         trajectoryDeposit = robot.drive.trajectorySequenceBuilder(pickupPose)
                 // This is an empty trajectory with just timer to operate the Gulliver's Tower
-                .waitSeconds(1.5)
+                .waitSeconds(1.6)
 
                 // Cone picked up outside of the trajectory. Cone is at hand at clearing height
                 // Start moving turret first, and then lift to avoid kicking the stack
@@ -469,11 +469,11 @@ public class Auto_1plus5atLow extends LinearOpMode {
             if(isOrientationLEFT)   // RED-LEFT
                 switch (PARKING_NUMBER) {
                     case 1:
-                        parkingPose = new Pose2d (-58.75, -11.75, Math.toRadians(180));
+                        parkingPose = new Pose2d (-58.75, -11.75, Math.toRadians(-90));
                         break;
 
                     case 2:
-                        parkingPose = new Pose2d (-35.25, -11.75, Math.toRadians(180));
+                        parkingPose = new Pose2d (-35.25, -11.75, Math.toRadians(-90));
                         break;
 
                     case 3:
@@ -487,22 +487,22 @@ public class Auto_1plus5atLow extends LinearOpMode {
                         break;
 
                     case 2:
-                        parkingPose = new Pose2d (35.25, -11.75, Math.toRadians(0));
+                        parkingPose = new Pose2d (35.25, -11.75, Math.toRadians(-90));
                         break;
 
                     case 3:
-                        parkingPose = new Pose2d (58.75, -11.75, Math.toRadians(0));
+                        parkingPose = new Pose2d (58.75, -11.75, Math.toRadians(-90));
                         break;
                 }
         } else {
             if(isOrientationLEFT)   // BLUE-LEFT
                 switch (PARKING_NUMBER) {
                     case 1:
-                        parkingPose = new Pose2d (58.75, 11.75, Math.toRadians(0));
+                        parkingPose = new Pose2d (58.75, 11.75, Math.toRadians(90));
                         break;
 
                     case 2:
-                        parkingPose = new Pose2d (35.25, 11.75, Math.toRadians(0));
+                        parkingPose = new Pose2d (35.25, 11.75, Math.toRadians(90));
                         break;
 
                     case 3:
@@ -516,11 +516,11 @@ public class Auto_1plus5atLow extends LinearOpMode {
                         break;
 
                     case 2:
-                        parkingPose = new Pose2d (-35.25, 11.75, Math.toRadians(-90));
+                        parkingPose = new Pose2d (-35.25, 11.75, Math.toRadians(90));
                         break;
 
                     case 3:
-                        parkingPose = new Pose2d (-58.75, 11.75, Math.toRadians(-90));
+                        parkingPose = new Pose2d (-58.75, 11.75, Math.toRadians(90));
                         break;
                 }
         }
@@ -591,8 +591,9 @@ public class Auto_1plus5atLow extends LinearOpMode {
                     break;
 
                 case TRAJECTORY_PARKING_STATE:
+
                     robot.arm.extendHome();
-                    robot.grabber.grabberClose();
+                    robot.grabber.grabberOpen();
                     robot.turret.moveTo(robot.turret.CENTER_POSITION_VALUE);
 
                     trajectoryPark = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate())
@@ -600,7 +601,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
                             .build();
                     robot.drive.followTrajectory(trajectoryPark); // This is synchronous trajectory; code does not advance until the trajectory is complete
 
-                    robot.lift.raiseHeightTo(robot.lift.LIFT_POSITION_GROUND);
+                    robot.lift.raiseHeightTo(robot.lift.LIFT_POSITION_RESET);
 
                     currentTrajectoryState = TrajectoryState.TRAJECTORY_IDLE;
 
@@ -623,6 +624,12 @@ public class Auto_1plus5atLow extends LinearOpMode {
             }
             else {
 
+                telemetry.addData("State:",currentTrajectoryState);
+                telemetry.addData("Lift Position=",robot.lift.getPosition());
+                telemetry.addData("Turret Position=", robot.turret.getPosition());
+
+                telemetry.update();
+
                 // Continue executing trajectory following
                 robot.drive.update();
 //                robot.turret.setTurretPower();
@@ -631,11 +638,6 @@ public class Auto_1plus5atLow extends LinearOpMode {
 //                robot.updateSystems();
             }
 
-            telemetry.addData("State:",currentTrajectoryState);
-            telemetry.addData("Lift Position=",robot.lift.getPosition());
-            telemetry.addData("Turret Position=", robot.turret.getPosition());
-
-            telemetry.update();
         }
     }
 
