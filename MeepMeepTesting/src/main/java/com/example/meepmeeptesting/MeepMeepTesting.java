@@ -15,24 +15,45 @@ public class MeepMeepTesting {
 
         // Bring in components from Auto class
         // Determine waypoints based on Alliance and Orientation
-        double  XFORM_X=-1, XFORM_Y=-1;
-        double  pickupDeltaX=0, pickupDeltaY=0,
-                depositDeltaX=0, depositDeltaY=0,
-                preloadDeltaX=0, preloadDeltaY=0,
-                cornerDeltaX=0, cornerDeltaY=0;
-        double  startingHeading=90, deliveryHeading=180, pickupHeading=180;
+        //------------------------------------------------------
+        //            Variable used for trajectories
+        //------------------------------------------------------
 
-        Pose2d startingPose, pickupPose, depositPose, parkingPose;
+        Pose2d startingPose, pickupPose, parkingPose;
         Pose2d cornerPose;
 
-//        startingPose    = new Pose2d(XFORM_X * 35.5, XFORM_Y * 63.75, Math.toRadians(startingHeading));
-//        cornerPose      = new Pose2d(XFORM_X * (56 + cornerDeltaX), XFORM_Y * (59 + pickupDeltaY), Math.toRadians(0));
-//        pickupPose      = new Pose2d(XFORM_X * (55.75 + pickupDeltaX), XFORM_Y * (12 + pickupDeltaY), Math.toRadians(240));
+        // Determine waypoints based on Alliance and Orientation
+        double  XFORM_X, XFORM_Y;
+        double  pickupDeltaX, pickupDeltaY,
+                cornerDeltaX, cornerDeltaY;
+        double  startingHeading, startingTangent,
+                pickupHeading, pickupTangent,
+                cornerHeading, cornerTangent;
 
-        startingPose    = new Pose2d(XFORM_X * 35.5, XFORM_Y * 63.75, Math.toRadians(startingHeading));
-        cornerPose      = new Pose2d(XFORM_X * (60 + cornerDeltaX), XFORM_Y * (47 + pickupDeltaY), Math.toRadians(-89));
-        pickupPose      = new Pose2d(XFORM_X * (56.75 + pickupDeltaX), XFORM_Y * (12 + pickupDeltaY), Math.toRadians(240));
-//        depositPose     = new Pose2d(XFORM_X * (24 + depositDeltaX), XFORM_Y * (10 + depositDeltaY), Math.toRadians(deliveryHeading));
+        // Orientation Adjustments
+        XFORM_X = -1;
+        XFORM_Y = -1;
+
+        startingHeading = -90;
+        startingTangent = 135;
+
+        cornerHeading = -90;
+        cornerTangent = 90;
+
+        pickupHeading = -90;
+        pickupTangent = 90;
+
+        cornerDeltaX = 0;
+        cornerDeltaY = 0;
+
+        pickupDeltaX = 0; // previously 0
+        pickupDeltaY = 0;  // previously 0
+
+
+        // Poses
+        startingPose    = new Pose2d(XFORM_X * 36, XFORM_Y * 63.75, Math.toRadians(startingHeading));
+        cornerPose      = new Pose2d(XFORM_X * (60 + cornerDeltaX), XFORM_Y * (52 + cornerDeltaY), Math.toRadians(cornerHeading));
+        pickupPose      = new Pose2d(XFORM_X * (56.26 + pickupDeltaX), XFORM_Y * (13.75 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 
 
@@ -44,12 +65,15 @@ public class MeepMeepTesting {
                         drive.trajectorySequenceBuilder((startingPose))
 
                                 ///////////// Best Time: 3.34 sec ///////////////
-                                .setTangent(Math.toRadians(135))
-                                .splineToLinearHeading(cornerPose,Math.toRadians(90),
-                                        SampleMecanumDrive.getVelocityConstraint(60, Math.toRadians(180), 3.5),
-                                        SampleMecanumDrive.getAccelerationConstraint(180))
-                                .setTangent(Math.toRadians(90))
-                                .splineToLinearHeading(pickupPose,Math.toRadians(90))
+                                .setTangent(Math.toRadians(startingTangent))
+                                .splineToConstantHeading(new Vector2d(cornerPose.getX(), cornerPose.getY()), Math.toRadians(cornerTangent),
+                                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75), //3.5),
+                                        SampleMecanumDrive.getAccelerationConstraint(90))
+
+//                                .setTangent(Math.toRadians(pickupTangent))
+                                .splineToConstantHeading(new Vector2d(pickupPose.getX(), pickupPose.getY()),Math.toRadians(pickupTangent),
+                                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75), //3.5),
+                                        SampleMecanumDrive.getAccelerationConstraint(90))
 
                                 .build()
                 );
