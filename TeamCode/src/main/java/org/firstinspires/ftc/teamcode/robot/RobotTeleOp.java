@@ -48,6 +48,7 @@ public class RobotTeleOp extends LinearOpMode {
     private final String AUTO_DRIVE_MODE = "AUTO";
     private final String DRIVE_MODE = "DRIVE_MODE";
     private final int checkTicks = 10;
+    private final double extensionAddition = 0.001;
 
     private boolean leftTriggerPressed = false;
     private boolean retractionInProgress = false;
@@ -175,14 +176,17 @@ public class RobotTeleOp extends LinearOpMode {
               }
           } else if(gamepad1.right_trigger > 0.5){
               grabberCycleTime.reset();
+              grabberCycleTime.startTime();
               stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_STATE);
               grabberCycleInProgress = true;
           }
-
+          telemetry.addData("Time",grabberCycleTime.milliseconds());
+          telemetry.addData("grabberCycleInProgress", grabberCycleInProgress);
 
           if(grabberCycleInProgress){
               if(grabberCycleTime.milliseconds() > 300){
-                  stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_MEDIUM);
+                  stateMap.put(constants.DRIVER_2_SELECTED_LIFT, robot.lift.LIFT_UP_MOVING_STATE);
+                  toggleMap.put(GAMEPAD_1_A_STATE, true);
                   telemetry.addData("Robot Lift", stateMap.get(robot.lift.LIFT_SYSTEM_NAME));
                   grabberCycleInProgress = false;
               }
@@ -191,9 +195,11 @@ public class RobotTeleOp extends LinearOpMode {
 //            stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_CHECK_STATE);
 //        }
           if(gamepad2.left_stick_y > 0.2){
-              toggleMap.put(GAMEPAD_1_B_STATE, false);
-              robot.arm.setAdjustmentPosition();
-              telemetry.addData("Adjustment", robot.arm.adjustmentPosition);
+              robot.arm.adjustmentPosition +=  extensionAddition;
+//          } else if(gamepad2.left_stick_y <= 0.2 && gamepad2.left_stick_y >= -0.2){
+//              robot.arm.adjustmentPosition = 0;
+          } else if(gamepad2.left_stick_y < -0.2){
+              robot.arm.adjustmentPosition -= extensionAddition;
           }
         if(stateMap.get(DRIVE_MODE).equalsIgnoreCase(MANUAL_DRIVE_MODE)){
             if (gamepad1.dpad_down) {
