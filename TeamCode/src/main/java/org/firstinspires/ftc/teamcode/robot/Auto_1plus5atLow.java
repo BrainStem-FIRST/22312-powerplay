@@ -224,6 +224,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
             setProgram();
         }
 
+        robot.grabber.grabberClose();
 
         //------------------------------------------------------
         //            Camera initialization
@@ -541,7 +542,6 @@ public class Auto_1plus5atLow extends LinearOpMode {
                 case TRAJECTORY_START_STATE:
                     // Switch to trajectoryPickup once the starting trajectory is complete
                     if (!robot.drive.isBusy()) {
-
                         // Initial trajectory completed, drop the cone
                         robot.dropCone();
                         sleep(100); // wait for cone to drop
