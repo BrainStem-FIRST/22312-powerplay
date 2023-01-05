@@ -110,6 +110,10 @@ public class Auto_1plus5atLow extends LinearOpMode {
         trajectoryStart = robot.drive.trajectorySequenceBuilder(startingPose)
 
                 //make sure the cone is lifted a little from the ground before robot starts moving
+                .addTemporalMarker(0.2, () -> {
+                    // lift off the ground for transportation
+                    robot.lift.goToClear();
+                })
 
                 .setTangent(Math.toRadians(startingTangent))
                 .splineToConstantHeading(new Vector2d(cornerPose.getX(), cornerPose.getY()), Math.toRadians(cornerTangent),
@@ -358,7 +362,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 36, XFORM_Y * 63.75, Math.toRadians(startingHeading));
         cornerPose      = new Pose2d(XFORM_X * (60 + cornerDeltaX), XFORM_Y * (52 + cornerDeltaY), Math.toRadians(cornerHeading));
-        pickupPose      = new Pose2d(XFORM_X * (56.26 + pickupDeltaX), XFORM_Y * (13.75 + pickupDeltaY), Math.toRadians(pickupHeading));
+        pickupPose      = new Pose2d(XFORM_X * (57 + pickupDeltaX), XFORM_Y * (13.75 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
@@ -525,8 +529,6 @@ public class Auto_1plus5atLow extends LinearOpMode {
                 }
         }
 
-        // lift off the ground for transportation
-        robot.pickupCone();
 
         // initiate first trajectory asynchronous (go to pickup location) at the start of autonomous
         // Need to call drive.update() to make things move within the loop
@@ -539,6 +541,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
                 case TRAJECTORY_START_STATE:
                     // Switch to trajectoryPickup once the starting trajectory is complete
                     if (!robot.drive.isBusy()) {
+
                         // Initial trajectory completed, drop the cone
                         robot.dropCone();
                         sleep(100); // wait for cone to drop
