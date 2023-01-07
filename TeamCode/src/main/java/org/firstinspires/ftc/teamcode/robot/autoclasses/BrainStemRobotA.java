@@ -140,22 +140,24 @@ public class BrainStemRobotA {
     }
 
     public void dropCone() throws InterruptedException {
-        lift.raiseHeightTo(lift.getPosition() - 75);
-        sleep(100);
+        lift.raiseHeightTo(lift.getPosition() - 100);
+        sleep(200); // was 100
         grabber.grabberOpenWide();
 //        lift.raiseHeightTo(lift.getPosition() + 75);
 
         // move away from the pole so the grabber does not hit the pole when swinging back
         // clip the retract position at the swing clearance position so it doesn't hit the motors when swinging back
         // Arm extends with the lower numbers, retracts with higher numbers
-        arm.extendTo(Range.clip(arm.getExtensionPosition() + 0.05, arm.EXTENSION_POSITION_SWING_CLEARANCE, 0));
+
+        //
+//        arm.extendTo(arm.EXTENSION_POSITION_DURING_SWING);
     }
 
     public void pickupCone() throws InterruptedException {
         grabber.grabberClose();
         sleep(220);
 //        lift.goToClear();
-        lift.raiseHeightTo(lift.getPosition() + 100);
+        lift.raiseHeightTo(lift.getPosition() + 90);
         sleep(200);
     }
 }

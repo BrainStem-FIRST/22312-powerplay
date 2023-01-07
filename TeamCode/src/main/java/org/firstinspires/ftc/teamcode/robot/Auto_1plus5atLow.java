@@ -146,16 +146,20 @@ public class Auto_1plus5atLow extends LinearOpMode {
 
         trajectoryDeposit = robot.drive.trajectorySequenceBuilder(pickupPose)
                 // This is an empty trajectory with just timer to operate the Gulliver's Tower
-                .waitSeconds(1.6)
+                .waitSeconds(1.5)
+
+                .addTemporalMarker(0,()->{
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DURING_SWING);
+                })
 
                 // Cone picked up outside of the trajectory. Cone is at hand at clearing height
                 // Start moving turret first, and then lift to avoid kicking the stack
-                .addTemporalMarker(0, () -> {
+                .addTemporalMarker(0.2, () -> {
                     robot.turret.goToDepositPosition();
+                    robot.lift.goToLowPoleHeight();
                 })
                 // Clear the pole before adjusting height. Lift move trails the turret move
-                .addTemporalMarker(0.2,()-> {
-                    robot.lift.goToLowPoleHeight();
+                .addTemporalMarker(0.8,()-> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
                 })
 
@@ -177,12 +181,16 @@ public class Auto_1plus5atLow extends LinearOpMode {
                 // All that is needed to move the tower to the pickup location starting with turret first
                 // and then delay-start lift
                 .addTemporalMarker(0,()->{
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DURING_SWING);
+                })
+
+                .addTemporalMarker(0.2,()->{
                     robot.turret.goToPickupPosition();
-                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
                 // Clear the pole before adjusting height. Lift move trails the turret move
-                .addTemporalMarker(0.5,()-> {
+                .addTemporalMarker(0.8,()-> {
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                     robot.lift.goToPickupHeight();
                 })
 
@@ -270,7 +278,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
                 pickupTangent = 90;
 
                 robot.turret.turret_PICKUP_POSITION_VALUE   = 245;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -107; //-165
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -112; //-165
 
                 cornerDeltaX = 0;
                 cornerDeltaY = 0;
@@ -316,7 +324,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
                 pickupTangent = -90;
 
                 robot.turret.turret_PICKUP_POSITION_VALUE   = 245;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -120;
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -107;
 
                 cornerDeltaX = 0;
                 cornerDeltaY = 0;

@@ -28,10 +28,11 @@ public class ExtensionA {
     public final double EXTENSION_POSITION_LEFT     = 0.5;   // Extend to the pole on the left from center of isle
     public final double EXTENSION_POSITION_RIGHT    = 0.61;  // Extend to the pole on the right from center of isle
 
-    public final double EXTENSION_POSITION_PICKUP   = 0.65;   // Extend to the stack of cones from pickup position
-    public final double EXTENSION_POSITION_DEPOSIT  = 0.48;  // Extend to the low pole from pickup position
+    public final double EXTENSION_POSITION_PICKUP   = 0.63; //0.65  // Extend to the stack of cones from pickup position
+    public final double EXTENSION_POSITION_DEPOSIT  = 0.50; //0.48  // Extend to the low pole from pickup position
 
     public final double EXTENSION_POSITION_SWING_CLEARANCE = 1.0 - (MINIMUM_CLEARANCE_DISTANCE / MAXIMUM_REACH); // 0.63
+    public final double EXTENSION_POSITION_DURING_SWING = 1.0 - (3.0 / MAXIMUM_REACH);
 
 
     public final double TWOBAR_POSITION_HOME    = 0;    // vertical position
