@@ -228,7 +228,7 @@ public class Lift {
                 break;
             }
             case LIFT_POLE_GROUND:{
-                transitionToLiftPosition(LIFT_POSITION_GROUND + deliveryHeight(subheight));
+                transitionToLiftPosition(LIFT_POSITION_GROUND + liftPickup);
                 break;
             }
             case LIFT_POSITION_CLEAR:{

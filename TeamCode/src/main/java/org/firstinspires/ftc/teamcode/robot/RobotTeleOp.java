@@ -196,6 +196,7 @@ public class RobotTeleOp extends LinearOpMode {
 //        }
           if(gamepad2.left_stick_y > 0.2){
               robot.arm.adjustmentPosition +=  extensionAddition;
+              telemetry.addData("This is working", true);
 //          } else if(gamepad2.left_stick_y <= 0.2 && gamepad2.left_stick_y >= -0.2){
 //              robot.arm.adjustmentPosition = 0;
           } else if(gamepad2.left_stick_y < -0.2){
@@ -265,11 +266,11 @@ public class RobotTeleOp extends LinearOpMode {
         drive.update();
 
         robot.updateSystems();
-        telemetry.addData("Started Grabber Action", robot.startGrabberAction());
-        telemetry.addData("Started Lift Up action", robot.startLiftUp());
+
         telemetry.addData("Cycle Lift up", stateMap.get(constants.CYCLE_LIFT_UP));
         telemetry.addData("Lift selected", stateMap.get(robot.lift.LIFT_SYSTEM_NAME));
         telemetry.addData("Lift subheight adding", robot.lift.liftPickup);
+        telemetry.addData("Adjustment for the extension", robot.arm.adjustmentPosition);
         telemetry.update();
         }
       }
