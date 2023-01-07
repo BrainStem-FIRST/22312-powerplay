@@ -111,14 +111,14 @@ public class Lift {
 
         updateConeCycleState();
 
-        if (shouldLiftMove(level, currentState) ) {
+//        if (shouldLiftMove(level, currentState) ) {
             selectTransition(level, subheight, currentState);
-        } else {
-            liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftMotor.setPower(0);
-            liftMotor2.setPower(0);
-        }
+//        } else {
+//            liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//            liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//            liftMotor.setPower(0);
+//            liftMotor2.setPower(0);
+//        }
     }
 
     public void setAdjustmentHeight(double driverInput) {
