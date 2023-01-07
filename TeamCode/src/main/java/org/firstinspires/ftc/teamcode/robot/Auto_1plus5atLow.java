@@ -305,7 +305,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
                 cornerDeltaX = 0;
                 cornerDeltaY = 0;
 
-                pickupDeltaX = 1;
+                pickupDeltaX = 0; //1
                 pickupDeltaY = -1;
             }
         }
