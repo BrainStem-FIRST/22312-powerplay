@@ -175,22 +175,23 @@ public class RobotTeleOp extends LinearOpMode {
                   robot.lift.setAdjustmentHeight(0);
               }
           } else if(gamepad1.right_trigger > 0.5){
-              grabberCycleTime.reset();
-              grabberCycleTime.startTime();
-              stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_STATE);
-              grabberCycleInProgress = true;
+//              grabberCycleTime.reset();
+//              grabberCycleTime.startTime();
+//              stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_STATE);
+//              grabberCycleInProgress = true;
+              stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS);
           }
-          telemetry.addData("Time",grabberCycleTime.milliseconds());
-          telemetry.addData("grabberCycleInProgress", grabberCycleInProgress);
+//          telemetry.addData("Time",grabberCycleTime.milliseconds());
+//          telemetry.addData("grabberCycleInProgress", grabberCycleInProgress);
 
-          if(grabberCycleInProgress){
-              if(grabberCycleTime.milliseconds() > 300){
-                  stateMap.put(constants.DRIVER_2_SELECTED_LIFT, robot.lift.LIFT_UP_MOVING_STATE);
-                  toggleMap.put(GAMEPAD_1_A_STATE, true);
-                  telemetry.addData("Robot Lift", stateMap.get(robot.lift.LIFT_SYSTEM_NAME));
-                  grabberCycleInProgress = false;
-              }
-          }
+//          if(grabberCycleInProgress){
+//              if(grabberCycleTime.milliseconds() > 300){
+//                  stateMap.put(constants.DRIVER_2_SELECTED_LIFT, robot.lift.LIFT_UP_MOVING_STATE);
+//                  toggleMap.put(GAMEPAD_1_A_STATE, true);
+//                  telemetry.addData("Robot Lift", stateMap.get(robot.lift.LIFT_SYSTEM_NAME));
+//                  grabberCycleInProgress = false;
+//              }
+//          }
 //        if(gamepad1.left_trigger > 0.2){
 //            stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_CHECK_STATE);
 //        }
