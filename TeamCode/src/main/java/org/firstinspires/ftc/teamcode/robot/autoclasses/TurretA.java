@@ -50,9 +50,9 @@ public class TurretA {
         turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // PID controller setup
-        turretPIDController = new PIDController(0.03, 0, 0);
-        turretPIDController.setInputBounds(-256, 256);
-        turretPIDController.setOutputBounds(-1, 1);
+        turretPIDController = new PIDController(0.1, 0, 0);
+        turretPIDController.setInputBounds(0, 512);
+        turretPIDController.setOutputBounds(0, 1);
     }
 
     public void setState(String desiredState, LiftA lift){
@@ -99,26 +99,39 @@ public class TurretA {
     }
 
     private void transitionToPosition(int ticks){
-        moveTo(ticks);
+        setTurretPower(ticks);
     }
 
     public void moveTo (int positionInTicks) {
         // move to desired tick position
         currentTargetPosition = positionInTicks;
         turretMotor.setTargetPosition(positionInTicks);
-//        turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         turretMotor.setPower(0.9);  // 0.6
     }
 
+    public void moveToPID (int positionInTicks) {
+        // move to desired tick position
+        currentTargetPosition = positionInTicks;
+    }
+
     public int currentTargetPosition = 0;
 
-    public void setTurretPower() {
+    public void setTurretPower(int positionInTicks) {
+        currentTargetPosition = positionInTicks;
         int error = currentTargetPosition - getPosition();
-        if (Math.abs(error) < 5)
+        if (Math.abs(error) < 5) {
             turretMotor.setPower(0);
-        else
-            turretMotor.setPower(0.85 * turretPIDController.updateWithError(error));
+        }
+        else {
+            if (error>0) {
+                turretMotor.setPower(turretPIDController.updateWithError(Math.abs(error)));
+            }
+            else {
+                turretMotor.setPower(-turretPIDController.updateWithError(Math.abs(error)));
+            }
+        }
 
         telemetry.addData("Turret Error=", error);
         telemetry.addData("Turret Power=", turretMotor.getPower());
