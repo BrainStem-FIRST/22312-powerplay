@@ -50,9 +50,9 @@ public class TurretA {
         turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // PID controller setup
-//        turretPIDController = new PIDController(0.03, 0, 0);
-//        turretPIDController.setInputBounds(-256, 256);
-//        turretPIDController.setOutputBounds(0, 1);
+        turretPIDController = new PIDController(0.03, 0, 0);
+        turretPIDController.setInputBounds(-256, 256);
+        turretPIDController.setOutputBounds(-1, 1);
     }
 
     public void setState(String desiredState, LiftA lift){
@@ -104,18 +104,18 @@ public class TurretA {
 
     public void moveTo (int positionInTicks) {
         // move to desired tick position
-//        currentTargetPosition = positionInTicks;
+        currentTargetPosition = positionInTicks;
         turretMotor.setTargetPosition(positionInTicks);
-        turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        turretMotor.setPower(0.75);  // 0.6
+//        turretMotor.setPower(0.75);  // 0.6
     }
 
     public int currentTargetPosition = 0;
 
     public void setTurretPower() {
-        int error = Math.abs(getPosition() - currentTargetPosition);
-        if (error < 5)
+        int error = currentTargetPosition - getPosition();
+        if (Math.abs(error) < 5)
             turretMotor.setPower(0);
         else
             turretMotor.setPower(0.85 * turretPIDController.updateWithError(error));

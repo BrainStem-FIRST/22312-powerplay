@@ -658,8 +658,8 @@ public class Auto_1plus5high extends LinearOpMode {
                 // Continue executing trajectory following
                 robot.drive.update();
                 // Experimenting state map with Turret
-                robot.turret.setState((String) stateMap.get(robot.turret.SYSTEM_NAME), robot.lift);
-//                robot.turret.setTurretPower();    // For use with turretPIDController
+//                robot.turret.setState((String) stateMap.get(robot.turret.SYSTEM_NAME), robot.lift);
+                robot.turret.setTurretPower();    // For use with turretPIDController
 
                 // Execute systems based on stateMap
 //                robot.updateSystems();
