@@ -167,7 +167,7 @@ public class BrainStemRobot {
     }
 
     public boolean startGrabberAction() {
-        if(stateMap.get(constants.CONE_CYCLE).equals(constants.STATE_IN_PROGRESS) && stateMap.get(constants.CONE_CYCLE).equals(constants.STATE_IN_PROGRESS)){
+        if(stateMap.get(constants.CONE_CYCLE).equals(constants.STATE_IN_PROGRESS) && stateMap.get(constants.CYCLE_GRABBER).equals(constants.STATE_NOT_STARTED)){
             return true;
         }
         return false;
