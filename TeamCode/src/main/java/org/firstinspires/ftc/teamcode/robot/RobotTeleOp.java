@@ -48,7 +48,7 @@ public class RobotTeleOp extends LinearOpMode {
     private final String AUTO_DRIVE_MODE = "AUTO";
     private final String DRIVE_MODE = "DRIVE_MODE";
     private final int checkTicks = 10;
-    private final double extensionAddition = 0.001;
+    private final double extensionAddition = 0.1;
 
     private boolean leftTriggerPressed = false;
     private boolean retractionInProgress = false;
