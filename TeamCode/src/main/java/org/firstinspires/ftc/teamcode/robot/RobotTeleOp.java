@@ -264,13 +264,11 @@ public class RobotTeleOp extends LinearOpMode {
       }
 
         drive.update();
-
         robot.updateSystems();
 
         telemetry.addData("Cycle Lift up", stateMap.get(constants.CYCLE_LIFT_UP));
         telemetry.addData("Lift selected", stateMap.get(robot.lift.LIFT_SYSTEM_NAME));
         telemetry.addData("Lift subheight adding", robot.lift.liftPickup);
-        telemetry.addData("Adjustment for the extension", robot.arm.adjustmentPosition);
         telemetry.update();
         }
       }
