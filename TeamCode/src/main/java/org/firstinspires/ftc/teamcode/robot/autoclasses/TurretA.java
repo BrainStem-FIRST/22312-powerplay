@@ -47,10 +47,10 @@ public class TurretA {
         turretMotor = (DcMotorEx) hwMap.get("TurretMotor");
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //      liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // PID controller setup
-        turretPIDController = new PIDController(0.1, 0, 0);
+        turretPIDController = new PIDController(0.01, 0, 0);
         turretPIDController.setInputBounds(0, 512);
         turretPIDController.setOutputBounds(0, 1);
     }
@@ -99,7 +99,7 @@ public class TurretA {
     }
 
     private void transitionToPosition(int ticks){
-        setTurretPower(ticks);
+        moveTo(ticks); //setTurretPower(ticks);
     }
 
     public void moveTo (int positionInTicks) {
@@ -126,10 +126,10 @@ public class TurretA {
         }
         else {
             if (error>0) {
-                turretMotor.setPower(turretPIDController.updateWithError(Math.abs(error)));
+                turretMotor.setPower(0.85 * turretPIDController.updateWithError(Math.abs(error)));
             }
             else {
-                turretMotor.setPower(-turretPIDController.updateWithError(Math.abs(error)));
+                turretMotor.setPower(0.85 * -turretPIDController.updateWithError(Math.abs(error)));
             }
         }
 
