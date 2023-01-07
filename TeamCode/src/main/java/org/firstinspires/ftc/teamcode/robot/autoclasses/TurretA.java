@@ -108,7 +108,7 @@ public class TurretA {
         turretMotor.setTargetPosition(positionInTicks);
 //        turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-//        turretMotor.setPower(0.75);  // 0.6
+        turretMotor.setPower(0.9);  // 0.6
     }
 
     public int currentTargetPosition = 0;

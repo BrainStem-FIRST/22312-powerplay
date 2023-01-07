@@ -187,7 +187,7 @@ public class RobotTeleOp extends LinearOpMode {
 
           if(grabberCycleInProgress){
               if(grabberCycleTime.milliseconds() > 300){
-                  robot.lift.liftPickup = 25;
+                  robot.lift.liftPickup = 60;
                   grabberCycleInProgress = false;
               }
           }
@@ -269,6 +269,7 @@ public class RobotTeleOp extends LinearOpMode {
         telemetry.addData("Started Lift Up action", robot.startLiftUp());
         telemetry.addData("Cycle Lift up", stateMap.get(constants.CYCLE_LIFT_UP));
         telemetry.addData("Lift selected", stateMap.get(robot.lift.LIFT_SYSTEM_NAME));
+        telemetry.addData("Lift subheight adding", robot.lift.liftPickup);
         telemetry.update();
         }
       }
