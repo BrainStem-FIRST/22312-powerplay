@@ -77,6 +77,7 @@ public class Lift {
     public static double currentLiftHeight;
     private Map stateMap;
     private int adjustmentHeight;
+    public int liftPickup;
 
 
     public Lift(HardwareMap hwMap, Telemetry telemetry, Map stateMap) {
@@ -185,7 +186,7 @@ public class Lift {
                 break;
             }
             case LIFT_POLE_GROUND:{
-                position = LIFT_POSITION_GROUND;
+                position = LIFT_POSITION_GROUND + liftPickup;
                 break;
             }
             case LIFT_POSITION_CLEAR:{
