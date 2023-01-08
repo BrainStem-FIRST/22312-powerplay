@@ -140,7 +140,7 @@ public class BrainStemRobotA {
     }
 
     public void dropCone() throws InterruptedException {
-        lift.raiseHeightTo(lift.getPosition() - 100);
+        lift.raiseHeightTo(lift.getPosition() - 150);
         sleep(200); // was 100
         grabber.grabberOpenWide();
 //        lift.raiseHeightTo(lift.getPosition() + 75);
@@ -155,7 +155,7 @@ public class BrainStemRobotA {
 
     public void pickupCone() throws InterruptedException {
         grabber.grabberClose();
-        sleep(220);
+        sleep(250);
 //        lift.goToClear();
         lift.raiseHeightTo(lift.getPosition() + 90);
         sleep(200);

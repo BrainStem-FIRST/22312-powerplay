@@ -130,7 +130,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
                     robot.lift.goToLowPoleHeight();
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
                 })
-                .addTemporalMarker(2.0, () -> {
+                .addTemporalMarker(1.6, () -> {
                     robot.turret.goToDepositPosition();
                 })
 
@@ -283,7 +283,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
                 cornerDeltaX = 0;
                 cornerDeltaY = 0;
 
-                pickupDeltaX = 0; // previously 0
+                pickupDeltaX = -1; // previously 0
                 pickupDeltaY = 0;  // previously 0
             }
             else {                  // RED-RIGHT
@@ -305,7 +305,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
                 cornerDeltaX = 0;
                 cornerDeltaY = 0;
 
-                pickupDeltaX = 0; //1
+                pickupDeltaX = -0.5; //1
                 pickupDeltaY = -1;
             }
         }
@@ -346,12 +346,12 @@ public class Auto_1plus5atLow extends LinearOpMode {
                 pickupTangent = -90;
 
                 robot.turret.turret_PICKUP_POSITION_VALUE   = -225;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 115;
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 87;
 
-                cornerDeltaX = 4;
+                cornerDeltaX = 2;
                 cornerDeltaY = 0;
 
-                pickupDeltaX = -0.8;
+                pickupDeltaX = 1;
                 pickupDeltaY = -1;
             }
         }
