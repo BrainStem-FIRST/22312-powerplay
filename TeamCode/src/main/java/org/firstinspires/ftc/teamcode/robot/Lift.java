@@ -111,14 +111,14 @@ public class Lift {
 
         updateConeCycleState();
 
-//        if (shouldLiftMove(level, currentState) ) {
+        if (shouldLiftMove(level, currentState) ) {
             selectTransition(level, subheight, currentState);
-//        } else {
-//            liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//            liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//            liftMotor.setPower(0);
-//            liftMotor2.setPower(0);
-//        }
+        } else {
+            liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            liftMotor.setPower(0);
+            liftMotor2.setPower(0);
+        }
     }
 
     public void setAdjustmentHeight(double driverInput) {
@@ -228,7 +228,7 @@ public class Lift {
                 break;
             }
             case LIFT_POLE_GROUND:{
-                transitionToLiftPosition(LIFT_POSITION_GROUND + liftPickup);
+                transitionToLiftPosition(LIFT_POSITION_GROUND + deliveryHeight(subheight) + liftPickup);
                 break;
             }
             case LIFT_POSITION_CLEAR:{
@@ -256,7 +256,7 @@ public class Lift {
         telemetry.addData("currentPosition", currentPosition);
         telemetry.addData("liftPositionPickup", liftPositionPickup);
         telemetry.addData("deliveryHeight(subheight)", deliveryHeight(subheight));
-        if(inHeightTolerance(currentPosition, LIFT_POSITION_GROUND + deliveryHeight(subheight))){
+        if(inHeightTolerance(currentPosition, LIFT_POSITION_GROUND + deliveryHeight(subheight) + liftPickup)){
             state = LIFT_POLE_GROUND;
         } else if (inHeightTolerance(currentPosition, LIFT_POSITION_LOWPOLE + deliveryHeight(subheight))) {
             state = LIFT_POLE_LOW;
