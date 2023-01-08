@@ -102,7 +102,7 @@ public class RobotTeleOp extends LinearOpMode {
       while (opModeIsActive()) {
       if(gamepad2.right_trigger > 0.1){
           robot.lift.setMotor(1.0);
-      } else if(gamepad2.left_bumper) {
+      } else if(gamepad2.dpad_down) {
           robot.lift.resetEncoders();
       } else if(gamepad2.left_trigger > 0.1) {
           robot.lift.setMotor(-1.0);
@@ -153,7 +153,7 @@ public class RobotTeleOp extends LinearOpMode {
                 telemetry.addData("timer in ", true);
                 retractionInProgress = false;
                 elapsedTime.reset();
-            } else if (elapsedTime.seconds() > 0.2) {
+            } else if (elapsedTime.seconds() > 0.5) {
                 stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
             }
         }
