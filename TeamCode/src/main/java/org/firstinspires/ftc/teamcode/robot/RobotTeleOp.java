@@ -156,7 +156,7 @@ public class RobotTeleOp extends LinearOpMode {
                 telemetry.addData("timer in ", true);
                 retractionInProgress = false;
                 elapsedTime.reset();
-            } else if (elapsedTime.seconds() > 0.5) {
+            } else if (elapsedTime.seconds() > 0.3) {
                 stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
             }
         }
