@@ -283,7 +283,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
                 cornerDeltaX = 0;
                 cornerDeltaY = 0;
 
-                pickupDeltaX = -1; // previously 0
+                pickupDeltaX = 0; // previously 0
                 pickupDeltaY = 0;  // previously 0
             }
             else {                  // RED-RIGHT
@@ -330,7 +330,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
                 cornerDeltaY = 0;
 
                 pickupDeltaX = 0;
-                pickupDeltaY = 1;
+                pickupDeltaY = 0;
             }
             else {                  // BLUE-RIGHT
                 XFORM_X = -1;
@@ -345,13 +345,13 @@ public class Auto_1plus5atLow extends LinearOpMode {
                 pickupHeading = 90;
                 pickupTangent = -90;
 
-                robot.turret.turret_PICKUP_POSITION_VALUE   = -225;
+                robot.turret.turret_PICKUP_POSITION_VALUE   = -255;
                 robot.turret.turret_DEPOSIT_POSITION_VALUE  = 87;
 
                 cornerDeltaX = 2;
                 cornerDeltaY = 0;
 
-                pickupDeltaX = 1;
+                pickupDeltaX = 0.5;
                 pickupDeltaY = -1;
             }
         }
