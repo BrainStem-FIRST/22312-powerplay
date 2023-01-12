@@ -122,7 +122,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
 
                 //.setTangent(Math.toRadians(pickupTangent))
                 .splineToConstantHeading(new Vector2d(pickupPose.getX(), pickupPose.getY()),Math.toRadians(pickupTangent),
-                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75), //3.5),
+                        SampleMecanumDrive.getVelocityConstraint(30, Math.toRadians(180), 9.75), //3.5),
                         SampleMecanumDrive.getAccelerationConstraint(90))
 
                 // Timer is from start of the trajectory; it is not an offset
@@ -278,7 +278,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
                 pickupTangent = 90;
 
                 robot.turret.turret_PICKUP_POSITION_VALUE   = 245;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -112; //-165
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -105; //-165
 
                 cornerDeltaX = 0;
                 cornerDeltaY = 0;
@@ -324,13 +324,13 @@ public class Auto_1plus5atLow extends LinearOpMode {
                 pickupTangent = -90;
 
                 robot.turret.turret_PICKUP_POSITION_VALUE   = 245;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -107;
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -105;
 
                 cornerDeltaX = 0;
                 cornerDeltaY = 0;
 
                 pickupDeltaX = 0;
-                pickupDeltaY = 0;
+                pickupDeltaY = -0.5;
             }
             else {                  // BLUE-RIGHT
                 XFORM_X = -1;
@@ -371,7 +371,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 36, XFORM_Y * 63.75, Math.toRadians(startingHeading));
         cornerPose      = new Pose2d(XFORM_X * (60 + cornerDeltaX), XFORM_Y * (52 + cornerDeltaY), Math.toRadians(cornerHeading));
-        pickupPose      = new Pose2d(XFORM_X * (57 + pickupDeltaX), XFORM_Y * (13.75 + pickupDeltaY), Math.toRadians(pickupHeading));
+        pickupPose      = new Pose2d(XFORM_X * (56.5 + pickupDeltaX), XFORM_Y * (13.75 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
