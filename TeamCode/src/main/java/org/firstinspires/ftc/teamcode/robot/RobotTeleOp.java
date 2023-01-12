@@ -147,8 +147,11 @@ public class RobotTeleOp extends LinearOpMode {
         }
 
         if (retractionInProgress) {
-            if (elapsedTime.seconds() > 0.3) {
+            if(elapsedTime.seconds() > 0.1){
                 stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
+            }
+            if (elapsedTime.seconds() > 0.4) {
+//                stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
                 toggleMap.put(GAMEPAD_1_A_STATE, false);
                 telemetry.addData("timer in ", true);
                 retractionInProgress = false;
