@@ -102,7 +102,7 @@ public class RobotTeleOp extends LinearOpMode {
       while (opModeIsActive()) {
       if(gamepad2.right_trigger > 0.1){
           robot.lift.setMotor(1.0);
-      } else if(gamepad2.dpad_down) {
+      } else if(gamepad2.right_bumper) {
           robot.lift.resetEncoders();
       } else if(gamepad2.left_trigger > 0.1) {
           robot.lift.setMotor(-1.0);
