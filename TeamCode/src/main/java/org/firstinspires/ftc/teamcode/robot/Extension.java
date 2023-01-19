@@ -26,6 +26,8 @@ public class Extension {
     public final double EXTENSION_POSITION_LEFT = 0.4;  // Extended to left position
 
 
+    public int EDITABLE_SERVO_MAX_PWM = 565;
+
     public final double TWOBAR_POSITION_HOME    = 0;    // vertical position
     public final double TWOBAR_POSITION_MAX     = 1;    // fully tilted
 
@@ -36,7 +38,7 @@ public class Extension {
     public final String EXTEND_LEFT = "EXTENDED_L";
     public final String FINE_ADJUSTMENTS = "FINE_ADJUSTMENTS";
     public final String TRANSITION_STATE = "TRANSITION";
-    public int adjustmentPosition = 0;
+    public double adjustmentPosition = 0;
 
     private Map stateMap;
 

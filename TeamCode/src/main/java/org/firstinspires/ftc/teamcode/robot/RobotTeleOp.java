@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityCons
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -100,182 +101,187 @@ public class RobotTeleOp extends LinearOpMode {
 
         waitForStart();
       while (opModeIsActive()) {
-      if(gamepad2.right_trigger > 0.1){
-          robot.lift.setMotor(1.0);
-      } else if(gamepad2.right_bumper) {
-          robot.lift.resetEncoders();
-      } else if(gamepad2.left_trigger > 0.1) {
-          robot.lift.setMotor(-1.0);
-      } else if(gamepad2.x){
-          robot.turret.resetEncoders();
-      } else {
-        setButtons();
-        telemetry.addData("State Map", stateMap);
-        if (toggleMap.get(GAMEPAD_1_B_STATE)) {
-            stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
-        } else {
-            stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
-        }
+          if (gamepad2.right_trigger > 0.1) {
+              robot.lift.setMotor(1.0);
+          } else if (gamepad2.right_bumper && gamepad2.left_bumper) {
+              robot.lift.resetEncoders();
+          } else if (gamepad2.left_trigger > 0.1) {
+              robot.lift.setMotor(-1.0);
+          } else if (gamepad2.x) {
+              robot.turret.resetEncoders();
+          } else {
+              setButtons();
+              telemetry.addData("State Map", stateMap);
+              if (toggleMap.get(GAMEPAD_1_B_STATE)) {
+                  stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
+              } else {
+                  robot.arm.EDITABLE_SERVO_MAX_PWM = 565;
+                  stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
+              }
 
-        if(toggleMap.get(GAMEPAD_1_A_STATE)){
-            robot.lift.liftPickup = 0;
-            stateMap.put(robot.lift.LIFT_SYSTEM_NAME, stateMap.get(constants.DRIVER_2_SELECTED_LIFT));
-        } else {
-            stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_GROUND);
-        }
+              if (toggleMap.get(GAMEPAD_1_A_STATE)) {
+                  robot.lift.liftPickup = 0;
+                  stateMap.put(robot.lift.LIFT_SYSTEM_NAME, stateMap.get(constants.DRIVER_2_SELECTED_LIFT));
+              } else {
+                  stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_GROUND);
+              }
 
 
-        if(gamepad2.a){
-            stateMap.put(constants.DRIVER_2_SELECTED_LIFT, robot.lift.LIFT_POLE_LOW);
-        } else if(gamepad2.b){
-            stateMap.put(constants.DRIVER_2_SELECTED_LIFT, robot.lift.LIFT_POLE_MEDIUM);
-        } else if(gamepad2.y){
-            stateMap.put(constants.DRIVER_2_SELECTED_LIFT, robot.lift.LIFT_POLE_HIGH);
-        }
-        if(gamepad1.right_bumper){
-            telemetry.addData("time", elapsedTime);
-            if(((String)stateMap.get(robot.lift.LIFT_SYSTEM_NAME)).equalsIgnoreCase(robot.lift.LIFT_POLE_GROUND)){
-                stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
-            }else{
-                elapsedTime.reset();
-                elapsedTime.startTime();
-                retractionInProgress = true;
-                stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.FULLY_OPEN_STATE);
-                toggleMap.put(GAMEPAD_1_B_STATE, false);
-            }
+              if (gamepad2.a) {
+                  stateMap.put(constants.DRIVER_2_SELECTED_LIFT, robot.lift.LIFT_POLE_LOW);
+              } else if (gamepad2.b) {
+                  stateMap.put(constants.DRIVER_2_SELECTED_LIFT, robot.lift.LIFT_POLE_MEDIUM);
+              } else if (gamepad2.y) {
+                  stateMap.put(constants.DRIVER_2_SELECTED_LIFT, robot.lift.LIFT_POLE_HIGH);
+              }
+              if (gamepad1.right_bumper) {
+                  telemetry.addData("time", elapsedTime);
+                  if (((String) stateMap.get(robot.lift.LIFT_SYSTEM_NAME)).equalsIgnoreCase(robot.lift.LIFT_POLE_GROUND)) {
+                      stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
+                  } else {
+                      elapsedTime.reset();
+                      elapsedTime.startTime();
+                      retractionInProgress = true;
+                      stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.FULLY_OPEN_STATE);
+                      toggleMap.put(GAMEPAD_1_B_STATE, false);
+                  }
 
-        }
+              }
 
-        if (retractionInProgress) {
-            if(elapsedTime.seconds() > 0.1){
-                stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
-            }
-            if (elapsedTime.seconds() > 0.4) {
+              if (retractionInProgress) {
+                  if (elapsedTime.seconds() > 0.1) {
+                      stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
+                  }
+                  if (elapsedTime.seconds() > 0.4) {
 //                stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
-                toggleMap.put(GAMEPAD_1_A_STATE, false);
-                telemetry.addData("timer in ", true);
-                retractionInProgress = false;
-                elapsedTime.reset();
-            } else if (elapsedTime.seconds() > 0.3) {
-                stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
-            }
-        }
+                      toggleMap.put(GAMEPAD_1_A_STATE, false);
+                      telemetry.addData("timer in ", true);
+                      retractionInProgress = false;
+                      elapsedTime.reset();
+                  } else if (elapsedTime.seconds() > 0.3) {
+                      stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
+                  }
+              }
 
-        if(gamepad2.dpad_right){
-            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.RIGHT_POSITION);
-        } else if(gamepad2.dpad_left){
-            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.LEFT_POSITION);
-        }else if(gamepad2.dpad_up){
-            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
-        }
+              if (gamepad2.dpad_right) {
+                  stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.RIGHT_POSITION);
+              } else if (gamepad2.dpad_left) {
+                  stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.LEFT_POSITION);
+              } else if (gamepad2.dpad_up) {
+                  stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
+              }
 
-          if (stateMap.get(robot.lift.LIFT_SYSTEM_NAME) != robot.lift.LIFT_POLE_GROUND) {
-              if (gamepad1.right_trigger > 0.05) {
-                  robot.lift.setAdjustmentHeight(gamepad1.right_trigger);
+              if (stateMap.get(robot.lift.LIFT_SYSTEM_NAME) != robot.lift.LIFT_POLE_GROUND) {
+                  if (gamepad1.right_trigger > 0.05) {
+                      robot.lift.setAdjustmentHeight(gamepad1.right_trigger);
 //              } else if (gamepad1.right_trigger >= 0.9) {
 //                  stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
 //                  robot.grabber.grabberOpen();
-              } else {
-                  robot.lift.setAdjustmentHeight(0);
-              }
-          } else if(gamepad1.right_trigger > 0.5){
-              grabberCycleTime.reset();
-              grabberCycleTime.startTime();
-              stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_STATE);
-              grabberCycleInProgress = true;
+                  } else {
+                      robot.lift.setAdjustmentHeight(0);
+                  }
+              } else if (gamepad1.right_trigger > 0.5) {
+                  grabberCycleTime.reset();
+                  grabberCycleTime.startTime();
+                  stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_STATE);
+                  grabberCycleInProgress = true;
 //              stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS);
-          }
+              }
 //          telemetry.addData("Time",grabberCycleTime.milliseconds());
 //          telemetry.addData("grabberCycleInProgress", grabberCycleInProgress);
 
-          if(grabberCycleInProgress){
-              if(grabberCycleTime.milliseconds() > 300){
-                  robot.lift.liftPickup = 60;
-                  grabberCycleInProgress = false;
+              if (grabberCycleInProgress) {
+                  if (grabberCycleTime.milliseconds() > 300) {
+                      robot.lift.liftPickup = 60;
+                      grabberCycleInProgress = false;
+                  }
               }
-          }
 //        if(gamepad1.left_trigger > 0.2){
 //            stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_CHECK_STATE);
 //        }
-          if(gamepad2.left_stick_y > 0.2){
-              robot.arm.adjustmentPosition +=  extensionAddition;
-              telemetry.addData("This is working", true);
-//          } else if(gamepad2.left_stick_y <= 0.2 && gamepad2.left_stick_y >= -0.2){
-//              robot.arm.adjustmentPosition = 0;
-          } else if(gamepad2.left_stick_y < -0.2){
-              robot.arm.adjustmentPosition -= extensionAddition;
+              if (gamepad2.right_bumper) {
+                  robot.arm.EDITABLE_SERVO_MAX_PWM -= extensionAddition;
+                  robot.arm.extension.setPwmRange(new PwmControl.PwmRange(robot.arm.EDITABLE_SERVO_MAX_PWM, 640));
+//
+              }
+
+              if (gamepad2.left_bumper) {
+                  robot.arm.EDITABLE_SERVO_MAX_PWM += extensionAddition;
+                  robot.arm.extension.setPwmRange(new PwmControl.PwmRange(robot.arm.EDITABLE_SERVO_MAX_PWM, 640));
+              }
+
+              if (stateMap.get(DRIVE_MODE).equalsIgnoreCase(MANUAL_DRIVE_MODE)) {
+                  if (gamepad1.dpad_down) {
+                      stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
+                      stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
+                      drive.setPoseEstimate(new Pose2d(0, 0, 0));
+                      Pose2d currentPosition = drive.getPoseEstimate();
+                      Pose2d targetPosition = new Pose2d(currentPosition.getX() - 40, currentPosition.getY(), currentPosition.getHeading());
+                      TrajectorySequence reverseTrajectory = drive.highSpeedTrajectoryBuilder(drive.getPoseEstimate())
+                              .lineToLinearHeading(targetPosition)
+                              .UNSTABLE_addTemporalMarkerOffset(-1, () -> toggleMap.put(GAMEPAD_1_A_STATE, false))
+                              .UNSTABLE_addTemporalMarkerOffset(0, () -> stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE))
+                              .build();
+                      drive.followTrajectorySequenceAsync(reverseTrajectory);
+
+                  } else if (gamepad1.dpad_up) {
+                      stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
+                      toggleMap.put(GAMEPAD_1_A_STATE, true);
+                      Pose2d currentPosition = drive.getPoseEstimate();
+                      Pose2d targetPosition = new Pose2d(currentPosition.getX() + 41.5, currentPosition.getY(), currentPosition.getHeading());
+                      TrajectorySequence forwardTrajectory = drive.highSpeedTrajectoryBuilder(drive.getPoseEstimate())
+                              .lineToLinearHeading(targetPosition)
+                              .UNSTABLE_addTemporalMarkerOffset(0, () -> stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE))
+                              .build();
+                      drive.followTrajectorySequenceAsync(forwardTrajectory);
+
+                  }
+              }
+
+              if (stateMap.get(DRIVE_MODE).equals(MANUAL_DRIVE_MODE)) {
+                  if (gamepad2.left_stick_x <= -0.1 || gamepad2.left_stick_x >= 0.1) {
+                      drive.setWeightedDrivePower(
+                              new Pose2d(
+                                      0,
+                                      -(0.5 * gamepad1.left_stick_x),
+                                      0
+                              )
+                      );
+
+                  }
+
+                  if (toggleMap.get(GAMEPAD_1_LEFT_BUTTON_STATE)) {
+                      drive.setWeightedDrivePower(
+                              new Pose2d(
+
+                                      (SLOWMODE * -gamepad1.left_stick_y),
+                                      (SLOWMODE * -gamepad1.left_stick_x),
+                                      (SLOWMODE * -gamepad1.right_stick_x)
+                              )
+                      );
+                  } else {
+                      drive.setWeightedDrivePower(
+                              new Pose2d(
+
+                                      -gamepad1.left_stick_y,
+                                      -gamepad1.left_stick_x,
+                                      -gamepad1.right_stick_x
+                              )
+                      );
+                  }
+              }
+
+              drive.update();
+              robot.updateSystems();
+
+              telemetry.addData("Cycle Lift up", stateMap.get(constants.CYCLE_LIFT_UP));
+              telemetry.addData("Lift selected", stateMap.get(robot.lift.LIFT_SYSTEM_NAME));
+              telemetry.addData("Lift subheight adding", robot.lift.liftPickup);
+              telemetry.update();
           }
-        if(stateMap.get(DRIVE_MODE).equalsIgnoreCase(MANUAL_DRIVE_MODE)){
-            if (gamepad1.dpad_down) {
-                stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
-                stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
-                drive.setPoseEstimate(new Pose2d(0,0,0));
-                Pose2d currentPosition = drive.getPoseEstimate();
-                Pose2d targetPosition = new Pose2d(currentPosition.getX() - 40, currentPosition.getY(), currentPosition.getHeading());
-                TrajectorySequence reverseTrajectory = drive.highSpeedTrajectoryBuilder(drive.getPoseEstimate())
-                        .lineToLinearHeading(targetPosition)
-                        .UNSTABLE_addTemporalMarkerOffset(-1, () -> toggleMap.put(GAMEPAD_1_A_STATE, false))
-                        .UNSTABLE_addTemporalMarkerOffset(0,() -> stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE))
-                        .build();
-                drive.followTrajectorySequenceAsync(reverseTrajectory);
-
-            } else if (gamepad1.dpad_up) {
-                stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
-                toggleMap.put(GAMEPAD_1_A_STATE, true);
-                Pose2d currentPosition = drive.getPoseEstimate();
-                Pose2d targetPosition = new Pose2d(currentPosition.getX() + 41.5, currentPosition.getY(), currentPosition.getHeading());
-                TrajectorySequence forwardTrajectory = drive.highSpeedTrajectoryBuilder(drive.getPoseEstimate())
-                        .lineToLinearHeading(targetPosition)
-                        .UNSTABLE_addTemporalMarkerOffset(0,() -> stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE))
-                        .build();
-                drive.followTrajectorySequenceAsync(forwardTrajectory);
-
-            }
         }
-
-        if (stateMap.get(DRIVE_MODE).equals(MANUAL_DRIVE_MODE)) {
-            if(gamepad2.left_stick_x <= -0.1 || gamepad2.left_stick_x >= 0.1){
-                drive.setWeightedDrivePower(
-                        new Pose2d(
-                                0,
-                                -(0.5 * gamepad1.left_stick_x),
-                                0
-                        )
-                );
-
-            }
-
-          if (toggleMap.get(GAMEPAD_1_LEFT_BUTTON_STATE)) {
-              drive.setWeightedDrivePower(
-                      new Pose2d(
-
-                              (SLOWMODE * -gamepad1.left_stick_y),
-                              (SLOWMODE * -gamepad1.left_stick_x),
-                              (SLOWMODE * -gamepad1.right_stick_x)
-                      )
-              );
-          } else {
-              drive.setWeightedDrivePower(
-                      new Pose2d(
-
-                              -gamepad1.left_stick_y,
-                              -gamepad1.left_stick_x,
-                              -gamepad1.right_stick_x
-                      )
-              );
-          }
-      }
-
-        drive.update();
-        robot.updateSystems();
-
-        telemetry.addData("Cycle Lift up", stateMap.get(constants.CYCLE_LIFT_UP));
-        telemetry.addData("Lift selected", stateMap.get(robot.lift.LIFT_SYSTEM_NAME));
-        telemetry.addData("Lift subheight adding", robot.lift.liftPickup);
-        telemetry.update();
-        }
-      }
     }
+
 
     private void setButtons() {
         toggleButton(GAMEPAD_1_A_STATE, GAMEPAD_1_A_IS_PRESSED, gamepad1.a);
