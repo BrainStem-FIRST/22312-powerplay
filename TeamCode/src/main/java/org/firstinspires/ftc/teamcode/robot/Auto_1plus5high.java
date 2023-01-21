@@ -5,7 +5,6 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -24,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-@Disabled
 @Config
 @Autonomous(name="Robot: Auto 1+5 at High", group="Robot")
 public class Auto_1plus5high extends LinearOpMode {
@@ -112,6 +110,10 @@ public class Auto_1plus5high extends LinearOpMode {
         trajectoryStart = robot.drive.trajectorySequenceBuilder(startingPose)
 
                 //make sure the cone is lifted a little from the ground before robot starts moving
+                .addTemporalMarker(0.2, () -> {
+                    // lift off the ground for transportation
+                    robot.lift.goToClear();
+                })
 
                 .setTangent(Math.toRadians(startingTangent))
                 .splineToConstantHeading(new Vector2d(cornerPose.getX(), cornerPose.getY()), Math.toRadians(cornerTangent),
@@ -120,7 +122,7 @@ public class Auto_1plus5high extends LinearOpMode {
 
                 //.setTangent(Math.toRadians(pickupTangent))
                 .splineToConstantHeading(new Vector2d(pickupPose.getX(), pickupPose.getY()),Math.toRadians(pickupTangent),
-                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75), //3.5),
+                        SampleMecanumDrive.getVelocityConstraint(30, Math.toRadians(180), 9.75), //3.5),
                         SampleMecanumDrive.getAccelerationConstraint(90))
 
                 // Timer is from start of the trajectory; it is not an offset
@@ -128,15 +130,9 @@ public class Auto_1plus5high extends LinearOpMode {
                     robot.lift.goToLowPoleHeight();
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
                 })
-
-                // Testing statemap approach for Turret
-                .addTemporalMarker(2.0, () -> {   //was 1.7
-                    stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.DEPOSIT_POSITION);
+                .addTemporalMarker(1.6, () -> {
+                    robot.turret.goToDepositPosition();
                 })
-
-//                .addTemporalMarker(2.0, () -> {
-//                    robot.turret.goToDepositPosition();
-//                })
 
                 // Start trajectory ends with holding the cone above the pole
                 .build();
@@ -150,22 +146,20 @@ public class Auto_1plus5high extends LinearOpMode {
 
         trajectoryDeposit = robot.drive.trajectorySequenceBuilder(pickupPose)
                 // This is an empty trajectory with just timer to operate the Gulliver's Tower
-                .waitSeconds(1.6)
+                .waitSeconds(1.5)
+
+                .addTemporalMarker(0,()->{
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DURING_SWING);
+                })
 
                 // Cone picked up outside of the trajectory. Cone is at hand at clearing height
                 // Start moving turret first, and then lift to avoid kicking the stack
-//                .addTemporalMarker(0, () -> {
-//                    robot.turret.goToDepositPosition();
-//                })
-
-                // Testing statemap approach for Turret
-                .addTemporalMarker(0.0, () -> {
-                    stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.DEPOSIT_POSITION);
-                })
-
-                // Clear the pole before adjusting height. Lift move trails the turret move
-                .addTemporalMarker(0.2,()-> {
+                .addTemporalMarker(0.2, () -> {
+                    robot.turret.goToDepositPosition();
                     robot.lift.goToLowPoleHeight();
+                })
+                // Clear the pole before adjusting height. Lift move trails the turret move
+                .addTemporalMarker(0.8,()-> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
                 })
 
@@ -186,18 +180,17 @@ public class Auto_1plus5high extends LinearOpMode {
                 // Cone dropped prior to this trajectory.
                 // All that is needed to move the tower to the pickup location starting with turret first
                 // and then delay-start lift
-                // Testing statemap approach for Turret
-                .addTemporalMarker(0.0, () -> {
-                    stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.PICKUP_POSITION);
+                .addTemporalMarker(0,()->{
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DURING_SWING);
                 })
 
-                .addTemporalMarker(0,()->{
-//                    robot.turret.goToPickupPosition();
-                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
+                .addTemporalMarker(0.2,()->{
+                    robot.turret.goToPickupPosition();
                 })
 
                 // Clear the pole before adjusting height. Lift move trails the turret move
-                .addTemporalMarker(0.5,()-> {
+                .addTemporalMarker(0.8,()-> {
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                     robot.lift.goToPickupHeight();
                 })
 
@@ -231,7 +224,7 @@ public class Auto_1plus5high extends LinearOpMode {
 //        stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
 //        stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
 //        stateMap.put(robot.lift.LIFT_SUBHEIGHT, robot.lift.APPROACH_HEIGHT);
-        stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
+//        stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
 //        stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
 
         // Wait until Alliance and Orientation is set by drivers
@@ -239,6 +232,7 @@ public class Auto_1plus5high extends LinearOpMode {
             setProgram();
         }
 
+        robot.grabber.grabberClose();
 
         //------------------------------------------------------
         //            Camera initialization
@@ -284,7 +278,7 @@ public class Auto_1plus5high extends LinearOpMode {
                 pickupTangent = 90;
 
                 robot.turret.turret_PICKUP_POSITION_VALUE   = 245;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -107; //-165
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -105; //-165
 
                 cornerDeltaX = 0;
                 cornerDeltaY = 0;
@@ -306,12 +300,12 @@ public class Auto_1plus5high extends LinearOpMode {
                 pickupTangent = 90;
 
                 robot.turret.turret_PICKUP_POSITION_VALUE   = -245;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 100;
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 87;
 
                 cornerDeltaX = 0;
                 cornerDeltaY = 0;
 
-                pickupDeltaX = 1;
+                pickupDeltaX = -0.5; //1
                 pickupDeltaY = -1;
             }
         }
@@ -330,13 +324,13 @@ public class Auto_1plus5high extends LinearOpMode {
                 pickupTangent = -90;
 
                 robot.turret.turret_PICKUP_POSITION_VALUE   = 245;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -120;
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -105;
 
                 cornerDeltaX = 0;
                 cornerDeltaY = 0;
 
                 pickupDeltaX = 0;
-                pickupDeltaY = 1;
+                pickupDeltaY = -0.5;
             }
             else {                  // BLUE-RIGHT
                 XFORM_X = -1;
@@ -351,13 +345,13 @@ public class Auto_1plus5high extends LinearOpMode {
                 pickupHeading = 90;
                 pickupTangent = -90;
 
-                robot.turret.turret_PICKUP_POSITION_VALUE   = -225;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 115;
+                robot.turret.turret_PICKUP_POSITION_VALUE   = -255;
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 87;
 
-                cornerDeltaX = 4;
+                cornerDeltaX = 2;
                 cornerDeltaY = 0;
 
-                pickupDeltaX = -0.8;
+                pickupDeltaX = 0.5;
                 pickupDeltaY = -1;
             }
         }
@@ -377,7 +371,7 @@ public class Auto_1plus5high extends LinearOpMode {
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 36, XFORM_Y * 63.75, Math.toRadians(startingHeading));
         cornerPose      = new Pose2d(XFORM_X * (60 + cornerDeltaX), XFORM_Y * (52 + cornerDeltaY), Math.toRadians(cornerHeading));
-        pickupPose      = new Pose2d(XFORM_X * (56.26 + pickupDeltaX), XFORM_Y * (13.75 + pickupDeltaY), Math.toRadians(pickupHeading));
+        pickupPose      = new Pose2d(XFORM_X * (56.5 + pickupDeltaX), XFORM_Y * (13.75 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
@@ -386,7 +380,7 @@ public class Auto_1plus5high extends LinearOpMode {
         TrajectorySequence startTrajectory   = buildStartTrajectory(robot);
         TrajectorySequence pickupTrajectory  = buildPickupTrajectory(robot);
         TrajectorySequence depositTrajectory = buildDepositTrajectory(robot);
-        TrajectorySequence trajectoryPark;
+        Trajectory trajectoryPark;
 
         telemetry.clearAll();
         telemetry.addLine("Load Cone.  Driver 1 Hit A.");
@@ -544,8 +538,6 @@ public class Auto_1plus5high extends LinearOpMode {
                 }
         }
 
-        // lift off the ground for transportation
-        robot.pickupCone();
 
         // initiate first trajectory asynchronous (go to pickup location) at the start of autonomous
         // Need to call drive.update() to make things move within the loop
@@ -593,7 +585,10 @@ public class Auto_1plus5high extends LinearOpMode {
                     // Switch to trajectoryDeposit once the pickup trajectory is complete
                     if (!robot.drive.isBusy()) {
                         // Pickup trajectory completed, pick the cone up
-                        robot.pickupCone();
+                        robot.grabber.grabberClose();
+                        sleep(200); // wait for servo to grab
+                        robot.lift.goToClear();
+                        sleep(100); // wait for lift to clear the stack
 
                         // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
                         robot.lift.numCyclesCompleted++;
@@ -608,26 +603,16 @@ public class Auto_1plus5high extends LinearOpMode {
 
                 case TRAJECTORY_PARKING_STATE:
 
-                    trajectoryPark = robot.drive.trajectorySequenceBuilder(robot.drive.getPoseEstimate())
+                    robot.arm.extendHome();
+                    robot.grabber.grabberOpen();
+                    robot.turret.moveTo(robot.turret.CENTER_POSITION_VALUE);
+
+                    trajectoryPark = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate())
                             .lineToLinearHeading(parkingPose)
-
-                            .addTemporalMarker(0.0, () -> {
-                                robot.arm.extendHome();
-                                robot.grabber.grabberOpen();
-                            })
-
-                            // Testing statemap approach for Turret
-                            .addTemporalMarker(0.2, () -> {
-                                stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
-                            })
-
-                            .addTemporalMarker(0.5, () -> {
-                                robot.lift.raiseHeightTo(robot.lift.LIFT_POSITION_RESET);
-                            })
-
                             .build();
+                    robot.drive.followTrajectory(trajectoryPark); // This is synchronous trajectory; code does not advance until the trajectory is complete
 
-                    robot.drive.followTrajectorySequenceAsync(trajectoryPark);
+                    robot.lift.raiseHeightTo(robot.lift.LIFT_POSITION_RESET);
 
                     currentTrajectoryState = TrajectoryState.TRAJECTORY_IDLE;
 
@@ -639,28 +624,26 @@ public class Auto_1plus5high extends LinearOpMode {
                     break;
             }
 
+//            telemetry.addData("remaining time:", (30.0 - autoTime.seconds()));
+
             // Is it time to park?
             if (autoTime.seconds() > TIME_TO_PARK &&
                     (currentTrajectoryState != TrajectoryState.TRAJECTORY_PARKING_STATE) &&
-                     currentTrajectoryState != TrajectoryState.TRAJECTORY_IDLE) {
+                    currentTrajectoryState != TrajectoryState.TRAJECTORY_IDLE) {
                 //if((trajectoryPickup.duration()+trajectoryParkFromPickup.duration()) < (30.0 - autoTime.seconds())) {
                 currentTrajectoryState = TrajectoryState.TRAJECTORY_PARKING_STATE;
             }
             else {
 
-                telemetry.addData("Trajectory State:",currentTrajectoryState);
+                telemetry.addData("State:",currentTrajectoryState);
                 telemetry.addData("Lift Position=",robot.lift.getPosition());
-                telemetry.addData("Turret Target State :",stateMap.get(robot.turret.SYSTEM_NAME));
-                telemetry.addData("Turret Current State:",robot.turret.getCurrentState());
                 telemetry.addData("Turret Position=", robot.turret.getPosition());
-                telemetry.addData("Turret Power=", robot.turret.turretMotor.getPower());
 
                 telemetry.update();
 
                 // Continue executing trajectory following
                 robot.drive.update();
-                // Experimenting state map with Turret
-                robot.turret.setState(stateMap.get(robot.turret.SYSTEM_NAME),robot.lift);    // For use with turretPIDController
+//                robot.turret.setTurretPower();
 
                 // Execute systems based on stateMap
 //                robot.updateSystems();
