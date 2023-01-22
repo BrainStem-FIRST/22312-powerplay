@@ -44,12 +44,13 @@ public class RobotTeleOp extends LinearOpMode {
 
 
     private double extensionPosition = 0.01;
+    private int GROUND_LIFT_FINE_ADJUSTMENTS = 1;
 
     private final String MANUAL_DRIVE_MODE = "MANUAL";
     private final String AUTO_DRIVE_MODE = "AUTO";
     private final String DRIVE_MODE = "DRIVE_MODE";
     private final int checkTicks = 10;
-    private final double extensionAddition = 0.1;
+    private final int extensionAddition = 3;
 
     private boolean leftTriggerPressed = false;
     private boolean retractionInProgress = false;
@@ -101,12 +102,10 @@ public class RobotTeleOp extends LinearOpMode {
 
         waitForStart();
       while (opModeIsActive()) {
-          if (gamepad2.right_trigger > 0.1) {
-              robot.lift.setMotor(1.0);
-          } else if (gamepad2.right_bumper && gamepad2.left_bumper) {
+          if (gamepad2.right_bumper && gamepad2.left_bumper) {
               robot.lift.resetEncoders();
           } else if (gamepad2.left_trigger > 0.1) {
-              robot.lift.setMotor(-1.0);
+              robot.lift.setMotor(-1);
           } else if (gamepad2.x) {
               robot.turret.resetEncoders();
           } else {
@@ -116,11 +115,13 @@ public class RobotTeleOp extends LinearOpMode {
                   stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
               } else {
                   robot.arm.EDITABLE_SERVO_MAX_PWM = 565;
+                  robot.arm.extension.setPwmRange(new PwmControl.PwmRange(robot.arm.EDITABLE_SERVO_MAX_PWM, 640));
                   stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
               }
 
               if (toggleMap.get(GAMEPAD_1_A_STATE)) {
                   robot.lift.liftPickup = 0;
+                  telemetry.addData("Lift pickup", robot.lift.liftPickup);
                   stateMap.put(robot.lift.LIFT_SYSTEM_NAME, stateMap.get(constants.DRIVER_2_SELECTED_LIFT));
               } else {
                   stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_GROUND);
@@ -207,6 +208,8 @@ public class RobotTeleOp extends LinearOpMode {
 
               if (gamepad2.left_bumper) {
                   robot.arm.EDITABLE_SERVO_MAX_PWM += extensionAddition;
+                  telemetry.addData("Editable Servo Max PWM", robot.arm.EDITABLE_SERVO_MAX_PWM);
+                  telemetry.addData("Mihir", true);
                   robot.arm.extension.setPwmRange(new PwmControl.PwmRange(robot.arm.EDITABLE_SERVO_MAX_PWM, 640));
               }
 
