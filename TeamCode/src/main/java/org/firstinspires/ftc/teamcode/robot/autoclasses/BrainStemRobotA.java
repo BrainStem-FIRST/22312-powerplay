@@ -158,7 +158,7 @@ public class BrainStemRobotA {
         sleep(250);
 //        lift.goToClear();
         lift.raiseHeightTo(lift.getPosition() + 90);
-        sleep(200);
+        sleep(300); // original was 200
     }
 }
 

@@ -84,7 +84,7 @@ public class Auto_1plus5high extends LinearOpMode {
     //            Variable used for trajectories
     //------------------------------------------------------
 
-    Pose2d startingPose, pickupPose, parkingPose;
+    Pose2d startingPose, depositPose, pickupPose, parkingPose;
     Pose2d cornerPose;
 
     // Determine waypoints based on Alliance and Orientation
@@ -92,6 +92,7 @@ public class Auto_1plus5high extends LinearOpMode {
     double  pickupDeltaX, pickupDeltaY,
             cornerDeltaX, cornerDeltaY;
     double  startingHeading, startingTangent,
+            depositHeading, depositTangent,
             pickupHeading, pickupTangent,
             cornerHeading, cornerTangent;
     String  turretState, armState;
@@ -116,23 +117,27 @@ public class Auto_1plus5high extends LinearOpMode {
                 })
 
                 .setTangent(Math.toRadians(startingTangent))
-                .splineToConstantHeading(new Vector2d(cornerPose.getX(), cornerPose.getY()), Math.toRadians(cornerTangent),
-                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75), //3.5),
+                .lineToConstantHeading(new Vector2d(cornerPose.getX(), cornerPose.getY()),
+                        SampleMecanumDrive.getVelocityConstraint(30, Math.toRadians(180), 9.75), //3.5),
                         SampleMecanumDrive.getAccelerationConstraint(90))
 
-                //.setTangent(Math.toRadians(pickupTangent))
-                .splineToConstantHeading(new Vector2d(pickupPose.getX(), pickupPose.getY()),Math.toRadians(pickupTangent),
+                .splineToSplineHeading(depositPose, Math.toRadians(depositTangent),
                         SampleMecanumDrive.getVelocityConstraint(30, Math.toRadians(180), 9.75), //3.5),
                         SampleMecanumDrive.getAccelerationConstraint(90))
 
                 // Timer is from start of the trajectory; it is not an offset
                 .addTemporalMarker(1.5, () -> {
-                    robot.lift.goToLowPoleHeight();
-                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
+                    robot.lift.goToHighPoleHeight();
                 })
-                .addTemporalMarker(1.6, () -> {
+
+                .addTemporalMarker(1.77, () -> {
                     robot.turret.goToDepositPosition();
                 })
+
+                .addTemporalMarker(2.2, () -> {
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
+                })
+
 
                 // Start trajectory ends with holding the cone above the pole
                 .build();
@@ -146,22 +151,41 @@ public class Auto_1plus5high extends LinearOpMode {
 
         trajectoryDeposit = robot.drive.trajectorySequenceBuilder(pickupPose)
                 // This is an empty trajectory with just timer to operate the Gulliver's Tower
-                .waitSeconds(1.5)
-
-                .addTemporalMarker(0,()->{
-                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DURING_SWING);
-                })
+                .lineToConstantHeading(new Vector2d(depositPose.getX(), depositPose.getY()),
+                        SampleMecanumDrive.getVelocityConstraint(30, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getAccelerationConstraint(90))
 
                 // Cone picked up outside of the trajectory. Cone is at hand at clearing height
-                // Start moving turret first, and then lift to avoid kicking the stack
-                .addTemporalMarker(0.2, () -> {
-                    robot.turret.goToDepositPosition();
-                    robot.lift.goToLowPoleHeight();
+                // Pull arm in for travelling
+                .addTemporalMarker(0,()->{
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_HOME);
                 })
-                // Clear the pole before adjusting height. Lift move trails the turret move
-                .addTemporalMarker(0.8,()-> {
+
+                .waitSeconds(1.0)
+
+                .UNSTABLE_addTemporalMarkerOffset(-1.0, () -> {
+                    robot.lift.goToHighPoleHeight();
+                })
+
+                .UNSTABLE_addTemporalMarkerOffset(-0.5, () -> {
+                    robot.turret.goToDepositPosition();
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
                 })
+
+                // Start moving turret first, and then lift to avoid kicking the stack
+//                .addTemporalMarker(1.0, () -> {
+//                    robot.turret.goToDepositPosition();
+//                })
+//
+//                .addTemporalMarker(0.8, () -> {
+//                    robot.lift.goToHighPoleHeight();
+//                })
+
+                // Clear the pole before adjusting height. Lift move trails the turret move
+
+//                .addTemporalMarker(1.0,()-> {
+//                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
+//                })
 
                 // ConeCycle will be outside of trajectory
                 .build();
@@ -173,25 +197,32 @@ public class Auto_1plus5high extends LinearOpMode {
 
         TrajectorySequence trajectoryPickup;
 
-        trajectoryPickup = robot.drive.trajectorySequenceBuilder(pickupPose)
-                // This is an empty trajectory for just timing the sequence of Gulliver's Tower moves
-                .waitSeconds(1.5)
+        trajectoryPickup = robot.drive.trajectorySequenceBuilder(depositPose)
+                // Move to the cone stack head first, stop at arm's reach
+                .lineToConstantHeading(new Vector2d(pickupPose.getX(), pickupPose.getY()),
+                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getAccelerationConstraint(90))
 
                 // Cone dropped prior to this trajectory.
                 // All that is needed to move the tower to the pickup location starting with turret first
                 // and then delay-start lift
                 .addTemporalMarker(0,()->{
-                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DURING_SWING);
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_HOME);
                 })
 
-                .addTemporalMarker(0.2,()->{
+                .addTemporalMarker(0.1,()->{
                     robot.turret.goToPickupPosition();
+                    robot.grabber.grabberOpenWide();
                 })
 
                 // Clear the pole before adjusting height. Lift move trails the turret move
-                .addTemporalMarker(0.8,()-> {
-                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
+                .addTemporalMarker(0.3,()-> {
                     robot.lift.goToPickupHeight();
+                })
+
+                // Reach arm to touch the cone
+                .addTemporalMarker(0.4,()-> {
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
                 // Stop at the pickup position. Cone will be picked up outside of trajectory
@@ -260,7 +291,7 @@ public class Auto_1plus5high extends LinearOpMode {
 
         double CONE_CYCLE_DURATION = 1.0;   // seconds to allow cone cycle to complete before moving again in trajectory
 
-        startingTangent = 135;
+        startingTangent = 90;
 
         // Determine trajectory headings for all alliance combinations
         if (isAllianceRED) {
@@ -271,14 +302,20 @@ public class Auto_1plus5high extends LinearOpMode {
                 startingHeading = -90;
                 startingTangent = startingTangent; //120
 
-                cornerHeading = -90;
+                cornerHeading = 180;
                 cornerTangent = 90;
 
-                pickupHeading = -90;
-                pickupTangent = 90;
+                depositHeading = 180;
+                depositTangent = 0;
 
-                robot.turret.turret_PICKUP_POSITION_VALUE   = 245;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -105; //-165
+                pickupHeading = 180;
+                pickupTangent = 180;
+
+                robot.turret.turret_PICKUP_POSITION_VALUE   = 0;
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 245;
+
+                robot.arm.EXTENSION_POSITION_PICKUP = 0;
+                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.72;
 
                 cornerDeltaX = 0;
                 cornerDeltaY = 0;
@@ -286,7 +323,7 @@ public class Auto_1plus5high extends LinearOpMode {
                 pickupDeltaX = 0; // previously 0
                 pickupDeltaY = 0;  // previously 0
             }
-            else {                  // RED-RIGHT
+            else {                  // RED-RIGHT TODO: adjust for different quadrant
                 XFORM_X = 1;
                 XFORM_Y = -1;
 
@@ -310,7 +347,7 @@ public class Auto_1plus5high extends LinearOpMode {
             }
         }
         else {
-            if (isOrientationLEFT) { // BLUE-LEFT
+            if (isOrientationLEFT) { // BLUE-LEFT TODO: adjust for different quadrant
                 XFORM_X = 1;
                 XFORM_Y = 1;
 
@@ -332,7 +369,7 @@ public class Auto_1plus5high extends LinearOpMode {
                 pickupDeltaX = 0;
                 pickupDeltaY = -0.5;
             }
-            else {                  // BLUE-RIGHT
+            else {                  // BLUE-RIGHT TODO: adjust for different quadrant
                 XFORM_X = -1;
                 XFORM_Y = 1;
 
@@ -361,6 +398,7 @@ public class Auto_1plus5high extends LinearOpMode {
         telemetry.update();
 
         // Load the initial cone
+
         while(!gamepad1.a && !isStopRequested()) {}
 
         // grab the cone
@@ -370,8 +408,9 @@ public class Auto_1plus5high extends LinearOpMode {
 
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 36, XFORM_Y * 63.75, Math.toRadians(startingHeading));
-        cornerPose      = new Pose2d(XFORM_X * (60 + cornerDeltaX), XFORM_Y * (52 + cornerDeltaY), Math.toRadians(cornerHeading));
-        pickupPose      = new Pose2d(XFORM_X * (56.5 + pickupDeltaX), XFORM_Y * (13.75 + pickupDeltaY), Math.toRadians(pickupHeading));
+        cornerPose      = new Pose2d(XFORM_X * (36 + cornerDeltaX), XFORM_Y * (30 + cornerDeltaY), Math.toRadians(cornerHeading));
+        depositPose     = new Pose2d(XFORM_X * (27 + cornerDeltaX), XFORM_Y * (12 + cornerDeltaY), Math.toRadians(depositHeading));
+        pickupPose      = new Pose2d(XFORM_X * (54 + pickupDeltaX), XFORM_Y * (11 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory

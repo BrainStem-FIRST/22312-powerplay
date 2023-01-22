@@ -176,10 +176,10 @@ public class TurretA {
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
+    // Pickup and Deposit positions are overridden by the auto classes to fit their own needs
     public void goToDepositPosition() {
         transitionToPosition(turret_DEPOSIT_POSITION_VALUE);
     }
-
     public void goToPickupPosition() {
         transitionToPosition(turret_PICKUP_POSITION_VALUE);
     }

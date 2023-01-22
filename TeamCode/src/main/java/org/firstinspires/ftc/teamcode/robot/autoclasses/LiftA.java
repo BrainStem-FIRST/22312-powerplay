@@ -347,6 +347,10 @@ public class LiftA {
         raiseHeightTo(LIFT_POSITION_LOWPOLE);
     }
 
+    public void goToHighPoleHeight() {
+        raiseHeightTo(LIFT_POSITION_HIGHPOLE);
+    }
+
     public void goToPickupHeight() {
         // For pickups from stack, negate the approach height adjustment
         raiseHeightTo(liftPositionPickup + LIFT_ADJUSTMENT);
