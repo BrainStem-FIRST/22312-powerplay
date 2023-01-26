@@ -50,7 +50,9 @@ public class RobotTeleOp extends LinearOpMode {
     private final String AUTO_DRIVE_MODE = "AUTO";
     private final String DRIVE_MODE = "DRIVE_MODE";
     private final int checkTicks = 10;
-    private final int extensionAddition = 3;
+    private final int extensionAddition = 6;
+
+    private int CONE_COUNT = 1;
 
     private boolean leftTriggerPressed = false;
     private boolean retractionInProgress = false;
@@ -172,7 +174,15 @@ public class RobotTeleOp extends LinearOpMode {
                   stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
               }
 
-              if (stateMap.get(robot.lift.LIFT_SYSTEM_NAME) != robot.lift.LIFT_POLE_GROUND) {
+              if(gamepad2.right_trigger > 0.2){
+                  if(CONE_COUNT == 1){
+                      CONE_COUNT = 5;
+                  } else{
+                      CONE_COUNT --;
+                  }
+                  robot.updateConeStackState(CONE_COUNT);
+              }
+              if (stateMap.get(robot.lift.LIFT_SYSTEM_NAME) != robot.lift.LIFT_POLE_GROUND && !robot.inConeStack()) {
                   if (gamepad1.right_trigger > 0.05) {
                       robot.lift.setAdjustmentHeight(gamepad1.right_trigger);
 //              } else if (gamepad1.right_trigger >= 0.9) {
@@ -296,6 +306,7 @@ public class RobotTeleOp extends LinearOpMode {
         toggleButton(GAMEPAD_1_Y_STATE, GAMEPAD_1_Y_PRESSED,gamepad1.y);
         toggleButton(GAMEPAD_1_LEFT_BUTTON_STATE, GAMEPAD_1_LEFT_BUTTON_PRESSED, gamepad1.left_bumper);
     }
+
 
     private boolean toggleButton(String buttonStateName, String buttonPressName, boolean buttonState) {
         boolean buttonPressed = toggleMap.get(buttonPressName);
