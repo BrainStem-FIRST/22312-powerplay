@@ -33,7 +33,7 @@ public class LiftA {
     public final int LIFT_POSITION_GROUND = 125;
     public final int LIFT_POSITION_LOWPOLE = 380;   // 450
     public final int LIFT_POSITION_MIDPOLE = 700;   //685;
-    public final int LIFT_POSITION_HIGHPOLE = 960;
+    public final int LIFT_POSITION_HIGHPOLE = 900;
 
 
     // Lift pick up position is only 4 cone bases higher than the starting position,
@@ -63,7 +63,7 @@ public class LiftA {
     public final String LIFT_POSITION_CLEAR = "LIFT_CLEAR_HEIGHT";
     // This is the encoder tick count for the lift that raises the cone's base just below the rim of the field wall.
     // Raising the cone any further during auto pickup risks hitting the cone's base to the lip of the wall.
-    public final int LIFT_CLEAR_HEIGHT = 285;   // Encoder position was determined empirically
+    public final int LIFT_CLEAR_HEIGHT = 225;   // Encoder position was determined empirically
 
     public final String TRANSITION_STATE = "TRANSITION";
     public final int DELIVERY_ADJUSTMENT = -3;

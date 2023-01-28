@@ -139,18 +139,22 @@ public class BrainStemRobotA {
                 ((String) stateMap.get(constants.CYCLE_LIFT_UP)).equalsIgnoreCase(constants.STATE_COMPLETE));
     }
 
-    public void dropCone() throws InterruptedException {
+    // Just to be safe, the 1+5lowpole drop cone sequence is preserved
+    public void dropConeLowPole() throws InterruptedException {
         lift.raiseHeightTo(lift.getPosition() - 150);
         sleep(200); // was 100
         grabber.grabberOpenWide();
-//        lift.raiseHeightTo(lift.getPosition() + 75);
+    }
+
+    public void dropCone() throws InterruptedException {
+        lift.raiseHeightTo(lift.getPosition() - 200);
+        sleep(200); // was 100
+        grabber.grabberOpen();
 
         // move away from the pole so the grabber does not hit the pole when swinging back
-        // clip the retract position at the swing clearance position so it doesn't hit the motors when swinging back
         // Arm extends with the lower numbers, retracts with higher numbers
-
-        //
-//        arm.extendTo(arm.EXTENSION_POSITION_DURING_SWING);
+        arm.extendTo(arm.EXTENSION_POSITION_HOME);
+        sleep(100);
     }
 
     public void pickupCone() throws InterruptedException {

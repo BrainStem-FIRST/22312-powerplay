@@ -33,7 +33,7 @@ public class ExtensionA {
 
     //needed for Autonomous
     public double EXTENSION_POSITION_PICKUP   = 0.618; //0.65  // Extend to the stack of cones from pickup position
-    public double EXTENSION_POSITION_DEPOSIT  = 0.50; //0.48  // Extend to the low pole from pickup position
+    public double EXTENSION_POSITION_DEPOSIT  = 0.27; //0.50  // Extend to the low pole from pickup position
 
 
     // extension statemap values

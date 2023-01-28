@@ -41,6 +41,8 @@ public class TurretA {
     public Telemetry telemetry;
     public DcMotorEx turretMotor;
 
+    private double targetTurretPower = 0.2; // default turret power unless it was overridden
+
     public TurretA(HardwareMap hwMap, Telemetry telemetry) {
         this.telemetry = telemetry;
         //getting turret motor from the hardware map
@@ -108,7 +110,8 @@ public class TurretA {
         turretMotor.setTargetPosition(positionInTicks);
         turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        turretMotor.setPower(0.9);  // 0.6
+        // Experiment: Slow down the turret to see if it stops on target
+        turretMotor.setPower(targetTurretPower);
     }
 
     public void moveToPID (int positionInTicks) {
@@ -182,5 +185,9 @@ public class TurretA {
     }
     public void goToPickupPosition() {
         transitionToPosition(turret_PICKUP_POSITION_VALUE);
+    }
+
+    public void setTurretPower(double desiredPower) {
+        targetTurretPower = desiredPower;
     }
 }
