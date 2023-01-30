@@ -123,6 +123,7 @@ public class RobotTeleOp extends LinearOpMode {
 
               if (toggleMap.get(GAMEPAD_1_A_STATE)) {
                   robot.lift.liftPickup = 0;
+                  robot.lift.LIFT_POSITION_GROUND = 0;
                   telemetry.addData("Lift pickup", robot.lift.liftPickup);
                   stateMap.put(robot.lift.LIFT_SYSTEM_NAME, stateMap.get(constants.DRIVER_2_SELECTED_LIFT));
               } else {
@@ -175,14 +176,9 @@ public class RobotTeleOp extends LinearOpMode {
               }
 
               if(gamepad2.right_trigger > 0.2){
-                  if(CONE_COUNT == 1){
-                      CONE_COUNT = 5;
-                  } else{
-                      CONE_COUNT --;
-                  }
-                  robot.updateConeStackState(CONE_COUNT);
+                  robot.lift.LIFT_POSITION_GROUND += 1;
               }
-              if (stateMap.get(robot.lift.LIFT_SYSTEM_NAME) != robot.lift.LIFT_POLE_GROUND && !robot.inConeStack()) {
+              if (stateMap.get(robot.lift.LIFT_SYSTEM_NAME) != robot.lift.LIFT_POLE_GROUND) {
                   if (gamepad1.right_trigger > 0.05) {
                       robot.lift.setAdjustmentHeight(gamepad1.right_trigger);
 //              } else if (gamepad1.right_trigger >= 0.9) {
@@ -202,8 +198,11 @@ public class RobotTeleOp extends LinearOpMode {
 //          telemetry.addData("grabberCycleInProgress", grabberCycleInProgress);
 
               if (grabberCycleInProgress) {
-                  if (grabberCycleTime.milliseconds() > 300) {
+                  if (grabberCycleTime.milliseconds() > 300 && robot.lift.LIFT_POSITION_GROUND == 0) {
                       robot.lift.liftPickup = 60;
+                      grabberCycleInProgress = false;
+                  } else if(grabberCycleTime.milliseconds() > 300 && robot.lift.LIFT_POSITION_GROUND != 0){
+                      robot.lift.liftPickup = 100;
                       grabberCycleInProgress = false;
                   }
               }
