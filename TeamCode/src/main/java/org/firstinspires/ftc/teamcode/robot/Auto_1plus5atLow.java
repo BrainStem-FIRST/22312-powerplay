@@ -551,7 +551,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
                     // Switch to trajectoryPickup once the starting trajectory is complete
                     if (!robot.drive.isBusy()) {
                         // Initial trajectory completed, drop the cone
-                        robot.dropCone();
+                        robot.dropConeLowPole();
                         sleep(100); // wait for cone to drop
 
                         // Start the next state
@@ -564,7 +564,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
                     // Switch to Pickup once the deposit trajectory is complete
                     if (!robot.drive.isBusy()) {
                         // Deposit trajectory completed, drop the cone
-                        robot.dropCone();
+                        robot.dropConeLowPole();
                         sleep(100); // wait for cone to drop
 
                         // Continue the cycle until no more cones left
