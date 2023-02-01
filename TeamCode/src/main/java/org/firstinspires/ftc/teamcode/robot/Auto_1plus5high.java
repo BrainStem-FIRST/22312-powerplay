@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.robot.Vision.imagecv.AprilTagDetectionPipe
 import org.firstinspires.ftc.teamcode.robot.autoclasses.BrainStemRobotA;
 import org.firstinspires.ftc.teamcode.robot.autoclasses.ConstantsA;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.opencv.core.Mat;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -117,9 +118,6 @@ public class Auto_1plus5high extends LinearOpMode {
                 })
 
                 .setTangent(Math.toRadians(startingTangent))
-//                .lineToConstantHeading(new Vector2d(cornerPose.getX(), cornerPose.getY()),
-//                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75), //3.5),
-//                        SampleMecanumDrive.getAccelerationConstraint(90))
 
                 // 2.55 sec to reach destination
                 .splineToSplineHeading(depositPose, Math.toRadians(depositTangent),
@@ -155,27 +153,33 @@ public class Auto_1plus5high extends LinearOpMode {
 
         TrajectorySequence trajectoryDeposit;
 
-        trajectoryDeposit = robot.drive.trajectorySequenceBuilder(robot.drive.getPoseEstimate())
+        trajectoryDeposit = robot.drive.trajectorySequenceBuilder(pickupPose)
                 // This is an empty trajectory with just timer to operate the Gulliver's Tower
 
-                .lineToLinearHeading(depositPose,
-                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(270), 9.75),
-                        SampleMecanumDrive.getAccelerationConstraint(90))
-/*
+                .setTangent(depositTangent)
+                .splineToSplineHeading(depositPose, Math.toRadians(depositTangent))
+//                        SampleMecanumDrive.getVelocityConstraint(30, Math.toRadians(180), 9.75),
+//                        SampleMecanumDrive.getAccelerationConstraint(90))
+
                 // Timer is from start of the trajectory; it is not an offset
-                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                .addTemporalMarker(0, () -> {
+                    robot.arm.extendHome();
+                })
+
+                // Timer is from start of the trajectory; it is not an offset
+                .addTemporalMarker(0.8, () -> {
                     robot.lift.goToHighPoleHeight();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                .addTemporalMarker(1.0, () -> {
                     robot.turret.setTurretPower(0.2);
                     robot.turret.goToDepositPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> {
+                .addTemporalMarker(1.2, () -> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
                 })
-*/
+
                 // Needed to allow turret/extension move to complete.
                 // Immediately after the trajectory is complete, cone cycle starts
                 .waitSeconds(0.6)
@@ -190,12 +194,14 @@ public class Auto_1plus5high extends LinearOpMode {
 
         TrajectorySequence trajectoryPickup;
 
-        trajectoryPickup = robot.drive.trajectorySequenceBuilder(robot.drive.getPoseEstimate())
+        trajectoryPickup = robot.drive.trajectorySequenceBuilder(depositPose)
+                .waitSeconds(0.2)
+
                 // Move to the cone stack head first, stop at arm's reach
-                .lineToLinearHeading(pickupPose,
-                        SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(270), 9.75),
-                        SampleMecanumDrive.getAccelerationConstraint(90))
-/*
+                .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent))
+//                        SampleMecanumDrive.getVelocityConstraint(30, Math.toRadians(270), 9.75),
+//                        SampleMecanumDrive.getAccelerationConstraint(90))
+
                 // Cone dropped prior to this trajectory.
                 // All that is needed to move the tower to the pickup location starting with turret first
                 // and then delay-start lift
@@ -205,18 +211,18 @@ public class Auto_1plus5high extends LinearOpMode {
                 })
 
                 // Clear the pole before adjusting height. Lift move trails the turret move
-                .addTemporalMarker(0.2,()-> {
+                .addTemporalMarker(0.4,()-> {
                     robot.lift.goToPickupHeight();
                 })
 
                 // Reach arm to touch the cone
-                .addTemporalMarker(0.6,()-> {
+                .addTemporalMarker(0.8,()-> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
-                .addTemporalMarker(0.7,()->{
+                .addTemporalMarker(0.8,()->{
                     robot.grabber.grabberOpenWide();
                 })
-*/
+
                 // Stop at the pickup position. Cone will be picked up outside of trajectory
                 .build();
 
@@ -408,9 +414,8 @@ public class Auto_1plus5high extends LinearOpMode {
 
         // Build trajectory sequences before Start signal
         TrajectorySequence startTrajectory   = buildStartTrajectory(robot);
-//        These trajectories are now built on-demand in order to account for the robot's current position
-//        TrajectorySequence pickupTrajectory  = buildPickupTrajectory(robot);
-//        TrajectorySequence depositTrajectory = buildDepositTrajectory(robot);
+        TrajectorySequence pickupTrajectory  = buildPickupTrajectory(robot);
+        TrajectorySequence depositTrajectory = buildDepositTrajectory(robot);
         Trajectory trajectoryPark;
 
         telemetry.clearAll();
@@ -581,16 +586,9 @@ public class Auto_1plus5high extends LinearOpMode {
                         robot.dropCone();
                         sleep(100); // wait for cone to drop
 
-                        // temporary moves //////////////////////
-                        robot.turret.setTurretPower(.8);
-                        robot.turret.goToPickupPosition();
-                        robot.lift.goToPickupHeight();
-                        robot.arm.extendHome();
-                        /////////////////////////////////////////
-
                         // Start the next state
                         currentTrajectoryState = TrajectoryState.TRAJECTORY_PICKUP_STATE;
-                        robot.drive.followTrajectorySequenceAsync(buildPickupTrajectory(robot));
+                        robot.drive.followTrajectorySequenceAsync(pickupTrajectory);
                     }
                     break;
 
@@ -605,7 +603,7 @@ public class Auto_1plus5high extends LinearOpMode {
                         if(robot.lift.numCyclesCompleted < 5) {
                             // Start the pickup state
                             currentTrajectoryState = TrajectoryState.TRAJECTORY_PICKUP_STATE;
-                            robot.drive.followTrajectorySequenceAsync(buildPickupTrajectory(robot));
+                            robot.drive.followTrajectorySequenceAsync(pickupTrajectory);
                         }
                         else {
                             // the last cone was deposited, go to park.
@@ -620,7 +618,7 @@ public class Auto_1plus5high extends LinearOpMode {
                     if (!robot.drive.isBusy()) {
                         // Pickup trajectory completed, pick the cone up
                         robot.grabber.grabberClose();
-                        sleep(200); // wait for servo to grab
+                        sleep(300); // wait for servo to grab
                         robot.lift.goToClear();
                         sleep(100); // wait for lift to clear the stack
 
@@ -630,7 +628,7 @@ public class Auto_1plus5high extends LinearOpMode {
 
                         // Start the next state
                         currentTrajectoryState = TrajectoryState.TRAJECTORY_DEPOSIT_STATE;
-                        robot.drive.followTrajectorySequenceAsync(buildDepositTrajectory(robot));
+                        robot.drive.followTrajectorySequenceAsync(depositTrajectory);
                     }
 
                     break;

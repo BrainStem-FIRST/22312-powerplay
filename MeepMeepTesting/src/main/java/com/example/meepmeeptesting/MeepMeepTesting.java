@@ -70,27 +70,25 @@ public class MeepMeepTesting {
                 .setConstraints(60, 30, Math.toRadians(180), Math.toRadians(60), 3.5)
                 .setDimensions(12.25,14.25)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder((startingPose))
+                        drive.trajectorySequenceBuilder((depositPose))
 
                                 ///////////// Best Time: 3.34 sec ///////////////
-                                .setTangent(Math.toRadians(startingTangent))
-//                                .splineToLinearHeading(cornerPose,Math.toRadians(90),
+//                                .setTangent(Math.toRadians(startingTangent))
+//                                .splineToSplineHeading(depositPose, Math.toRadians(depositTangent),
 //                                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75), //3.5),
 //                                        SampleMecanumDrive.getAccelerationConstraint(90))
 
-                                .splineToSplineHeading(depositPose, Math.toRadians(depositTangent),
-                                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(270), 9.75), //3.5),
-                                        SampleMecanumDrive.getAccelerationConstraint(90))
-
                                 // Cycle 1
-                                .lineToLinearHeading(pickupPose,
-                                        SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(270), 9.75),
+                                .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
+                                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
                                         SampleMecanumDrive.getAccelerationConstraint(90))
 
-                                .lineToConstantHeading(new Vector2d(depositPose.getX(), depositPose.getY()),
-                                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75), //3.5),
+                                .waitSeconds(2)
+                                .setTangent(0)
+                                .splineToSplineHeading(depositPose, Math.toRadians(depositTangent),
+                                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
                                         SampleMecanumDrive.getAccelerationConstraint(90))
-
+                                .waitSeconds(2)
 
                                 .build()
                 );
