@@ -195,7 +195,7 @@ public class Auto_1plus5high extends LinearOpMode {
         TrajectorySequence trajectoryPickup;
 
         trajectoryPickup = robot.drive.trajectorySequenceBuilder(depositPose)
-                .waitSeconds(0.2)
+                .waitSeconds(0.3)
 
                 // Move to the cone stack head first, stop at arm's reach
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent))
@@ -216,10 +216,10 @@ public class Auto_1plus5high extends LinearOpMode {
                 })
 
                 // Reach arm to touch the cone
-                .addTemporalMarker(0.8,()-> {
+                .addTemporalMarker(0.7,()-> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
-                .addTemporalMarker(0.8,()->{
+                .addTemporalMarker(0.9,()->{
                     robot.grabber.grabberOpenWide();
                 })
 
@@ -310,10 +310,10 @@ public class Auto_1plus5high extends LinearOpMode {
                 pickupTangent = 180;
 
                 robot.turret.turret_PICKUP_POSITION_VALUE   = 0;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 160;  //245
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 177;  //245
 
                 robot.arm.EXTENSION_POSITION_PICKUP = 0;
-                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.43; //0.32
+                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.415; //0.32
 
                 cornerDeltaX = 0;
                 cornerDeltaY = 0;
@@ -618,7 +618,7 @@ public class Auto_1plus5high extends LinearOpMode {
                     if (!robot.drive.isBusy()) {
                         // Pickup trajectory completed, pick the cone up
                         robot.grabber.grabberClose();
-                        sleep(300); // wait for servo to grab
+                        sleep(200); // wait for servo to grab
                         robot.lift.goToClear();
                         sleep(100); // wait for lift to clear the stack
 
