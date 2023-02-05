@@ -121,7 +121,7 @@ public class Auto_1plus5high extends LinearOpMode {
 
                 // 2.55 sec to reach destination
                 .splineToSplineHeading(depositPose, Math.toRadians(depositTangent),
-                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(270), 9.75), //3.5),
+                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75), //3.5),
                         SampleMecanumDrive.getAccelerationConstraint(90))
 
 
@@ -141,7 +141,7 @@ public class Auto_1plus5high extends LinearOpMode {
 
                 // Needed to allow turret/extension move to complete.
                 // Immediately after the trajectory is complete, cone cycle starts
-                .waitSeconds(0.6)
+                .waitSeconds(0.7)  //0.6
 
                 // Start trajectory ends with holding the cone above the pole
                 .build();
@@ -157,9 +157,9 @@ public class Auto_1plus5high extends LinearOpMode {
                 // This is an empty trajectory with just timer to operate the Gulliver's Tower
 
                 .setTangent(depositTangent)
-                .splineToSplineHeading(depositPose, Math.toRadians(depositTangent))
-//                        SampleMecanumDrive.getVelocityConstraint(30, Math.toRadians(180), 9.75),
-//                        SampleMecanumDrive.getAccelerationConstraint(90))
+                .splineToSplineHeading(depositPose, Math.toRadians(depositTangent),
+                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getAccelerationConstraint(90))
 
                 // Timer is from start of the trajectory; it is not an offset
                 .addTemporalMarker(0, () -> {
@@ -167,22 +167,22 @@ public class Auto_1plus5high extends LinearOpMode {
                 })
 
                 // Timer is from start of the trajectory; it is not an offset
-                .addTemporalMarker(0.8, () -> {
+                .addTemporalMarker(0.2, () -> { //0.4
                     robot.lift.goToHighPoleHeight();
                 })
 
-                .addTemporalMarker(1.0, () -> {
+                .addTemporalMarker(0.8, () -> { //1.0
                     robot.turret.setTurretPower(0.2);
                     robot.turret.goToDepositPosition();
                 })
 
-                .addTemporalMarker(1.2, () -> {
+                .addTemporalMarker(1.0, () -> { //1.2
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
                 })
 
                 // Needed to allow turret/extension move to complete.
                 // Immediately after the trajectory is complete, cone cycle starts
-                .waitSeconds(0.6)
+//                .waitSeconds(0.2)
 
                 // ConeCycle will be outside of trajectory
                 .build();
@@ -195,12 +195,12 @@ public class Auto_1plus5high extends LinearOpMode {
         TrajectorySequence trajectoryPickup;
 
         trajectoryPickup = robot.drive.trajectorySequenceBuilder(depositPose)
-                .waitSeconds(0.3)
+//                .waitSeconds(0.2)
 
                 // Move to the cone stack head first, stop at arm's reach
-                .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent))
-//                        SampleMecanumDrive.getVelocityConstraint(30, Math.toRadians(270), 9.75),
-//                        SampleMecanumDrive.getAccelerationConstraint(90))
+                .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
+                        SampleMecanumDrive.getVelocityConstraint(30, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getAccelerationConstraint(90))
 
                 // Cone dropped prior to this trajectory.
                 // All that is needed to move the tower to the pickup location starting with turret first
@@ -216,10 +216,11 @@ public class Auto_1plus5high extends LinearOpMode {
                 })
 
                 // Reach arm to touch the cone
-                .addTemporalMarker(0.7,()-> {
+                .addTemporalMarker(0.5,()-> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
-                .addTemporalMarker(0.9,()->{
+
+                .addTemporalMarker(0.7,()->{
                     robot.grabber.grabberOpenWide();
                 })
 
@@ -310,10 +311,10 @@ public class Auto_1plus5high extends LinearOpMode {
                 pickupTangent = 180;
 
                 robot.turret.turret_PICKUP_POSITION_VALUE   = 0;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 177;  //245
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 152;  //245
 
                 robot.arm.EXTENSION_POSITION_PICKUP = 0;
-                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.415; //0.32
+                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.44; //0.32
 
                 cornerDeltaX = 0;
                 cornerDeltaY = 0;
@@ -407,7 +408,7 @@ public class Auto_1plus5high extends LinearOpMode {
         startingPose    = new Pose2d(XFORM_X * 36, XFORM_Y * 63, Math.toRadians(startingHeading));
         cornerPose      = new Pose2d(XFORM_X * (36 + cornerDeltaX), XFORM_Y * (40 + cornerDeltaY), Math.toRadians(cornerHeading));
         depositPose     = new Pose2d(XFORM_X * (18 + cornerDeltaX), XFORM_Y * (12 + cornerDeltaY), Math.toRadians(depositHeading)); //depositX-28
-        pickupPose      = new Pose2d(XFORM_X * (53.5 + pickupDeltaX), XFORM_Y * (12 + pickupDeltaY), Math.toRadians(pickupHeading));
+        pickupPose      = new Pose2d(XFORM_X * (52.75 + pickupDeltaX), XFORM_Y * (11 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
@@ -618,9 +619,9 @@ public class Auto_1plus5high extends LinearOpMode {
                     if (!robot.drive.isBusy()) {
                         // Pickup trajectory completed, pick the cone up
                         robot.grabber.grabberClose();
-                        sleep(200); // wait for servo to grab
+                        sleep(300); // wait for servo to grab
                         robot.lift.goToClear();
-                        sleep(100); // wait for lift to clear the stack
+                        sleep(300); // wait for lift to clear the stack
 
                         // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
                         robot.lift.numCyclesCompleted++;

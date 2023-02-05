@@ -158,6 +158,7 @@ public class BrainStemRobotA {
         sleep(200);
     }
 
+
     public void pickupCone() throws InterruptedException {
         grabber.grabberClose();
         sleep(250);

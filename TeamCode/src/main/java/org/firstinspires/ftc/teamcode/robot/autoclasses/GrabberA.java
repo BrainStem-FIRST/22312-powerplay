@@ -22,8 +22,8 @@ public class GrabberA {
     ConstantsA constants = new ConstantsA();
 
     public final double WIDE_OPEN_VALUE = 0.0;
-    public final double OPEN_VALUE      = 0.80;      // 0.27
-    public final double CLOSED_VALUE    = 1.0;     // 0.12
+    public final double OPEN_VALUE      = 0.60;      // 0.27
+    public final double CLOSED_VALUE    = 0.95;     // 0.12
 
     private Map stateMap;
 

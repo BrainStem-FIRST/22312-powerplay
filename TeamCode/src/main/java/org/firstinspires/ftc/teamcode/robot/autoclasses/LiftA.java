@@ -63,7 +63,7 @@ public class LiftA {
     public final String LIFT_POSITION_CLEAR = "LIFT_CLEAR_HEIGHT";
     // This is the encoder tick count for the lift that raises the cone's base just below the rim of the field wall.
     // Raising the cone any further during auto pickup risks hitting the cone's base to the lip of the wall.
-    public final int LIFT_CLEAR_HEIGHT = 225;   // Encoder position was determined empirically
+    public final int LIFT_CLEAR_HEIGHT = 250;   //225;   // Encoder position was determined empirically
 
     public final String TRANSITION_STATE = "TRANSITION";
     public final int DELIVERY_ADJUSTMENT = -3;
@@ -310,29 +310,29 @@ public class LiftA {
     public void updateLiftPickupPosition() {
         switch (numCyclesCompleted){
             case 0: {
-                liftPositionPickup = 185; //-LIFT_ADJUSTMENT; //175
+                liftPositionPickup = 195; //-LIFT_ADJUSTMENT; //175
                 break;
             }
             case 1: {
-                liftPositionPickup = 155; //LIFT_ADJUSTMENT; //135
+                liftPositionPickup = 165; //LIFT_ADJUSTMENT; //135
                 break;
             }
             case 2: {
-                liftPositionPickup = 120; //LIFT_ADJUSTMENT; //100
+                liftPositionPickup = 130; //LIFT_ADJUSTMENT; //100
                 break;
             }
             case 3: {
-                liftPositionPickup = 80; //LIFT_ADJUSTMENT; //60
+                liftPositionPickup = 90; //LIFT_ADJUSTMENT; //60
                 break;
             }
             case 4: {
-                liftPositionPickup = 60; //LIFT_ADJUSTMENT; //40
+                liftPositionPickup = 70; //LIFT_ADJUSTMENT; //40
                 break;
             }
             default: {
                 // No cones left, congratulations.
                 //41 so it's not case 4 and doesn't have yellow line (to look clean)
-                liftPositionPickup = 41-LIFT_ADJUSTMENT;
+                liftPositionPickup = 51-LIFT_ADJUSTMENT;
                 break;
             }
         }
