@@ -202,7 +202,7 @@ public class Auto_1plus5high extends LinearOpMode {
 
                 // Move to the cone stack head first, stop at arm's reach
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
-                        SampleMecanumDrive.getVelocityConstraint(20, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getVelocityConstraint(25, Math.toRadians(180), 9.75),
                         SampleMecanumDrive.getAccelerationConstraint(90))
 
                 // Cone dropped prior to this trajectory.
@@ -633,9 +633,9 @@ public class Auto_1plus5high extends LinearOpMode {
                     if (!robot.drive.isBusy()) {
                         // Pickup trajectory completed, pick the cone up
                         robot.grabber.grabberClose();
-                        sleep(300); // wait for servo to grab
+                        sleep(200); // wait for servo to grab
                         robot.lift.goToClear();
-                        sleep(300); // wait for lift to clear the stack
+                        sleep(200); // wait for lift to clear the stack
 
                         // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
                         robot.lift.numCyclesCompleted++;
