@@ -33,6 +33,7 @@ public class TurretA {
 
     // Needed for Autonomous
     public int              turret_PICKUP_POSITION_VALUE = 245;  // These initial values are overwritten by Auto
+    public int              turret_PRELOAD_POSITION_VALUE = 152;
     public int              turret_DEPOSIT_POSITION_VALUE = -107;
 
     public final int        ANGLE_TOLERANCE = 5;
@@ -182,6 +183,9 @@ public class TurretA {
     // Pickup and Deposit positions are overridden by the auto classes to fit their own needs
     public void goToDepositPosition() {
         transitionToPosition(turret_DEPOSIT_POSITION_VALUE);
+    }
+    public void gotoPreloadPosition(){
+        transitionToPosition(turret_PRELOAD_POSITION_VALUE);
     }
     public void goToPickupPosition() {
         transitionToPosition(turret_PICKUP_POSITION_VALUE);

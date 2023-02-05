@@ -279,18 +279,6 @@ public class LiftA {
         return false;
 
     }
-    // Not used -> DELETE
-    public void moveToMinHeight(){
-        if (!isClear()) {
-            raiseHeightTo(MINIMUM_CLEARANCE_HEIGHT);
-        }
-    }
-
-    // Not used -> DELETE
-    public void initializePosition( ) {
-        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-    }
 
     public void setMotor(double power){
         liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -310,29 +298,29 @@ public class LiftA {
     public void updateLiftPickupPosition() {
         switch (numCyclesCompleted){
             case 0: {
-                liftPositionPickup = 195; //-LIFT_ADJUSTMENT; //175
+                liftPositionPickup = 132 - LIFT_ADJUSTMENT; //195
                 break;
             }
             case 1: {
-                liftPositionPickup = 165; //LIFT_ADJUSTMENT; //135
+                liftPositionPickup = 99 - LIFT_ADJUSTMENT; //165
                 break;
             }
             case 2: {
-                liftPositionPickup = 130; //LIFT_ADJUSTMENT; //100
+                liftPositionPickup = 66 - LIFT_ADJUSTMENT; //130
                 break;
             }
             case 3: {
-                liftPositionPickup = 90; //LIFT_ADJUSTMENT; //60
+                liftPositionPickup = 33 - LIFT_ADJUSTMENT; //90
                 break;
             }
             case 4: {
-                liftPositionPickup = 70; //LIFT_ADJUSTMENT; //40
+                liftPositionPickup = 0 - LIFT_ADJUSTMENT; //70
                 break;
             }
             default: {
                 // No cones left, congratulations.
                 //41 so it's not case 4 and doesn't have yellow line (to look clean)
-                liftPositionPickup = 51-LIFT_ADJUSTMENT;
+                liftPositionPickup = 1 - LIFT_ADJUSTMENT;
                 break;
             }
         }
