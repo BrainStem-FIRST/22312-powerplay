@@ -198,6 +198,10 @@ public class RobotTeleOp extends LinearOpMode {
 //          telemetry.addData("grabberCycleInProgress", grabberCycleInProgress);
 
               if (grabberCycleInProgress) {
+                  if(grabberCycleTime.milliseconds() >= 50 && grabberCycleTime.milliseconds() <= 250){
+                      robot.lift.setRawPower(1.0);
+                      telemetry.addData("Giving jump", true);
+                  }
                   if (grabberCycleTime.milliseconds() > 300 && robot.lift.LIFT_POSITION_GROUND == 0) {
                       robot.lift.liftPickup = 60;
                       grabberCycleInProgress = false;
