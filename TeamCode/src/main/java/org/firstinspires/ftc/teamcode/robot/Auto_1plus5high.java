@@ -291,117 +291,197 @@ public class Auto_1plus5high extends LinearOpMode {
         telemetry.setMsTransmissionInterval(50); //camera
 
 
-        double CONE_CYCLE_DURATION = 1.0;   // seconds to allow cone cycle to complete before moving again in trajectory
-
-        startingTangent = 90;
-
         // Determine trajectory headings for all alliance combinations
         if (isAllianceRED) {
             if (isOrientationLEFT) { // RED-LEFT
+
+                ///////////////////////////////////////////
+                //             DO NOT CHANGE             //
+                ///////////////////////////////////////////
+
                 XFORM_X = -1;
                 XFORM_Y = -1;
 
                 startingHeading = -90;
-                startingTangent = startingTangent; //120
-
-                cornerHeading = 180;
-                cornerTangent = 90;
+                startingTangent = 90;
 
                 preloadHeading = 180;
                 preloadTangent = 0;
 
-                depositHeading = 180;
-                depositTangent = 0;
-
                 pickupHeading = 180;
                 pickupTangent = 180;
 
-                robot.turret.turret_PICKUP_POSITION_VALUE   = 0;
+                depositHeading = 180;
+                depositTangent = 0;
+
+                ///////////////////////////////////////////
+                //  CHANGE ONLY IF ABSOLUTELY NECESSARY  //
+                //           DURING TOURNAMENT           //
+                ///////////////////////////////////////////
+
                 robot.turret.turret_PRELOAD_POSITION_VALUE  = 165;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 270;  //245
+                robot.turret.turret_PICKUP_POSITION_VALUE   = 0;
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 270;  //hitting hard stop
 
                 robot.arm.EXTENSION_POSITION_PICKUP = 0;
-                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.45; //0.32
+                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.45;
 
-                cornerDeltaX = 0;
-                cornerDeltaY = 0;
+                ///////////////////////////////////////////
+                //      MAKE ADJUSTMENTS ON POSES        //
+                //           DURING TOURNAMENT           //
+                ///////////////////////////////////////////
 
                 preloadDeltaX = 0;
                 preloadDeltaY = 0;
 
-                pickupDeltaX = 0; // previously 0
-                pickupDeltaY = 0;  // previously 0
+                pickupDeltaX = 0;
+                pickupDeltaY = 0;
 
                 depositDeltaX = 0;
                 depositDeltaY = 0;
             }
             else {                  // RED-RIGHT TODO: adjust for different quadrant
+
+                ///////////////////////////////////////////
+                //             DO NOT CHANGE             //
+                ///////////////////////////////////////////
+
                 XFORM_X = 1;
                 XFORM_Y = -1;
 
                 startingHeading = -90;
-                startingTangent = 180 - startingTangent; //60
+                startingTangent = 90;
 
-                cornerHeading = -90;
-                cornerTangent = 90;
+                preloadHeading = 0;
+                preloadTangent = 180;
 
-                pickupHeading = -90;
-                pickupTangent = 90;
+                pickupHeading = 0;
+                pickupTangent = 0;
 
-                robot.turret.turret_PICKUP_POSITION_VALUE   = -245;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 87;
+                depositHeading = 0;
+                depositTangent = 180;
 
-                cornerDeltaX = 0;
-                cornerDeltaY = 0;
+                ///////////////////////////////////////////
+                //  CHANGE ONLY IF ABSOLUTELY NECESSARY  //
+                //           DURING TOURNAMENT           //
+                ///////////////////////////////////////////
 
-                pickupDeltaX = -0.5; //1
-                pickupDeltaY = -1;
+                robot.turret.turret_PRELOAD_POSITION_VALUE  = -165;
+                robot.turret.turret_PICKUP_POSITION_VALUE   = 0;
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -270;  //hitting hard stop
+
+                robot.arm.EXTENSION_POSITION_PICKUP = 0;
+                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.45;
+
+                ///////////////////////////////////////////
+                //      MAKE ADJUSTMENTS ON POSES        //
+                //           DURING TOURNAMENT           //
+                ///////////////////////////////////////////
+
+                preloadDeltaX = 0;
+                preloadDeltaY = 0;
+
+                pickupDeltaX = 0;
+                pickupDeltaY = 0;
+
+                depositDeltaX = 0;
+                depositDeltaY = 0;
             }
         }
         else {
             if (isOrientationLEFT) { // BLUE-LEFT TODO: adjust for different quadrant
+
+                ///////////////////////////////////////////
+                //             DO NOT CHANGE             //
+                ///////////////////////////////////////////
+
                 XFORM_X = 1;
                 XFORM_Y = 1;
 
                 startingHeading = 90;
-                startingTangent = (180 - startingTangent) * -1; //-60
+                startingTangent = -90;
 
-                cornerHeading = 90;
-                cornerTangent = -90;
+                preloadHeading = 0;
+                preloadTangent = 180;
 
-                pickupHeading = 90;
-                pickupTangent = -90;
+                pickupHeading = 0;
+                pickupTangent = 0;
 
-                robot.turret.turret_PICKUP_POSITION_VALUE   = 245;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -105;
+                depositHeading = 0;
+                depositTangent = 180;
 
-                cornerDeltaX = 0;
-                cornerDeltaY = 0;
+                ///////////////////////////////////////////
+                //  CHANGE ONLY IF ABSOLUTELY NECESSARY  //
+                //           DURING TOURNAMENT           //
+                ///////////////////////////////////////////
+
+                robot.turret.turret_PRELOAD_POSITION_VALUE  = 165;
+                robot.turret.turret_PICKUP_POSITION_VALUE   = 0;
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 270;  //hitting hard stop
+
+                robot.arm.EXTENSION_POSITION_PICKUP = 0;
+                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.45;
+
+                ///////////////////////////////////////////
+                //      MAKE ADJUSTMENTS ON POSES        //
+                //           DURING TOURNAMENT           //
+                ///////////////////////////////////////////
+
+                preloadDeltaX = 0;
+                preloadDeltaY = 0;
 
                 pickupDeltaX = 0;
-                pickupDeltaY = -0.5;
+                pickupDeltaY = 0;
+
+                depositDeltaX = 0;
+                depositDeltaY = 0;
             }
             else {                  // BLUE-RIGHT TODO: adjust for different quadrant
+
+                ///////////////////////////////////////////
+                //             DO NOT CHANGE             //
+                ///////////////////////////////////////////
+
                 XFORM_X = -1;
                 XFORM_Y = 1;
 
                 startingHeading = 90;
-                startingTangent = startingTangent * -1; //240
+                startingTangent = -90;
 
-                cornerHeading = 90;
-                cornerTangent = -90;
+                preloadHeading = 180;
+                preloadTangent = 0;
 
-                pickupHeading = 90;
-                pickupTangent = -90;
+                pickupHeading = 180;
+                pickupTangent = 180;
 
-                robot.turret.turret_PICKUP_POSITION_VALUE   = -255;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 87;
+                depositHeading = 180;
+                depositTangent = 0;
 
-                cornerDeltaX = 2;
-                cornerDeltaY = 0;
+                ///////////////////////////////////////////
+                //  CHANGE ONLY IF ABSOLUTELY NECESSARY  //
+                //           DURING TOURNAMENT           //
+                ///////////////////////////////////////////
 
-                pickupDeltaX = 0.5;
-                pickupDeltaY = -1;
+                robot.turret.turret_PRELOAD_POSITION_VALUE  = -165;
+                robot.turret.turret_PICKUP_POSITION_VALUE   = 0;
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -270;  //hitting hard stop
+
+                robot.arm.EXTENSION_POSITION_PICKUP = 0;
+                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.45;
+
+                ///////////////////////////////////////////
+                //      MAKE ADJUSTMENTS ON POSES        //
+                //           DURING TOURNAMENT           //
+                ///////////////////////////////////////////
+
+                preloadDeltaX = 0;
+                preloadDeltaY = 0;
+
+                pickupDeltaX = 0;
+                pickupDeltaY = 0;
+
+                depositDeltaX = 0;
+                depositDeltaY = 0;
             }
         }
 
