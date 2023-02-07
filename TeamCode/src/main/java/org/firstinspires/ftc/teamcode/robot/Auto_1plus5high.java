@@ -324,7 +324,8 @@ public class Auto_1plus5high extends LinearOpMode {
                 robot.turret.turret_DEPOSIT_POSITION_VALUE  = 270;  //hitting hard stop
 
                 robot.arm.EXTENSION_POSITION_PICKUP = 0;
-                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.45;
+                robot.arm.EXTENSION_POSITION_PRELOAD = 0.47;
+                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.56;
 
                 ///////////////////////////////////////////
                 //      MAKE ADJUSTMENTS ON POSES        //
