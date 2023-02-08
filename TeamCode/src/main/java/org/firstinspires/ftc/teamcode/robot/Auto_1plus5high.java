@@ -360,7 +360,7 @@ public class Auto_1plus5high extends LinearOpMode {
                 pickupTangent = 0;
 
                 depositHeading = 0;
-                depositTangent = 180;
+                depositTangent = 179;
 
                 ///////////////////////////////////////////
                 //  CHANGE ONLY IF ABSOLUTELY NECESSARY  //
@@ -372,7 +372,8 @@ public class Auto_1plus5high extends LinearOpMode {
                 robot.turret.turret_DEPOSIT_POSITION_VALUE  = -270;  //hitting hard stop
 
                 robot.arm.EXTENSION_POSITION_PICKUP = 0;
-                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.45;
+                robot.arm.EXTENSION_POSITION_PRELOAD = 0.32;
+                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.56;
 
                 ///////////////////////////////////////////
                 //      MAKE ADJUSTMENTS ON POSES        //
@@ -380,13 +381,13 @@ public class Auto_1plus5high extends LinearOpMode {
                 ///////////////////////////////////////////
 
                 preloadDeltaX = 0;
-                preloadDeltaY = 0;
+                preloadDeltaY = -2;
 
-                pickupDeltaX = 0;
-                pickupDeltaY = 0;
+                pickupDeltaX = 1.2;
+                pickupDeltaY = -2;
 
-                depositDeltaX = 0;
-                depositDeltaY = 0;
+                depositDeltaX = 0.5;
+                depositDeltaY = -2;
             }
         }
         else {
@@ -469,7 +470,8 @@ public class Auto_1plus5high extends LinearOpMode {
                 robot.turret.turret_DEPOSIT_POSITION_VALUE  = -270;  //hitting hard stop
 
                 robot.arm.EXTENSION_POSITION_PICKUP = 0;
-                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.45;
+                robot.arm.EXTENSION_POSITION_PRELOAD = 0.34;
+                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.50;
 
                 ///////////////////////////////////////////
                 //      MAKE ADJUSTMENTS ON POSES        //
@@ -477,13 +479,13 @@ public class Auto_1plus5high extends LinearOpMode {
                 ///////////////////////////////////////////
 
                 preloadDeltaX = 0;
-                preloadDeltaY = 0;
+                preloadDeltaY = -1;
 
-                pickupDeltaX = 0;
+                pickupDeltaX = 2;
                 pickupDeltaY = 0;
 
                 depositDeltaX = 0;
-                depositDeltaY = 0;
+                depositDeltaY = -0.5;
             }
         }
 
