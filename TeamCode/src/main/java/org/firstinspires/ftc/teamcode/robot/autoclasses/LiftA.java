@@ -63,7 +63,7 @@ public class LiftA {
     public final String LIFT_POSITION_CLEAR = "LIFT_CLEAR_HEIGHT";
     // This is the encoder tick count for the lift that raises the cone's base just below the rim of the field wall.
     // Raising the cone any further during auto pickup risks hitting the cone's base to the lip of the wall.
-    public final int LIFT_CLEAR_HEIGHT = 250;   //225;   // Encoder position was determined empirically
+    public final int LIFT_CLEAR_HEIGHT = 290;   //225;   // Encoder position was determined empirically
 
     public final String TRANSITION_STATE = "TRANSITION";
     public final int DELIVERY_ADJUSTMENT = -3;

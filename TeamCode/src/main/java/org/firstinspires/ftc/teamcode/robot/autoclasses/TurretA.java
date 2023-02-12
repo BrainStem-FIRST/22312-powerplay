@@ -53,7 +53,7 @@ public class TurretA {
         turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // PID controller setup
-        turretPIDController = new PIDController(0.01, 0, 0);
+        turretPIDController = new PIDController(0.001, 0.1, 0);
         turretPIDController.setInputBounds(0, 512);
         turretPIDController.setOutputBounds(0, 1);
     }
@@ -102,7 +102,7 @@ public class TurretA {
     }
 
     private void transitionToPosition(int ticks){
-        moveTo(ticks); //setTurretPower(ticks);
+        moveToPID(ticks); //setTurretPower(ticks);
     }
 
     public void moveTo (int positionInTicks) {
@@ -118,6 +118,16 @@ public class TurretA {
     public void moveToPID (int positionInTicks) {
         // move to desired tick position
         currentTargetPosition = positionInTicks;
+        int error = Math.abs(turretMotor.getCurrentPosition() - positionInTicks);
+        if (error < 7) {
+            turretMotor.setPower(0);
+        }
+        else if (turretMotor.getCurrentPosition() > positionInTicks) {
+            turretMotor.setPower(-turretPIDController.updateWithError(error));
+        }
+        else {
+            turretMotor.setPower(turretPIDController.updateWithError(error));
+        }
     }
 
     public int currentTargetPosition = 0;
@@ -194,4 +204,21 @@ public class TurretA {
     public void setTurretPower(double desiredPower) {
         targetTurretPower = desiredPower;
     }
+
+//    public void runTurret(int targetTicks){
+//        if (turretMotor.getCurrentPosition() < Math.abs(targetTicks)-70) {
+//            turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//            turretMotor.setPower(0.8);
+//        }
+//        if (turretMotor.getCurrentPosition() > Math.abs(targetTicks)-70 &&
+//                turretMotor.getCurrentPosition() < Math.abs(targetTicks)-35) {
+//            turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//            turretMotor.setPower(0.5);
+//        }
+//        if (turretMotor.getCurrentPosition() > Math.abs(targetTicks)-35) {
+//            turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            turretMotor.setTargetPosition(targetTicks);
+//            turretMotor.setPower(0.2);
+//        }
+//    }
 }
