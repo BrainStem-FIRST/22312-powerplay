@@ -53,7 +53,7 @@ public class TurretA {
         turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // PID controller setup
-        turretPIDController = new PIDController(0.001, 0.1, 0);
+        turretPIDController = new PIDController(0.1, 0.0, 0);
         turretPIDController.setInputBounds(0, 512);
         turretPIDController.setOutputBounds(0, 1);
     }
@@ -120,12 +120,16 @@ public class TurretA {
         currentTargetPosition = positionInTicks;
         int error = Math.abs(turretMotor.getCurrentPosition() - positionInTicks);
         if (error < 7) {
-            turretMotor.setPower(0);
+            turretMotor.setTargetPosition(positionInTicks);
+            turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            turretMotor.setPower(1.0);
         }
         else if (turretMotor.getCurrentPosition() > positionInTicks) {
+            turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             turretMotor.setPower(-turretPIDController.updateWithError(error));
         }
         else {
+            turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             turretMotor.setPower(turretPIDController.updateWithError(error));
         }
     }
