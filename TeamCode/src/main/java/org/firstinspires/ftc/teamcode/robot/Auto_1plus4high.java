@@ -324,7 +324,7 @@ public class Auto_1plus4high extends LinearOpMode {
                 robot.turret.turret_DEPOSIT_POSITION_VALUE  = 270;  //hitting hard stop
 
                 robot.arm.EXTENSION_POSITION_PICKUP = 0;
-                robot.arm.EXTENSION_POSITION_PRELOAD = 0.45;
+                robot.arm.EXTENSION_POSITION_PRELOAD = 0.42;
                 robot.arm.EXTENSION_POSITION_DEPOSIT = 0.56;
 
                 ///////////////////////////////////////////
@@ -504,9 +504,9 @@ public class Auto_1plus4high extends LinearOpMode {
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 36, XFORM_Y * 63, Math.toRadians(startingHeading));
         cornerPose      = new Pose2d(XFORM_X * (36 + cornerDeltaX), XFORM_Y * (40 + cornerDeltaY), Math.toRadians(cornerHeading));
-        preloadPose     = new Pose2d(XFORM_X * (18 + preloadDeltaX), XFORM_Y * (11 + preloadDeltaY), Math.toRadians(preloadHeading));
-        depositPose     = new Pose2d(XFORM_X * (27 + depositDeltaX), XFORM_Y * (11 + depositDeltaY), Math.toRadians(depositHeading)); //TODO: adjust pose to make turret go 90 degrees
-        pickupPose      = new Pose2d(XFORM_X * (53 + pickupDeltaX), XFORM_Y * (10.5 + pickupDeltaY), Math.toRadians(pickupHeading));
+        preloadPose     = new Pose2d(XFORM_X * (18 + preloadDeltaX), XFORM_Y * (10.5 + preloadDeltaY), Math.toRadians(preloadHeading));
+        depositPose     = new Pose2d(XFORM_X * (27 + depositDeltaX), XFORM_Y * (10.5 + depositDeltaY), Math.toRadians(depositHeading)); //TODO: adjust pose to make turret go 90 degrees
+        pickupPose      = new Pose2d(XFORM_X * (52 + pickupDeltaX), XFORM_Y * (10.5 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
@@ -771,13 +771,14 @@ public class Auto_1plus4high extends LinearOpMode {
                 telemetry.addData("X=",robot.drive.getPoseEstimate().getX());
                 telemetry.addData("Y=",robot.drive.getPoseEstimate().getY());
                 telemetry.addData("Lift Position=",robot.lift.getPosition());
-                telemetry.addData("Turret Position=", robot.turret.getPosition());
+                telemetry.addData("current Turret Position=", robot.turret.getPosition());
+                telemetry.addData("target turret position", robot.turret.currentTargetPosition);
 
                 telemetry.update();
 
                 // Continue executing trajectory following
                 robot.drive.update();
-//                robot.turret.setTurretPower();
+                robot.turret.transitionToPosition();
 
                 // Execute systems based on stateMap
 //                robot.updateSystems();

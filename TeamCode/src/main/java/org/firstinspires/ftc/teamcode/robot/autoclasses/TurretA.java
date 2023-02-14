@@ -53,56 +53,56 @@ public class TurretA {
         turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // PID controller setup
-        turretPIDController = new PIDController(0.1, 0.0, 0);
+        turretPIDController = new PIDController(0.07, 0.0, 0);
         turretPIDController.setInputBounds(0, 512);
         turretPIDController.setOutputBounds(0, 1);
     }
-
-    public void setState(String desiredState, LiftA lift){
-        String currentState = getCurrentState();
-        if(isLiftTooLow(lift) || desiredState.equalsIgnoreCase(currentState)){
-            turretMotor.setPower(0);
-        }
-        else{
-//            telemetry.addData("Desired:", desiredState);
-//            telemetry.addData("Current", currentState);
-            selectTransition(desiredState, currentState);
-        }
-    }
+//
+//    public void setState(String desiredState, LiftA lift){
+//        String currentState = getCurrentState();
+//        if(isLiftTooLow(lift) || desiredState.equalsIgnoreCase(currentState)){
+//            turretMotor.setPower(0);
+//        }
+//        else{
+////            telemetry.addData("Desired:", desiredState);
+////            telemetry.addData("Current", currentState);
+//            selectTransition(desiredState, currentState);
+//        }
+//    }
 
     public boolean isLiftTooLow(LiftA lift) {
         boolean tooLow = lift.getPosition() < LIFT_MIN_HEIGHT_TO_MOVE_TURRET;
         return tooLow;
     }
 
-    private void selectTransition(String desiredLevel, String currentState){
-        switch(desiredLevel){
-            case LEFT_POSITION: {
-                telemetry.addData("Left at: ", LEFT_POSITION_VALUE);
-                transitionToPosition(LEFT_POSITION_VALUE);
-                break;
-            } case CENTER_POSITION:{
-                telemetry.addData("Center at: ", CENTER_POSITION_VALUE);
-                transitionToPosition(CENTER_POSITION_VALUE);
-                break;
-            } case RIGHT_POSITION:{
-                telemetry.addData("Right at: ", RIGHT_POSITION_VALUE);
-                transitionToPosition(RIGHT_POSITION_VALUE);
-                break;
-            } case PICKUP_POSITION:{
-                telemetry.addData("Pickup at: ", turret_PICKUP_POSITION_VALUE);
-                transitionToPosition(turret_PICKUP_POSITION_VALUE);
-                break;
-            } case DEPOSIT_POSITION:{
-                telemetry.addData("Deposit at: ", turret_DEPOSIT_POSITION_VALUE);
-                transitionToPosition(turret_DEPOSIT_POSITION_VALUE);
-                break;
-            }
-        }
-    }
+//    private void selectTransition(String desiredLevel, String currentState){
+//        switch(desiredLevel){
+//            case LEFT_POSITION: {
+//                telemetry.addData("Left at: ", LEFT_POSITION_VALUE);
+//                transitionToPosition(LEFT_POSITION_VALUE);
+//                break;
+//            } case CENTER_POSITION:{
+//                telemetry.addData("Center at: ", CENTER_POSITION_VALUE);
+//                transitionToPosition(CENTER_POSITION_VALUE);
+//                break;
+//            } case RIGHT_POSITION:{
+//                telemetry.addData("Right at: ", RIGHT_POSITION_VALUE);
+//                transitionToPosition(RIGHT_POSITION_VALUE);
+//                break;
+//            } case PICKUP_POSITION:{
+//                telemetry.addData("Pickup at: ", turret_PICKUP_POSITION_VALUE);
+//                transitionToPosition(turret_PICKUP_POSITION_VALUE);
+//                break;
+//            } case DEPOSIT_POSITION:{
+//                telemetry.addData("Deposit at: ", turret_DEPOSIT_POSITION_VALUE);
+//                transitionToPosition(turret_DEPOSIT_POSITION_VALUE);
+//                break;
+//            }
+//        }
+//    }
 
-    private void transitionToPosition(int ticks){
-        moveToPID(ticks); //setTurretPower(ticks);
+    public void transitionToPosition(){
+        moveToPID(currentTargetPosition); //setTurretPower(ticks);
     }
 
     public void moveTo (int positionInTicks) {
@@ -117,7 +117,6 @@ public class TurretA {
 
     public void moveToPID (int positionInTicks) {
         // move to desired tick position
-        currentTargetPosition = positionInTicks;
         int error = Math.abs(turretMotor.getCurrentPosition() - positionInTicks);
         if (error < 7) {
             turretMotor.setTargetPosition(positionInTicks);
@@ -132,6 +131,9 @@ public class TurretA {
             turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             turretMotor.setPower(turretPIDController.updateWithError(error));
         }
+
+        telemetry.addData("Turret Error=", error);
+        telemetry.addData("Turret Power=", turretMotor.getPower());
     }
 
     public int currentTargetPosition = 0;
@@ -196,13 +198,16 @@ public class TurretA {
 
     // Pickup and Deposit positions are overridden by the auto classes to fit their own needs
     public void goToDepositPosition() {
-        transitionToPosition(turret_DEPOSIT_POSITION_VALUE);
+        currentTargetPosition = turret_DEPOSIT_POSITION_VALUE;
+//        transitionToPosition(turret_DEPOSIT_POSITION_VALUE);
     }
     public void gotoPreloadPosition(){
-        transitionToPosition(turret_PRELOAD_POSITION_VALUE);
+        currentTargetPosition = turret_PRELOAD_POSITION_VALUE;
+//        transitionToPosition(turret_PRELOAD_POSITION_VALUE);
     }
     public void goToPickupPosition() {
-        transitionToPosition(turret_PICKUP_POSITION_VALUE);
+        currentTargetPosition = turret_PICKUP_POSITION_VALUE;
+//        transitionToPosition(turret_PICKUP_POSITION_VALUE);
     }
 
     public void setTurretPower(double desiredPower) {
