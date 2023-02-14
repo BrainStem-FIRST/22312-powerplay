@@ -86,22 +86,17 @@ public class Auto_1plus4high extends LinearOpMode {
     //------------------------------------------------------
 
     Pose2d startingPose, preloadPose, depositPose, pickupPose, parkingPose;
-    Pose2d cornerPose;
 
     // Determine waypoints based on Alliance and Orientation
     double  XFORM_X, XFORM_Y;
     double  preloadDeltaX, preloadDeltaY,
             pickupDeltaX, pickupDeltaY,
-            depositDeltaX, depositDeltaY,
-            cornerDeltaX, cornerDeltaY;
+            depositDeltaX, depositDeltaY;
     double  startingHeading, startingTangent,
             preloadHeading, preloadTangent,
             depositHeading, depositTangent,
-            pickupHeading, pickupTangent,
-            cornerHeading, cornerTangent;
-    String  turretState, armState;
+            pickupHeading, pickupTangent;
 
-    // Build trajectories
 
     //------------------------------------------------------
     //            Define trajectories
@@ -124,7 +119,7 @@ public class Auto_1plus4high extends LinearOpMode {
 
                 // 2.55 sec to reach destination
                 .splineToSplineHeading(preloadPose, Math.toRadians(preloadTangent),
-                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75), //3.5),
+                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
                         SampleMecanumDrive.getAccelerationConstraint(90))
 
 
@@ -134,7 +129,6 @@ public class Auto_1plus4high extends LinearOpMode {
                 })
 
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    robot.turret.setTurretPower(0.2);
                     robot.turret.gotoPreloadPosition();
                 })
 
@@ -175,7 +169,6 @@ public class Auto_1plus4high extends LinearOpMode {
                 })
 
                 .addTemporalMarker(0.7, () -> { //1.0
-                    robot.turret.setTurretPower(0.4);
                     robot.turret.goToDepositPosition();
                 })
 
@@ -209,7 +202,6 @@ public class Auto_1plus4high extends LinearOpMode {
                 // All that is needed to move the tower to the pickup location starting with turret first
                 // and then delay-start lift
                 .addTemporalMarker(0,()->{
-                    robot.turret.setTurretPower(0.8);
                     robot.turret.goToPickupPosition();
                 })
 
@@ -243,29 +235,13 @@ public class Auto_1plus4high extends LinearOpMode {
 
         BrainStemRobotA robot = new BrainStemRobotA(hardwareMap, telemetry, stateMap);
 
-        // this variable is used to calculate liftPositionPickup for stacked cones
-        robot.lift.numCyclesCompleted = 0;
-        robot.lift.updateLiftPickupPosition();
-
-        robot.lift.resetEncoders();
-        robot.turret.resetEncoders();
-
         // Open grabber to allow Driver to load the initial cone
         robot.grabber.grabberOpen();
-
-        // Not using statemap in this version
-//        stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
-//        stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
-//        stateMap.put(robot.lift.LIFT_SUBHEIGHT, robot.lift.APPROACH_HEIGHT);
-//        stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
-//        stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
 
         // Wait until Alliance and Orientation is set by drivers
         while (!programConfirmation && !isStopRequested()) {
             setProgram();
         }
-
-        robot.grabber.grabberClose();
 
         //------------------------------------------------------
         //            Camera initialization
@@ -496,16 +472,24 @@ public class Auto_1plus4high extends LinearOpMode {
 
         while(!gamepad1.a && !isStopRequested()) {}
 
-        // grab the cone
+        // grab the preloaded cone
         robot.grabber.grabberClose();
         sleep(500);
+
+        // this variable is used to calculate liftPositionPickup for stacked cones
+        robot.lift.numCyclesCompleted = 0;
+        robot.lift.updateLiftPickupPosition();
+
+        // reset the encoders
+        robot.lift.resetEncoders();
+        robot.turret.resetEncoders();
+
 
 
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 36, XFORM_Y * 63, Math.toRadians(startingHeading));
-        cornerPose      = new Pose2d(XFORM_X * (36 + cornerDeltaX), XFORM_Y * (40 + cornerDeltaY), Math.toRadians(cornerHeading));
         preloadPose     = new Pose2d(XFORM_X * (18 + preloadDeltaX), XFORM_Y * (10.5 + preloadDeltaY), Math.toRadians(preloadHeading));
-        depositPose     = new Pose2d(XFORM_X * (27 + depositDeltaX), XFORM_Y * (10.5 + depositDeltaY), Math.toRadians(depositHeading)); //TODO: adjust pose to make turret go 90 degrees
+        depositPose     = new Pose2d(XFORM_X * (27 + depositDeltaX), XFORM_Y * (10.5 + depositDeltaY), Math.toRadians(depositHeading));
         pickupPose      = new Pose2d(XFORM_X * (52 + pickupDeltaX), XFORM_Y * (10.5 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 
@@ -755,24 +739,20 @@ public class Auto_1plus4high extends LinearOpMode {
                     break;
             }
 
-//            telemetry.addData("remaining time:", (30.0 - autoTime.seconds()));
-
             // Is it time to park?
             if (autoTime.seconds() > TIME_TO_PARK &&
                     (currentTrajectoryState != TrajectoryState.TRAJECTORY_PARKING_STATE) &&
                     currentTrajectoryState != TrajectoryState.TRAJECTORY_IDLE) {
-                //if((trajectoryPickup.duration()+trajectoryParkFromPickup.duration()) < (30.0 - autoTime.seconds())) {
                 currentTrajectoryState = TrajectoryState.TRAJECTORY_PARKING_STATE;
             }
             else {
 
-//                telemetry.addData("State:",currentTrajectoryState);
                 telemetry.addData("Heading=",Math.toDegrees(robot.drive.getPoseEstimate().getHeading()));
                 telemetry.addData("X=",robot.drive.getPoseEstimate().getX());
                 telemetry.addData("Y=",robot.drive.getPoseEstimate().getY());
                 telemetry.addData("Lift Position=",robot.lift.getPosition());
-                telemetry.addData("current Turret Position=", robot.turret.getPosition());
-                telemetry.addData("target turret position", robot.turret.currentTargetPosition);
+                telemetry.addData("Current Turret Position=", robot.turret.getPosition());
+                telemetry.addData("Target Turret Position =", robot.turret.currentTargetPosition);
 
                 telemetry.update();
 
@@ -787,13 +767,6 @@ public class Auto_1plus4high extends LinearOpMode {
         }
     }
 
-    void coneCycle(BrainStemRobotA robot) {
-
-//        stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS);
-//        while (stateMap.get(constants.CONE_CYCLE).equals(constants.STATE_IN_PROGRESS) && opModeIsActive()) {
-//            robot.updateSystems();
-//        }
-    }
 
     //camera
     void tagToTelemetry(AprilTagDetection detection) {
@@ -830,7 +803,7 @@ public class Auto_1plus4high extends LinearOpMode {
         telemetry.addData("Alliance Set: ", allianceColor);
         telemetry.update();
 
-        sleep(1500);
+        sleep(500);
 
         telemetry.clearAll();
         telemetry.addLine("Set Orientation: Driver 1-> dpad left or right.");
@@ -856,7 +829,7 @@ public class Auto_1plus4high extends LinearOpMode {
         telemetry.addData("Orientation Set: ", orientation);
         telemetry.update();
 
-        sleep(1500);
+        sleep(500);
         telemetry.clearAll();
         telemetry.addLine("Confirm Program:");
         telemetry.addData("Alliance   :", allianceColor);
@@ -884,7 +857,7 @@ public class Auto_1plus4high extends LinearOpMode {
             }
         }
 
-        sleep(1500);
+        sleep(500);
         telemetry.clearAll();
     }
 
