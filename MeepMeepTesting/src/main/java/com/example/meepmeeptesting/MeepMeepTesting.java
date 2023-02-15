@@ -19,18 +19,17 @@ public class MeepMeepTesting {
         //            Variable used for trajectories
         //------------------------------------------------------
 
-        Pose2d startingPose, depositPose, pickupPose, parkingPose;
-        Pose2d cornerPose;
+        Pose2d startingPose, preloadPose, depositPose, pickupPose, parkingPose;
 
         // Determine waypoints based on Alliance and Orientation
         double  XFORM_X, XFORM_Y;
-        double  pickupDeltaX, pickupDeltaY,
-                cornerDeltaX, cornerDeltaY,
+        double  preloadDeltaX, preloadDeltaY,
+                pickupDeltaX, pickupDeltaY,
                 depositDeltaX, depositDeltaY;
         double  startingHeading, startingTangent,
+                preloadHeading, preloadTangent,
                 depositHeading, depositTangent,
-                pickupHeading, pickupTangent,
-                cornerHeading, cornerTangent;
+                pickupHeading, pickupTangent;
 
         // Orientation Adjustments
         XFORM_X = -1;
@@ -39,29 +38,29 @@ public class MeepMeepTesting {
         startingHeading = -90;
         startingTangent = 90;
 
-        cornerHeading = 180;
-        cornerTangent = 90;
-
-        depositHeading = 180;
-        depositTangent = 0;
+        preloadHeading = 180;
+        preloadTangent = 0;
 
         pickupHeading = 180;
         pickupTangent = 180;
 
-        cornerDeltaX = 0;
-        cornerDeltaY = 0;
+        depositHeading = 180;
+        depositTangent = 0;
 
-        pickupDeltaX = 0; // previously 0
-        pickupDeltaY = 0;  // previously 0
+        preloadDeltaX = 0;
+        preloadDeltaY = 0;
+
+        pickupDeltaX = 0;
+        pickupDeltaY = 0;
 
         depositDeltaX = 0;
         depositDeltaY = 0;
 
         // Poses
-        startingPose    = new Pose2d(XFORM_X * 36, XFORM_Y * 63.75, Math.toRadians(startingHeading));
-        cornerPose      = new Pose2d(XFORM_X * (30 + cornerDeltaX), XFORM_Y * (40 + cornerDeltaY), Math.toRadians(cornerHeading));
-        depositPose     = new Pose2d(XFORM_X * (21 + cornerDeltaX), XFORM_Y * (12 + cornerDeltaY), Math.toRadians(depositHeading)); //depositX-28
-        pickupPose      = new Pose2d(XFORM_X * (54 + pickupDeltaX), XFORM_Y * (12 + pickupDeltaY), Math.toRadians(pickupHeading));
+        startingPose    = new Pose2d(XFORM_X * 36, XFORM_Y * 63, Math.toRadians(startingHeading));
+        preloadPose     = new Pose2d(XFORM_X * (18 + preloadDeltaX), XFORM_Y * (10.5 + preloadDeltaY), Math.toRadians(preloadHeading));
+        depositPose     = new Pose2d(XFORM_X * (27 + depositDeltaX), XFORM_Y * (10.5 + depositDeltaY), Math.toRadians(depositHeading));
+        pickupPose      = new Pose2d(XFORM_X * (52 + pickupDeltaX), XFORM_Y * (10.5 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 
 
@@ -70,24 +69,32 @@ public class MeepMeepTesting {
                 .setConstraints(60, 30, Math.toRadians(180), Math.toRadians(60), 3.5)
                 .setDimensions(12.25,14.25)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder((depositPose))
-
-                                ///////////// Best Time: 3.34 sec ///////////////
-//                                .setTangent(Math.toRadians(startingTangent))
-//                                .splineToSplineHeading(depositPose, Math.toRadians(depositTangent),
-//                                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75), //3.5),
-//                                        SampleMecanumDrive.getAccelerationConstraint(90))
+                        drive.trajectorySequenceBuilder((startingPose))
 
                                 // Cycle 1
-                                .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
+                                .setTangent(Math.toRadians(startingTangent))
+
+                                // 2.55 sec to reach destination
+                                .splineToSplineHeading(preloadPose, Math.toRadians(preloadTangent),
                                         SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
                                         SampleMecanumDrive.getAccelerationConstraint(90))
 
                                 .waitSeconds(2)
-                                .setTangent(0)
+
+                                .setTangent(Math.toRadians(pickupTangent))
+
+                                // Move to the cone stack head first, stop at arm's reach
+                                .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
+                                        SampleMecanumDrive.getVelocityConstraint(25, Math.toRadians(180), 9.75),
+                                        SampleMecanumDrive.getAccelerationConstraint(90))
+
+                                .waitSeconds(2)
+
+                                .setTangent(depositTangent)
                                 .splineToSplineHeading(depositPose, Math.toRadians(depositTangent),
                                         SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
                                         SampleMecanumDrive.getAccelerationConstraint(90))
+
                                 .waitSeconds(2)
 
                                 .build()

@@ -194,6 +194,7 @@ public class Auto_1plus4high extends LinearOpMode {
 //                .waitSeconds(0.2)
 
                 // Move to the cone stack head first, stop at arm's reach
+                .setTangent(pickupTangent)
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
                         SampleMecanumDrive.getVelocityConstraint(25, Math.toRadians(180), 9.75),
                         SampleMecanumDrive.getAccelerationConstraint(90))
