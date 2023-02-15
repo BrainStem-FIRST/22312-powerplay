@@ -32,8 +32,8 @@ public class ExtensionA {
     public final double EXTENSION_POSITION_DURING_SWING = 1.0 - (5.0 / MAXIMUM_REACH);
 
     //needed for Autonomous
-    public double EXTENSION_POSITION_PICKUP   = 0.618; //0.65  // Extend to the stack of cones from pickup position
-    public double EXTENSION_POSITION_DEPOSIT  = 0.27; //0.50  // Extend to the low pole from pickup position
+    public double EXTENSION_POSITION_PICKUP   = 0.615; //0.65  // Extend to the stack of cones from pickup position
+    public double EXTENSION_POSITION_DEPOSIT  = 0.35; //0.50  // Extend to the low pole from pickup position
     public double EXTENSION_POSITION_PRELOAD  = 0.50;
 
 

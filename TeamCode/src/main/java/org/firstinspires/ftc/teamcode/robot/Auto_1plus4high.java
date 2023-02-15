@@ -132,7 +132,7 @@ public class Auto_1plus4high extends LinearOpMode {
                     robot.turret.gotoPreloadPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(0.3, () -> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
                 })
 
@@ -211,11 +211,11 @@ public class Auto_1plus4high extends LinearOpMode {
                 })
 
                 // Reach arm to touch the cone
-                .addTemporalMarker(0.5,()-> {
+                .addTemporalMarker(1.1,()-> {   //0.8
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
-                .addTemporalMarker(0.7,()->{
+                .addTemporalMarker(1.2,()->{    //0.7
                     robot.grabber.grabberOpenWide();
                 })
 
@@ -295,13 +295,13 @@ public class Auto_1plus4high extends LinearOpMode {
                 //           DURING TOURNAMENT           //
                 ///////////////////////////////////////////
 
-                robot.turret.turret_PRELOAD_POSITION_VALUE  = 165;
+                robot.turret.turret_PRELOAD_POSITION_VALUE  = 170;
                 robot.turret.turret_PICKUP_POSITION_VALUE   = 0;
                 robot.turret.turret_DEPOSIT_POSITION_VALUE  = 270;  //hitting hard stop
 
-                robot.arm.EXTENSION_POSITION_PICKUP = 0;
-                robot.arm.EXTENSION_POSITION_PRELOAD = 0.42;
-                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.56;
+                robot.arm.EXTENSION_POSITION_PICKUP = 0.10; //0
+                robot.arm.EXTENSION_POSITION_PRELOAD = 0.47;
+                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.67;
 
                 ///////////////////////////////////////////
                 //      MAKE ADJUSTMENTS ON POSES        //
@@ -343,13 +343,13 @@ public class Auto_1plus4high extends LinearOpMode {
                 //           DURING TOURNAMENT           //
                 ///////////////////////////////////////////
 
-                robot.turret.turret_PRELOAD_POSITION_VALUE  = -165;
+                robot.turret.turret_PRELOAD_POSITION_VALUE  = -170;
                 robot.turret.turret_PICKUP_POSITION_VALUE   = 0;
                 robot.turret.turret_DEPOSIT_POSITION_VALUE  = -270;  //hitting hard stop
 
                 robot.arm.EXTENSION_POSITION_PICKUP = 0;
-                robot.arm.EXTENSION_POSITION_PRELOAD = 0.47;
-                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.56;
+                robot.arm.EXTENSION_POSITION_PRELOAD = 0.45;
+                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.62;
 
                 ///////////////////////////////////////////
                 //      MAKE ADJUSTMENTS ON POSES        //
@@ -357,13 +357,13 @@ public class Auto_1plus4high extends LinearOpMode {
                 ///////////////////////////////////////////
 
                 preloadDeltaX = 0;
-                preloadDeltaY = -2;
+                preloadDeltaY = 0; //-2;
 
-                pickupDeltaX = 1.2;
-                pickupDeltaY = -2;
+                pickupDeltaX = 2; //1.2;
+                pickupDeltaY = 1; //-2;
 
                 depositDeltaX = 0.5;
-                depositDeltaY = -2;
+                depositDeltaY = 1; //-2;
             }
         }
         else {
@@ -485,12 +485,11 @@ public class Auto_1plus4high extends LinearOpMode {
         robot.turret.resetEncoders();
 
 
-
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 36, XFORM_Y * 63, Math.toRadians(startingHeading));
-        preloadPose     = new Pose2d(XFORM_X * (18 + preloadDeltaX), XFORM_Y * (10.5 + preloadDeltaY), Math.toRadians(preloadHeading));
-        depositPose     = new Pose2d(XFORM_X * (27 + depositDeltaX), XFORM_Y * (10.5 + depositDeltaY), Math.toRadians(depositHeading));
-        pickupPose      = new Pose2d(XFORM_X * (52 + pickupDeltaX), XFORM_Y * (10.5 + pickupDeltaY), Math.toRadians(pickupHeading));
+        preloadPose     = new Pose2d(XFORM_X * (18 + preloadDeltaX), XFORM_Y * (11 + preloadDeltaY), Math.toRadians(preloadHeading));
+        depositPose     = new Pose2d(XFORM_X * (27 + depositDeltaX), XFORM_Y * (11 + depositDeltaY), Math.toRadians(depositHeading));
+        pickupPose      = new Pose2d(XFORM_X * (52 + pickupDeltaX), XFORM_Y * (11 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
