@@ -187,12 +187,15 @@ public class Auto_1plus5atLow extends LinearOpMode {
                     robot.turret.goToPickupPosition();
                 })
 
-                // Clear the pole before adjusting height. Lift move trails the turret move
-                .addTemporalMarker(0.8,()-> {
-                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
+                // Position the height before extending the arm (so that the lift down would not hit the stack from top)
+                .addTemporalMarker(0.5,()-> {
                     robot.lift.goToPickupHeight();
                 })
 
+                // Approach the stack from the side (instead of from top)
+                .addTemporalMarker(0.8,()-> {
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
+                })
                 // Stop at the pickup position. Cone will be picked up outside of trajectory
                 .build();
 
