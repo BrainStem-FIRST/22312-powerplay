@@ -62,7 +62,7 @@ public class Auto_1plus4high extends LinearOpMode {
     private boolean programConfirmation = false;
 
     // original auto
-    public static int PARKING_NUMBER = 2; // Controlled by the dashboard for test purposes
+    public static int PARKING_NUMBER = 3; // Controlled by the dashboard for test purposes
     public static double SPEED = 60.0;    // Controlled by the dashboard for test purposes
     private ElapsedTime autoTime = new ElapsedTime();
     private double TIME_TO_PARK = 27;  //25
@@ -133,7 +133,7 @@ public class Auto_1plus4high extends LinearOpMode {
                 })
 
                 .UNSTABLE_addTemporalMarkerOffset(0.3, () -> {
-                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PRELOAD);
                 })
 
                 // Needed to allow turret/extension move to complete.
@@ -286,7 +286,7 @@ public class Auto_1plus4high extends LinearOpMode {
                 preloadTangent = 0;
 
                 pickupHeading = 180;
-                pickupTangent = 180;
+                pickupTangent = 179;
 
                 depositHeading = 180;
                 depositTangent = 0;
@@ -300,8 +300,8 @@ public class Auto_1plus4high extends LinearOpMode {
                 robot.turret.turret_PICKUP_POSITION_VALUE   = 0;
                 robot.turret.turret_DEPOSIT_POSITION_VALUE  = 270;  //hitting hard stop
 
-                robot.arm.EXTENSION_POSITION_PICKUP = 0.10; //0
-                robot.arm.EXTENSION_POSITION_PRELOAD = 0.47;
+                robot.arm.EXTENSION_POSITION_PICKUP = 0.05; //0
+                robot.arm.EXTENSION_POSITION_PRELOAD = 0.49;
                 robot.arm.EXTENSION_POSITION_DEPOSIT = 0.67;
 
                 ///////////////////////////////////////////
@@ -360,11 +360,11 @@ public class Auto_1plus4high extends LinearOpMode {
                 preloadDeltaX = 0;
                 preloadDeltaY = 0; //-2;
 
-                pickupDeltaX = 2; //1.2;
-                pickupDeltaY = 1; //-2;
+                pickupDeltaX = 0; //1.2;
+                pickupDeltaY = 0; //-2;
 
-                depositDeltaX = 0.5;
-                depositDeltaY = 1; //-2;
+                depositDeltaX = 0;
+                depositDeltaY = 0; //-2;
             }
         }
         else {
@@ -400,7 +400,7 @@ public class Auto_1plus4high extends LinearOpMode {
 
                 robot.arm.EXTENSION_POSITION_PICKUP = 0;
                 robot.arm.EXTENSION_POSITION_PRELOAD = 0.47;
-                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.56;
+                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.67;
 
                 ///////////////////////////////////////////
                 //      MAKE ADJUSTMENTS ON POSES        //
@@ -410,11 +410,11 @@ public class Auto_1plus4high extends LinearOpMode {
                 preloadDeltaX = 0;
                 preloadDeltaY = 0;
 
-                pickupDeltaX = -1.5;
-                pickupDeltaY = 1;
+                pickupDeltaX = 0;
+                pickupDeltaY = 0;
 
                 depositDeltaX = 0;
-                depositDeltaY = 0;
+                depositDeltaY = 1;
             }
             else {                  // BLUE-RIGHT TODO: adjust for different quadrant
 
@@ -432,7 +432,7 @@ public class Auto_1plus4high extends LinearOpMode {
                 preloadTangent = 0;
 
                 pickupHeading = 180;
-                pickupTangent = 180;
+                pickupTangent = 179;
 
                 depositHeading = 180;
                 depositTangent = 0;
@@ -488,9 +488,9 @@ public class Auto_1plus4high extends LinearOpMode {
 
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 36, XFORM_Y * 63, Math.toRadians(startingHeading));
-        preloadPose     = new Pose2d(XFORM_X * (18 + preloadDeltaX), XFORM_Y * (11 + preloadDeltaY), Math.toRadians(preloadHeading));
-        depositPose     = new Pose2d(XFORM_X * (27 + depositDeltaX), XFORM_Y * (11 + depositDeltaY), Math.toRadians(depositHeading));
-        pickupPose      = new Pose2d(XFORM_X * (52 + pickupDeltaX), XFORM_Y * (11 + pickupDeltaY), Math.toRadians(pickupHeading));
+        preloadPose     = new Pose2d(XFORM_X * (18 + preloadDeltaX), XFORM_Y * (11.5 + preloadDeltaY), Math.toRadians(preloadHeading));
+        depositPose     = new Pose2d(XFORM_X * (27 + depositDeltaX), XFORM_Y * (11.5 + depositDeltaY), Math.toRadians(depositHeading));
+        pickupPose      = new Pose2d(XFORM_X * (52 + pickupDeltaX), XFORM_Y * (11.5 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
