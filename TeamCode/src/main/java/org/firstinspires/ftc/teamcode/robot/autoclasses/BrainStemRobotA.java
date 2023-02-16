@@ -68,7 +68,7 @@ public class BrainStemRobotA {
             coneCycle();
         } else {
             lift.setState();
-            turret.setState((String) stateMap.get(turret.SYSTEM_NAME), lift);
+           // turret.setState((String) stateMap.get(turret.SYSTEM_NAME), lift);
             arm.setState((String) stateMap.get(arm.SYSTEM_NAME));
             grabber.setState((String) stateMap.get(grabber.SYSTEM_NAME), lift);
         }
@@ -139,26 +139,32 @@ public class BrainStemRobotA {
                 ((String) stateMap.get(constants.CYCLE_LIFT_UP)).equalsIgnoreCase(constants.STATE_COMPLETE));
     }
 
-    public void dropCone() throws InterruptedException {
+    // Just to be safe, the 1+5lowpole drop cone sequence is preserved
+    public void dropConeLowPole() throws InterruptedException {
         lift.raiseHeightTo(lift.getPosition() - 150);
         sleep(200); // was 100
         grabber.grabberOpenWide();
-//        lift.raiseHeightTo(lift.getPosition() + 75);
+    }
+
+    public void dropCone() throws InterruptedException {
+        lift.raiseHeightTo(lift.getPosition() - 200);
+        sleep(100); // was 100
+        grabber.grabberOpen();
+        sleep(100); // was 100
 
         // move away from the pole so the grabber does not hit the pole when swinging back
-        // clip the retract position at the swing clearance position so it doesn't hit the motors when swinging back
         // Arm extends with the lower numbers, retracts with higher numbers
-
-        //
-//        arm.extendTo(arm.EXTENSION_POSITION_DURING_SWING);
+        arm.extendHome();
+        sleep(200);
     }
+
 
     public void pickupCone() throws InterruptedException {
         grabber.grabberClose();
         sleep(250);
 //        lift.goToClear();
         lift.raiseHeightTo(lift.getPosition() + 90);
-        sleep(200);
+        sleep(300); // original was 200
     }
 }
 

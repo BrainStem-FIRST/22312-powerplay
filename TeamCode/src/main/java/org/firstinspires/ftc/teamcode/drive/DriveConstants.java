@@ -44,9 +44,9 @@ public class DriveConstants {
      * angular distances although most angular parameters are wrapped in Math.toRadians() for
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
-    public static double WHEEL_RADIUS = 1.1811; // in
-    public static double GEAR_RATIO = 1.0 / (3.61 * 2.89); // output (wheel) speed / input (motor) speed
-                                                     // =10.4329 for 4:1 + 3:1.  Previously was 1 (but the gear ratio had been applied to MAX_RPM).
+    public static double WHEEL_RADIUS = 1.4763; // in
+    public static double GEAR_RATIO = 1.0/10.5;      // output (wheel) speed / input (motor) speed
+                                                     // 4:1 + 3:1 Combined gear reduction is 10.5,
     public static double TRACK_WIDTH = 9.75;         // previously was 3.5 in
 
     /*

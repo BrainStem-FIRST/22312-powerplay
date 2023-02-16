@@ -28,15 +28,14 @@ public class ExtensionA {
     public final double EXTENSION_POSITION_LEFT     = 0.5;   // Extend to the pole on the left from center of isle
     public final double EXTENSION_POSITION_RIGHT    = 0.61;  // Extend to the pole on the right from center of isle
 
-    public final double EXTENSION_POSITION_PICKUP   = 0.618; //0.65  // Extend to the stack of cones from pickup position
-    public final double EXTENSION_POSITION_DEPOSIT  = 0.50; //0.48  // Extend to the low pole from pickup position
-
     public final double EXTENSION_POSITION_SWING_CLEARANCE = 1.0 - (MINIMUM_CLEARANCE_DISTANCE / MAXIMUM_REACH); // 0.63
-    public final double EXTENSION_POSITION_DURING_SWING = 1.0 - (3.0 / MAXIMUM_REACH);
+    public final double EXTENSION_POSITION_DURING_SWING = 1.0 - (5.0 / MAXIMUM_REACH);
 
+    //needed for Autonomous
+    public double EXTENSION_POSITION_PICKUP   = 0.615; //0.65  // Extend to the stack of cones from pickup position
+    public double EXTENSION_POSITION_DEPOSIT  = 0.35; //0.50  // Extend to the low pole from pickup position
+    public double EXTENSION_POSITION_PRELOAD  = 0.50;
 
-    public final double TWOBAR_POSITION_HOME    = 0;    // vertical position
-    public final double TWOBAR_POSITION_MAX     = 1;    // fully tilted
 
     // extension statemap values
     public final String SYSTEM_NAME = "EXTENSION"; //statemap key
@@ -161,20 +160,6 @@ public class ExtensionA {
 
     public double getExtensionPosition() {
         return extension.getPosition();
-    }
-
-    /************************* TWO-BAR UTILITIES **************************/
-
-    // Tilt the two-bar to its max position.
-    // No micro adjustments envisioned for the two-bar
-    public void tiltUp() {
-        twoBar.setPosition(TWOBAR_POSITION_MAX);
-    }
-
-    // Tilt the two-bar to its starting position (vertical).
-    // No micro adjustments envisioned for the two-bar
-    public void tiltDown() {
-        twoBar.setPosition(TWOBAR_POSITION_HOME);
     }
 
     public boolean isExtensionOut(){

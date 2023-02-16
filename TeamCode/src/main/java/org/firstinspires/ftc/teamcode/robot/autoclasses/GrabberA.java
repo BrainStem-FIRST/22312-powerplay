@@ -22,8 +22,8 @@ public class GrabberA {
     ConstantsA constants = new ConstantsA();
 
     public final double WIDE_OPEN_VALUE = 0.0;
-    public final double OPEN_VALUE      = 0.80;      // 0.27
-    public final double CLOSED_VALUE    = 1.0;     // 0.12
+    public final double OPEN_VALUE      = 0.62;      // 0.27
+    public final double CLOSED_VALUE    = 0.90;     // 0.12
 
     private Map stateMap;
 
@@ -34,7 +34,7 @@ public class GrabberA {
 
         grabber = (ServoImplEx) hwMap.servo.get("Grabber");
 
-        grabber.setPwmRange(new PwmControl.PwmRange(1150,1600)); // previously 2055 and 2470 (1565)
+        grabber.setPwmRange(new PwmControl.PwmRange(1200,1675)); // previously 2055 and 2470 (1565)
         //grabberOpen();
     }
 

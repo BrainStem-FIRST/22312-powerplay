@@ -94,7 +94,6 @@ public class Auto_1plus5atLow extends LinearOpMode {
     double  startingHeading, startingTangent,
             pickupHeading, pickupTangent,
             cornerHeading, cornerTangent;
-    String  turretState, armState;
 
     // Build trajectories
 
@@ -117,12 +116,12 @@ public class Auto_1plus5atLow extends LinearOpMode {
 
                 .setTangent(Math.toRadians(startingTangent))
                 .splineToConstantHeading(new Vector2d(cornerPose.getX(), cornerPose.getY()), Math.toRadians(cornerTangent),
-                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75), //3.5),
+                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
                         SampleMecanumDrive.getAccelerationConstraint(90))
 
                 //.setTangent(Math.toRadians(pickupTangent))
                 .splineToConstantHeading(new Vector2d(pickupPose.getX(), pickupPose.getY()),Math.toRadians(pickupTangent),
-                        SampleMecanumDrive.getVelocityConstraint(30, Math.toRadians(180), 9.75), //3.5),
+                        SampleMecanumDrive.getVelocityConstraint(30, Math.toRadians(180), 9.75),
                         SampleMecanumDrive.getAccelerationConstraint(90))
 
                 // Timer is from start of the trajectory; it is not an offset
@@ -210,29 +209,13 @@ public class Auto_1plus5atLow extends LinearOpMode {
 
         BrainStemRobotA robot = new BrainStemRobotA(hardwareMap, telemetry, stateMap);
 
-        // this variable is used to calculate liftPositionPickup for stacked cones
-        robot.lift.numCyclesCompleted = 0;
-        robot.lift.updateLiftPickupPosition();
-
-        robot.lift.resetEncoders();
-        robot.turret.resetEncoders();
-
         // Open grabber to allow Driver to load the initial cone
         robot.grabber.grabberOpen();
-
-        // Not using statemap in this version
-//        stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
-//        stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_PICKUP);
-//        stateMap.put(robot.lift.LIFT_SUBHEIGHT, robot.lift.APPROACH_HEIGHT);
-//        stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
-//        stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
 
         // Wait until Alliance and Orientation is set by drivers
         while (!programConfirmation && !isStopRequested()) {
             setProgram();
         }
-
-        robot.grabber.grabberClose();
 
         //------------------------------------------------------
         //            Camera initialization
@@ -277,8 +260,8 @@ public class Auto_1plus5atLow extends LinearOpMode {
                 pickupHeading = -90;
                 pickupTangent = 90;
 
-                robot.turret.turret_PICKUP_POSITION_VALUE   = 245;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -105; //-165
+                robot.turret.turret_PICKUP_POSITION_VALUE   = 265;
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -123; //-165
 
                 cornerDeltaX = 0;
                 cornerDeltaY = 0;
@@ -300,13 +283,15 @@ public class Auto_1plus5atLow extends LinearOpMode {
                 pickupTangent = 90;
 
                 robot.turret.turret_PICKUP_POSITION_VALUE   = -245;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 87;
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 115;
+                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.55;
+                robot.arm.EXTENSION_POSITION_PICKUP = 0.55;
 
                 cornerDeltaX = 0;
                 cornerDeltaY = 0;
 
-                pickupDeltaX = -0.5; //1
-                pickupDeltaY = -1;
+                pickupDeltaX = 0; //1
+                pickupDeltaY = 0;
             }
         }
         else {
@@ -367,6 +352,14 @@ public class Auto_1plus5atLow extends LinearOpMode {
         robot.grabber.grabberClose();
         sleep(500);
 
+        // this variable is used to calculate liftPositionPickup for stacked cones
+        robot.lift.numCyclesCompleted = 0;
+        robot.lift.updateLiftPickupPosition();
+
+        // reset the encoders
+        robot.lift.resetEncoders();
+        robot.turret.resetEncoders();
+
 
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose    = new Pose2d(XFORM_X * 36, XFORM_Y * 63.75, Math.toRadians(startingHeading));
@@ -381,10 +374,6 @@ public class Auto_1plus5atLow extends LinearOpMode {
         TrajectorySequence pickupTrajectory  = buildPickupTrajectory(robot);
         TrajectorySequence depositTrajectory = buildDepositTrajectory(robot);
         Trajectory trajectoryPark;
-
-        telemetry.clearAll();
-        telemetry.addLine("Load Cone.  Driver 1 Hit A.");
-        telemetry.update();
 
         telemetry.clearAll();
         telemetry.addLine("Robot is Ready!");
@@ -551,7 +540,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
                     // Switch to trajectoryPickup once the starting trajectory is complete
                     if (!robot.drive.isBusy()) {
                         // Initial trajectory completed, drop the cone
-                        robot.dropCone();
+                        robot.dropConeLowPole();
                         sleep(100); // wait for cone to drop
 
                         // Start the next state
@@ -564,7 +553,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
                     // Switch to Pickup once the deposit trajectory is complete
                     if (!robot.drive.isBusy()) {
                         // Deposit trajectory completed, drop the cone
-                        robot.dropCone();
+                        robot.dropConeLowPole();
                         sleep(100); // wait for cone to drop
 
                         // Continue the cycle until no more cones left
@@ -624,13 +613,11 @@ public class Auto_1plus5atLow extends LinearOpMode {
                     break;
             }
 
-//            telemetry.addData("remaining time:", (30.0 - autoTime.seconds()));
 
             // Is it time to park?
             if (autoTime.seconds() > TIME_TO_PARK &&
                     (currentTrajectoryState != TrajectoryState.TRAJECTORY_PARKING_STATE) &&
                      currentTrajectoryState != TrajectoryState.TRAJECTORY_IDLE) {
-                //if((trajectoryPickup.duration()+trajectoryParkFromPickup.duration()) < (30.0 - autoTime.seconds())) {
                 currentTrajectoryState = TrajectoryState.TRAJECTORY_PARKING_STATE;
             }
             else {
@@ -643,7 +630,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
 
                 // Continue executing trajectory following
                 robot.drive.update();
-//                robot.turret.setTurretPower();
+                robot.turret.transitionToPosition();
 
                 // Execute systems based on stateMap
 //                robot.updateSystems();
@@ -652,13 +639,6 @@ public class Auto_1plus5atLow extends LinearOpMode {
         }
     }
 
-    void coneCycle(BrainStemRobotA robot) {
-
-//        stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS);
-//        while (stateMap.get(constants.CONE_CYCLE).equals(constants.STATE_IN_PROGRESS) && opModeIsActive()) {
-//            robot.updateSystems();
-//        }
-    }
 
     //camera
     void tagToTelemetry(AprilTagDetection detection) {
@@ -695,7 +675,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
         telemetry.addData("Alliance Set: ", allianceColor);
         telemetry.update();
 
-        sleep(1500);
+        sleep(500);
 
         telemetry.clearAll();
         telemetry.addLine("Set Orientation: Driver 1-> dpad left or right.");
@@ -721,7 +701,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
         telemetry.addData("Orientation Set: ", orientation);
         telemetry.update();
 
-        sleep(1500);
+        sleep(500);
         telemetry.clearAll();
         telemetry.addLine("Confirm Program:");
         telemetry.addData("Alliance   :", allianceColor);
@@ -749,7 +729,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
             }
         }
 
-        sleep(1500);
+        sleep(500);
         telemetry.clearAll();
     }
 
