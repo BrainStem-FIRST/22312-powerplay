@@ -186,11 +186,11 @@ public class Auto_1plus4high extends LinearOpMode {
         return trajectoryDeposit;
     }
 
-    TrajectorySequence buildPickupTrajectory(BrainStemRobotA robot) {
+    TrajectorySequence buildPickupTrajectory(BrainStemRobotA robot, Pose2d initialPose) {
 
         TrajectorySequence trajectoryPickup;
 
-        trajectoryPickup = robot.drive.trajectorySequenceBuilder(depositPose)
+        trajectoryPickup = robot.drive.trajectorySequenceBuilder(initialPose)
 //                .waitSeconds(0.2)
 
                 // Move to the cone stack head first, stop at arm's reach
@@ -497,7 +497,7 @@ public class Auto_1plus4high extends LinearOpMode {
 
         // Build trajectory sequences before Start signal
         TrajectorySequence startTrajectory   = buildStartTrajectory(robot);
-        TrajectorySequence pickupTrajectory  = buildPickupTrajectory(robot);
+        TrajectorySequence pickupTrajectory  = buildPickupTrajectory(robot,depositPose);
         TrajectorySequence depositTrajectory = buildDepositTrajectory(robot);
         Trajectory trajectoryPark;
 
@@ -671,7 +671,7 @@ public class Auto_1plus4high extends LinearOpMode {
 
                         // Start the next state
                         currentTrajectoryState = TrajectoryState.TRAJECTORY_PICKUP_STATE;
-                        robot.drive.followTrajectorySequenceAsync(pickupTrajectory);
+                        robot.drive.followTrajectorySequenceAsync(buildPickupTrajectory(robot,preloadPose));
                     }
                     break;
 
