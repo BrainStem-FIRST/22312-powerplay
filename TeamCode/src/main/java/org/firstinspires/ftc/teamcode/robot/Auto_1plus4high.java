@@ -212,11 +212,11 @@ public class Auto_1plus4high extends LinearOpMode {
                 })
 
                 // Reach arm to touch the cone
-                .addTemporalMarker(1.1,()-> {   //0.8
+                .addTemporalMarker(0.7,()-> {   //0.8
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
-                .addTemporalMarker(1.2,()->{    //0.7
+                .addTemporalMarker(0.85,()->{    //0.7
                     robot.grabber.grabberOpenWide();
                 })
 
@@ -302,7 +302,7 @@ public class Auto_1plus4high extends LinearOpMode {
 
                 robot.arm.EXTENSION_POSITION_PICKUP = 0.05; //0
                 robot.arm.EXTENSION_POSITION_PRELOAD = 0.49;
-                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.67;
+                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.62;
 
                 ///////////////////////////////////////////
                 //      MAKE ADJUSTMENTS ON POSES        //
