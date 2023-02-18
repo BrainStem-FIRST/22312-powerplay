@@ -32,20 +32,20 @@ public class MeepMeepTesting {
                 pickupHeading, pickupTangent;
 
         // Orientation Adjustments
-        XFORM_X = 1;
-        XFORM_Y = 1;
+        XFORM_X = -1;
+        XFORM_Y = -1;
 
-        startingHeading = 90;
-        startingTangent = -90;
+        startingHeading = -90;
+        startingTangent = 90;
 
-        preloadHeading = 0;
-        preloadTangent = 180;
+        preloadHeading = 180;
+        preloadTangent = 0;
 
-        pickupHeading = 0;
-        pickupTangent = 0;
+        pickupHeading = 180;
+        pickupTangent = 180;
 
-        depositHeading = 0;
-        depositTangent = 179;
+        depositHeading = 180;
+        depositTangent = 0;
 
         preloadDeltaX = 0;
         preloadDeltaY = 0;
@@ -58,9 +58,9 @@ public class MeepMeepTesting {
 
         // Poses
         startingPose    = new Pose2d(XFORM_X * 36, XFORM_Y * 63, Math.toRadians(startingHeading));
-        preloadPose     = new Pose2d(XFORM_X * (18 + preloadDeltaX), XFORM_Y * (11.5 + preloadDeltaY), Math.toRadians(preloadHeading));
-        depositPose     = new Pose2d(XFORM_X * (27 + depositDeltaX), XFORM_Y * (11.5 + depositDeltaY), Math.toRadians(depositHeading));
-        pickupPose      = new Pose2d(XFORM_X * (52 + pickupDeltaX), XFORM_Y * (11.5 + pickupDeltaY), Math.toRadians(pickupHeading));
+        preloadPose     = new Pose2d(XFORM_X * (18 + preloadDeltaX), XFORM_Y * (10.5 + preloadDeltaY), Math.toRadians(preloadHeading));
+        depositPose     = new Pose2d(XFORM_X * (27 + depositDeltaX), XFORM_Y * (10.5 + depositDeltaY), Math.toRadians(depositHeading));
+        pickupPose      = new Pose2d(XFORM_X * (52 + pickupDeltaX), XFORM_Y * (10.5 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 
 
@@ -76,7 +76,7 @@ public class MeepMeepTesting {
 
                                 // 2.55 sec to reach destination
                                 .splineToSplineHeading(preloadPose, Math.toRadians(preloadTangent),
-                                        SampleMecanumDrive.getVelocityConstraint(60, Math.toRadians(180), 9.75),
+                                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
                                         SampleMecanumDrive.getAccelerationConstraint(90))
 
                                 .waitSeconds(2)
@@ -85,14 +85,14 @@ public class MeepMeepTesting {
 
                                 // Move to the cone stack head first, stop at arm's reach
                                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
-                                        SampleMecanumDrive.getVelocityConstraint(60, Math.toRadians(180), 9.75),
-                                        SampleMecanumDrive.getAccelerationConstraint(30))
+                                        SampleMecanumDrive.getVelocityConstraint(25, Math.toRadians(180), 9.75),
+                                        SampleMecanumDrive.getAccelerationConstraint(90))
 
                                 .waitSeconds(2)
 
                                 .setTangent(depositTangent)
                                 .splineToSplineHeading(depositPose, Math.toRadians(depositTangent),
-                                        SampleMecanumDrive.getVelocityConstraint(60, Math.toRadians(180), 9.75),
+                                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
                                         SampleMecanumDrive.getAccelerationConstraint(90))
 
                                 .waitSeconds(2)
