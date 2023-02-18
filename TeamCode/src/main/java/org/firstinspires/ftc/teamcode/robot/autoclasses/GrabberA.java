@@ -23,7 +23,7 @@ public class GrabberA {
 
     public final double WIDE_OPEN_VALUE = 0.0;
     public final double OPEN_VALUE      = 0.62;      // 0.27
-    public final double CLOSED_VALUE    = 0.90;     // 0.12
+    public final double CLOSED_VALUE    = 0.87;     // 0.12
 
     private Map stateMap;
 

@@ -196,7 +196,7 @@ public class Auto_1plus4high extends LinearOpMode {
                 // Move to the cone stack head first, stop at arm's reach
                 .setTangent(pickupTangent)
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
-                        SampleMecanumDrive.getVelocityConstraint(25, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getVelocityConstraint(28, Math.toRadians(180), 9.75),
                         SampleMecanumDrive.getAccelerationConstraint(90))
 
                 // Cone dropped prior to this trajectory.
@@ -300,9 +300,9 @@ public class Auto_1plus4high extends LinearOpMode {
                 robot.turret.turret_PICKUP_POSITION_VALUE   = 0;
                 robot.turret.turret_DEPOSIT_POSITION_VALUE  = 270;  //hitting hard stop
 
-                robot.arm.EXTENSION_POSITION_PICKUP = 0.05; //0
+                robot.arm.EXTENSION_POSITION_PICKUP = 0;
                 robot.arm.EXTENSION_POSITION_PRELOAD = 0.49;
-                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.62;
+                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.69;
 
                 ///////////////////////////////////////////
                 //      MAKE ADJUSTMENTS ON POSES        //
@@ -490,7 +490,7 @@ public class Auto_1plus4high extends LinearOpMode {
         startingPose    = new Pose2d(XFORM_X * 36, XFORM_Y * 63, Math.toRadians(startingHeading));
         preloadPose     = new Pose2d(XFORM_X * (18 + preloadDeltaX), XFORM_Y * (11.5 + preloadDeltaY), Math.toRadians(preloadHeading));
         depositPose     = new Pose2d(XFORM_X * (27 + depositDeltaX), XFORM_Y * (11.5 + depositDeltaY), Math.toRadians(depositHeading));
-        pickupPose      = new Pose2d(XFORM_X * (52 + pickupDeltaX), XFORM_Y * (11.5 + pickupDeltaY), Math.toRadians(pickupHeading));
+        pickupPose      = new Pose2d(XFORM_X * (52.2 + pickupDeltaX), XFORM_Y * (11.5 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory

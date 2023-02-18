@@ -265,6 +265,8 @@ public class Auto_1plus5atLow extends LinearOpMode {
 
                 robot.turret.turret_PICKUP_POSITION_VALUE   = 265;
                 robot.turret.turret_DEPOSIT_POSITION_VALUE  = -123; //-165
+                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.55;
+                robot.arm.EXTENSION_POSITION_PICKUP = 0.55;
 
                 cornerDeltaX = 0;
                 cornerDeltaY = 0;
