@@ -31,11 +31,17 @@ public class Lift {
     public final int LIFT_ADJUSTMENT = -70;
 
     // Empirical numbers are for holding the cone above the pole prior to coneCycle drop
-    public final int LIFT_POSITION_GROUND = 0;
+    public int LIFT_POSITION_GROUND = 0;
+    public final int GROUND_ORIGINAL_POSITON = 0;
     public final int LIFT_POSITION_LOWPOLE = 480;
     public final int LIFT_POSITION_MIDPOLE = 700;   //685;
     public final int LIFT_POSITION_HIGHPOLE = 960;
     public final int LIFT_POSITION_MOVING = 100;
+
+    public final int LIFT_POSITION_CONE_5 = 200;
+    public final int LIFT_POSITION_CONE_4 = 155;
+    public final int LIFT_POSITION_CONE_3 = 100;
+    public final int LIFT_POSITION_CONE_2 = 60;
 
     // Lift pick up position is only 4 cone bases higher than the starting position,
     // which is reset to 0 ticks at the start of Auto when lift is positioned on top of a single cone
@@ -61,6 +67,10 @@ public class Lift {
     public final String LIFT_SUBHEIGHT = "SUB_HEIGHT";
     public final String LIFT_CHECK_STATE = "LIFT_CHECK";
     public final String LIFT_UP_MOVING_STATE = "LIFT_UP_MOVING_STATE";
+    public final String LIFT_CONE_5_STATE = "LIFT_CONE_5_STATE";
+    public final String LIFT_CONE_4_STATE = "LIFT_CONE_4_STATE";
+    public final String LIFT_CONE_3_STATE = "LIFT_CONE_3_STATE";
+    public final String LIFT_CONE_2_STATE = "LIFT_CONE_2_STATE";
 
     // Used in Auto to determine the lift's position high enough to unstack the cones during pickup
     public final String LIFT_POSITION_CLEAR = "LIFT_CLEAR_HEIGHT";
@@ -150,6 +160,13 @@ public class Lift {
         }
     }
 
+    public void setRawPower(double power) {
+        liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftMotor2.setPower(1.0);
+        liftMotor.setPower(1.0);
+    }
+
     private long coneCycleStartTime() {
         return (long) stateMap.get(constants.CONE_CYCLE_START_TIME);
     }
@@ -202,6 +219,22 @@ public class Lift {
                 position = LIFT_POSITION_MOVING;
                 break;
             }
+            case LIFT_CONE_5_STATE:{
+                position = LIFT_POSITION_CONE_5;
+                break;
+            }
+            case LIFT_CONE_4_STATE:{
+                position = LIFT_POSITION_CONE_4;
+                break;
+            }
+            case LIFT_CONE_3_STATE:{
+                position = LIFT_POSITION_CONE_3;
+                break;
+            }
+            case LIFT_CONE_2_STATE:{
+                position = LIFT_POSITION_CONE_2;
+                break;
+            }
         }
         // this function can return position 0 if lift is in transition between heights (as reported by getCurrentState() function)
 //        telemetry.addData("Lift State Position =", position);
@@ -243,8 +276,23 @@ public class Lift {
                 transitionToLiftPosition(LIFT_POSITION_MOVING);
                 break;
             }
+            case LIFT_CONE_5_STATE:{
+                transitionToLiftPosition(LIFT_POSITION_CONE_5);
+                break;
+            }
+            case LIFT_CONE_4_STATE:{
+                transitionToLiftPosition(LIFT_POSITION_CONE_4);
+                break;
+            }
+            case LIFT_CONE_3_STATE:{
+                transitionToLiftPosition(LIFT_POSITION_CONE_3);
+                break;
+            }
+            case LIFT_CONE_2_STATE:{
+                transitionToLiftPosition(LIFT_POSITION_CONE_2);
+                break;
+            }
         }
-
     }
     private void transitionToLiftPosition(int ticks){
         raiseHeightTo(ticks);

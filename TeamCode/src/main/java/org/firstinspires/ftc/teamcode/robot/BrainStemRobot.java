@@ -177,4 +177,31 @@ public class BrainStemRobot {
         return (((String) stateMap.get(constants.CYCLE_GRABBER)).equalsIgnoreCase(constants.STATE_COMPLETE) &&
                 ((String) stateMap.get(constants.CYCLE_LIFT_UP)).equalsIgnoreCase(constants.STATE_COMPLETE));
     }
+    public void updateConeStackState(int cone_count){
+        if(cone_count == 5) {
+            stateMap.put(constants.DRIVER_2_SELECTED_LIFT, lift.LIFT_CONE_5_STATE);
+        } else if(cone_count == 4){
+            stateMap.put(constants.DRIVER_2_SELECTED_LIFT, lift.LIFT_CONE_4_STATE);
+        } else if(cone_count == 3) {
+            stateMap.put(constants.DRIVER_2_SELECTED_LIFT, lift.LIFT_CONE_3_STATE);
+        } else if(cone_count == 2){
+            stateMap.put(constants.DRIVER_2_SELECTED_LIFT, lift.LIFT_CONE_2_STATE);
+        }
+    }
+
+    public boolean inConeStack(){
+        if(stateMap.get(constants.DRIVER_2_SELECTED_LIFT).equals(lift.LIFT_CONE_5_STATE)){
+            return true;
+        }
+        if(stateMap.get(constants.DRIVER_2_SELECTED_LIFT).equals(lift.LIFT_CONE_4_STATE)){
+            return true;
+        }
+        if(stateMap.get(constants.DRIVER_2_SELECTED_LIFT).equals(lift.LIFT_CONE_3_STATE)){
+            return true;
+        }
+        if(stateMap.get(constants.DRIVER_2_SELECTED_LIFT).equals(lift.LIFT_CONE_2_STATE)){
+            return true;
+        }
+        return false;
+    }
 }

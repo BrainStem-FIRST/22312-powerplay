@@ -35,7 +35,7 @@ public class Grabber {
 
     public final double FULLY_OPEN_VALUE = 0.01;
     private final double CONE_OPEN_VALUE = 0.65;
-    public final double CLOSED_VALUE = 1;
+    public final double CLOSED_VALUE = 0.93;
     public ElapsedTime grabberCycleTime;
 
 
