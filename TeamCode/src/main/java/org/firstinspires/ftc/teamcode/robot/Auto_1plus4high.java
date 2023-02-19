@@ -206,7 +206,7 @@ public class Auto_1plus4high extends LinearOpMode {
                     robot.arm.extendHome();
                 })
 
-                .addTemporalMarker(0,()->{
+                .addTemporalMarker(0.2,()->{
                     robot.turret.goToPickupPosition();
                 })
 
