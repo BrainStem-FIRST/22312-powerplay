@@ -202,6 +202,10 @@ public class Auto_1plus4high extends LinearOpMode {
                 // Cone dropped prior to this trajectory.
                 // All that is needed to move the tower to the pickup location starting with turret first
                 // and then delay-start lift
+                .addTemporalMarker(0, ()->{
+                    robot.arm.extendHome();
+                })
+
                 .addTemporalMarker(0,()->{
                     robot.turret.goToPickupPosition();
                 })
@@ -456,13 +460,13 @@ public class Auto_1plus4high extends LinearOpMode {
                 ///////////////////////////////////////////
 
                 preloadDeltaX = 0;
-                preloadDeltaY = -1;
+                preloadDeltaY = 0;
 
                 pickupDeltaX = 2;
                 pickupDeltaY = 0;
 
                 depositDeltaX = 0;
-                depositDeltaY = -0.5;
+                depositDeltaY = 0;
             }
         }
 
