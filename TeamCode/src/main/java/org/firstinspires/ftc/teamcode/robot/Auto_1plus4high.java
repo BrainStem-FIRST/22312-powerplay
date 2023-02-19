@@ -348,9 +348,9 @@ public class Auto_1plus4high extends LinearOpMode {
                 //           DURING TOURNAMENT           //
                 ///////////////////////////////////////////
 
-                robot.turret.turret_PRELOAD_POSITION_VALUE  = -170;
+                robot.turret.turret_PRELOAD_POSITION_VALUE  = -175;
                 robot.turret.turret_PICKUP_POSITION_VALUE   = 0;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -270;  //hitting hard stop
+                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -275;  //hitting hard stop
 
                 robot.arm.EXTENSION_POSITION_PICKUP = 0;
                 robot.arm.EXTENSION_POSITION_PRELOAD = 0.45;
