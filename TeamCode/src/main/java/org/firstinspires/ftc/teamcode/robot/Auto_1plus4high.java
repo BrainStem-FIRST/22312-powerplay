@@ -168,7 +168,7 @@ public class Auto_1plus4high extends LinearOpMode {
                     robot.lift.goToHighPoleHeight();
                 })
 
-                .addTemporalMarker(0.7, () -> { //1.0
+                .addTemporalMarker(0.8, () -> { //1.0
                     robot.turret.goToDepositPosition();
                 })
 
