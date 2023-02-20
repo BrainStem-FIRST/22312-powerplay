@@ -1,8 +1,7 @@
-package org.firstinspires.ftc.teamcode.robot;
+package org.firstinspires.ftc.teamcode.robot.autoclasses;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -14,7 +13,6 @@ import org.firstinspires.ftc.teamcode.robot.Vision.imagecv.AprilTagDetectionPipe
 import org.firstinspires.ftc.teamcode.robot.autoclasses.BrainStemRobotA;
 import org.firstinspires.ftc.teamcode.robot.autoclasses.ConstantsA;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-import org.opencv.core.Mat;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -25,8 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Config
-@Autonomous(name="Robot: Auto 1+4 at High", group="Robot")
-public class Auto_1plus4high extends LinearOpMode {
+@Autonomous(name="Robot: Auto 1+2 at High v2", group="Robot")
+public class auto_1plus4high_v2 extends LinearOpMode {
     //camera
     public OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -128,6 +126,10 @@ public class Auto_1plus4high extends LinearOpMode {
                     robot.lift.goToHighPoleHeight();
                 })
 
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> {
+                    robot.alignment.alignDown(); //TODO: fix timing
+                })
+
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     robot.turret.gotoPreloadPosition();
                 })
@@ -138,7 +140,7 @@ public class Auto_1plus4high extends LinearOpMode {
 
                 // Needed to allow turret/extension move to complete.
                 // Immediately after the trajectory is complete, cone cycle starts
-                .waitSeconds(1.0)  //0.6
+                .waitSeconds(1.0)  //0.6  // TODO: may not need this, or make it smaller
 
                 // Start trajectory ends with holding the cone above the pole
                 .build();
@@ -168,7 +170,11 @@ public class Auto_1plus4high extends LinearOpMode {
                     robot.lift.goToHighPoleHeight();
                 })
 
-                .addTemporalMarker(0.8, () -> { //1.0
+                .addTemporalMarker(0.4, () ->{
+                    robot.alignment.alignDown(); //TODO: fix timing
+                })
+
+                .addTemporalMarker(0.6, () -> { //1.0
                     robot.turret.goToDepositPosition();
                 })
 
@@ -191,27 +197,20 @@ public class Auto_1plus4high extends LinearOpMode {
         TrajectorySequence trajectoryPickup;
 
         trajectoryPickup = robot.drive.trajectorySequenceBuilder(initialPose)
-//                .waitSeconds(0.2)
-
                 // Move to the cone stack head first, stop at arm's reach
                 .setTangent(pickupTangent)
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
                         SampleMecanumDrive.getVelocityConstraint(28, Math.toRadians(180), 9.75),
                         SampleMecanumDrive.getAccelerationConstraint(90))
 
-                // Cone dropped prior to this trajectory.
-                // All that is needed to move the tower to the pickup location starting with turret first
-                // and then delay-start lift
-                .addTemporalMarker(0, ()->{
-                    robot.arm.extendHome();
-                })
-
-                .addTemporalMarker(0.2,()->{
-                    robot.turret.goToPickupPosition();
-                })
+                // Cone dropped prior to this trajectory, which also extendsHome and alignUp
 
                 // Clear the pole before adjusting height. Lift move trails the turret move
                 .addTemporalMarker(0.4,()-> {
+                    robot.turret.goToPickupPosition();
+                })
+
+                .addTemporalMarker(0.5, ()-> {
                     robot.lift.goToPickupHeight();
                 })
 
@@ -273,201 +272,101 @@ public class Auto_1plus4high extends LinearOpMode {
 
 
         // Determine trajectory headings for all alliance combinations
-        if (isAllianceRED) {
-            if (isOrientationLEFT) { // RED-LEFT
+        if (isOrientationLEFT) { // LEFT
 
-                ///////////////////////////////////////////
-                //             DO NOT CHANGE             //
-                ///////////////////////////////////////////
+            ///////////////////////////////////////////
+            //             DO NOT CHANGE             //
+            ///////////////////////////////////////////
 
-                XFORM_X = -1;
-                XFORM_Y = -1;
+            XFORM_X = -1;
+            XFORM_Y = -1;
 
-                startingHeading = -90;
-                startingTangent = 90;
+            startingHeading = -90;
+            startingTangent = 90;
 
-                preloadHeading = 180;
-                preloadTangent = 0;
+            preloadHeading = 180;
+            preloadTangent = 0;
 
-                pickupHeading = 180;
-                pickupTangent = 179;
+            pickupHeading = 180;
+            pickupTangent = 179;
 
-                depositHeading = 180;
-                depositTangent = 0;
+            depositHeading = 180;
+            depositTangent = 0;
 
-                ///////////////////////////////////////////
-                //  CHANGE ONLY IF ABSOLUTELY NECESSARY  //
-                //           DURING TOURNAMENT           //
-                ///////////////////////////////////////////
+            ///////////////////////////////////////////
+            //  CHANGE ONLY IF ABSOLUTELY NECESSARY  //
+            //           DURING TOURNAMENT           //
+            ///////////////////////////////////////////
 
-                robot.turret.turret_PRELOAD_POSITION_VALUE  = 170;
-                robot.turret.turret_PICKUP_POSITION_VALUE   = 0;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 270;  //hitting hard stop
+            robot.turret.turret_PRELOAD_POSITION_VALUE  = 170;
+            robot.turret.turret_PICKUP_POSITION_VALUE   = 0;
+            robot.turret.turret_DEPOSIT_POSITION_VALUE  = 270;  //hitting hard stop
 
-                robot.arm.EXTENSION_POSITION_PICKUP = 0;
-                robot.arm.EXTENSION_POSITION_PRELOAD = 0.49;
-                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.69;
+            robot.arm.EXTENSION_POSITION_PICKUP = 0;
+            robot.arm.EXTENSION_POSITION_PRELOAD = 0.49;
+            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.69;
 
-                ///////////////////////////////////////////
-                //      MAKE ADJUSTMENTS ON POSES        //
-                //           DURING TOURNAMENT           //
-                ///////////////////////////////////////////
+            ///////////////////////////////////////////
+            //      MAKE ADJUSTMENTS ON POSES        //
+            //           DURING TOURNAMENT           //
+            ///////////////////////////////////////////
 
-                preloadDeltaX = 0;
-                preloadDeltaY = 0;
+            preloadDeltaX = 0;
+            preloadDeltaY = 0;
 
-                pickupDeltaX = 0;
-                pickupDeltaY = 0;
+            pickupDeltaX = 0;
+            pickupDeltaY = 0;
 
-                depositDeltaX = 0;
-                depositDeltaY = 0;
-            }
-            else {                  // RED-RIGHT TODO: adjust for different quadrant
-
-                ///////////////////////////////////////////
-                //             DO NOT CHANGE             //
-                ///////////////////////////////////////////
-
-                XFORM_X = 1;
-                XFORM_Y = -1;
-
-                startingHeading = -90;
-                startingTangent = 90;
-
-                preloadHeading = 0;
-                preloadTangent = 180;
-
-                pickupHeading = 0;
-                pickupTangent = 0;
-
-                depositHeading = 0;
-                depositTangent = 179;
-
-                ///////////////////////////////////////////
-                //  CHANGE ONLY IF ABSOLUTELY NECESSARY  //
-                //           DURING TOURNAMENT           //
-                ///////////////////////////////////////////
-
-                robot.turret.turret_PRELOAD_POSITION_VALUE  = -165;
-                robot.turret.turret_PICKUP_POSITION_VALUE   = 0;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -265;  //hitting hard stop
-
-                robot.arm.EXTENSION_POSITION_PICKUP = 0;
-                robot.arm.EXTENSION_POSITION_PRELOAD = 0.45;
-                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.62;
-
-                ///////////////////////////////////////////
-                //      MAKE ADJUSTMENTS ON POSES        //
-                //           DURING TOURNAMENT           //
-                ///////////////////////////////////////////
-
-                preloadDeltaX = 0;
-                preloadDeltaY = 0; //-2;
-
-                pickupDeltaX = 0; //1.2;
-                pickupDeltaY = 0; //-2;
-
-                depositDeltaX = 0;
-                depositDeltaY = 0; //-2;
-            }
+            depositDeltaX = 0;
+            depositDeltaY = 0;
         }
-        else {
-            if (isOrientationLEFT) { // BLUE-LEFT TODO: adjust for different quadrant
+        else {                  // RIGHT TODO: adjust for different quadrant
 
-                ///////////////////////////////////////////
-                //             DO NOT CHANGE             //
-                ///////////////////////////////////////////
+            ///////////////////////////////////////////
+            //             DO NOT CHANGE             //
+            ///////////////////////////////////////////
 
-                XFORM_X = 1;
-                XFORM_Y = 1;
+            XFORM_X = 1;
+            XFORM_Y = -1;
 
-                startingHeading = 90;
-                startingTangent = -90;
+            startingHeading = -90;
+            startingTangent = 90;
 
-                preloadHeading = 0;
-                preloadTangent = 180;
+            preloadHeading = 0;
+            preloadTangent = 180;
 
-                pickupHeading = 0;
-                pickupTangent = 0;
+            pickupHeading = 0;
+            pickupTangent = 0;
 
-                depositHeading = 0;
-                depositTangent = 179;
+            depositHeading = 0;
+            depositTangent = 179;
 
-                ///////////////////////////////////////////
-                //  CHANGE ONLY IF ABSOLUTELY NECESSARY  //
-                //           DURING TOURNAMENT           //
-                ///////////////////////////////////////////
+            ///////////////////////////////////////////
+            //  CHANGE ONLY IF ABSOLUTELY NECESSARY  //
+            //           DURING TOURNAMENT           //
+            ///////////////////////////////////////////
 
-                robot.turret.turret_PRELOAD_POSITION_VALUE  = 165;
-                robot.turret.turret_PICKUP_POSITION_VALUE   = 0;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 270;  //hitting hard stop
+            robot.turret.turret_PRELOAD_POSITION_VALUE  = -175;
+            robot.turret.turret_PICKUP_POSITION_VALUE   = 0;
+            robot.turret.turret_DEPOSIT_POSITION_VALUE  = -275;  //hitting hard stop
 
-                robot.arm.EXTENSION_POSITION_PICKUP = 0;
-                robot.arm.EXTENSION_POSITION_PRELOAD = 0.47;
-                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.67;
+            robot.arm.EXTENSION_POSITION_PICKUP = 0;
+            robot.arm.EXTENSION_POSITION_PRELOAD = 0.45;
+            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.62;
 
-                ///////////////////////////////////////////
-                //      MAKE ADJUSTMENTS ON POSES        //
-                //           DURING TOURNAMENT           //
-                ///////////////////////////////////////////
+            ///////////////////////////////////////////
+            //      MAKE ADJUSTMENTS ON POSES        //
+            //           DURING TOURNAMENT           //
+            ///////////////////////////////////////////
 
-                preloadDeltaX = 0;
-                preloadDeltaY = 0;
+            preloadDeltaX = 0;
+            preloadDeltaY = 0; //-2;
 
-                pickupDeltaX = 0;
-                pickupDeltaY = 0;
+            pickupDeltaX = 0; //1.2;
+            pickupDeltaY = 0; //-2;
 
-                depositDeltaX = 0;
-                depositDeltaY = 1;
-            }
-            else {                  // BLUE-RIGHT TODO: adjust for different quadrant
-
-                ///////////////////////////////////////////
-                //             DO NOT CHANGE             //
-                ///////////////////////////////////////////
-
-                XFORM_X = -1;
-                XFORM_Y = 1;
-
-                startingHeading = 90;
-                startingTangent = -90;
-
-                preloadHeading = 180;
-                preloadTangent = 0;
-
-                pickupHeading = 180;
-                pickupTangent = 179;
-
-                depositHeading = 180;
-                depositTangent = 0;
-
-                ///////////////////////////////////////////
-                //  CHANGE ONLY IF ABSOLUTELY NECESSARY  //
-                //           DURING TOURNAMENT           //
-                ///////////////////////////////////////////
-
-                robot.turret.turret_PRELOAD_POSITION_VALUE  = -165;
-                robot.turret.turret_PICKUP_POSITION_VALUE   = 0;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -270;  //hitting hard stop
-
-                robot.arm.EXTENSION_POSITION_PICKUP = 0;
-                robot.arm.EXTENSION_POSITION_PRELOAD = 0.49;
-                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.65;
-
-                ///////////////////////////////////////////
-                //      MAKE ADJUSTMENTS ON POSES        //
-                //           DURING TOURNAMENT           //
-                ///////////////////////////////////////////
-
-                preloadDeltaX = 0;
-                preloadDeltaY = 0;
-
-                pickupDeltaX = 2;
-                pickupDeltaY = 0;
-
-                depositDeltaX = 0;
-                depositDeltaY = 0;
-            }
+            depositDeltaX = 0;
+            depositDeltaY = 0; //-2;
         }
 
         // Load the initial cone
@@ -670,8 +569,7 @@ public class Auto_1plus4high extends LinearOpMode {
                     // Switch to trajectoryPickup once the starting trajectory is complete
                     if (!robot.drive.isBusy()) {
                         // Initial trajectory completed, drop the cone
-                        robot.dropConeHighPoleNoAlign();
-                        sleep(100); // wait for cone to drop
+                        robot.dropConeHighPoleWithAlign();
 
                         // Start the next state
                         currentTrajectoryState = TrajectoryState.TRAJECTORY_PICKUP_STATE;
@@ -683,8 +581,7 @@ public class Auto_1plus4high extends LinearOpMode {
                     // Switch to Pickup once the deposit trajectory is complete
                     if (!robot.drive.isBusy()) {
                         // Deposit trajectory completed, drop the cone
-                        robot.dropConeHighPoleNoAlign();
-                        sleep(100); // wait for cone to drop
+                        robot.dropConeHighPoleWithAlign();
 
                         // Continue the cycle until no more cones left
                         if(robot.lift.numCyclesCompleted < 5) {

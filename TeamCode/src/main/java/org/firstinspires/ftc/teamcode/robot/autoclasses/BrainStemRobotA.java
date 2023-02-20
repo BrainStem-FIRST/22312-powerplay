@@ -26,6 +26,7 @@ public class BrainStemRobotA {
     public ExtensionA arm;
     public SampleMecanumDrive drive;
     public GrabberA grabber;
+    public AlignmentA alignment;
     private Map stateMap;
     ConstantsA constants = new ConstantsA();
 
@@ -35,11 +36,12 @@ public class BrainStemRobotA {
         this.opMode = opMode;
 
         // instantiate components turret, lift, arm, grabber
-        turret  = new TurretA(hwMap, telemetry);
-        lift    = new LiftA(hwMap, telemetry, stateMap);
-        arm     = new ExtensionA(hwMap, telemetry, stateMap);
-        drive   = new SampleMecanumDrive(hwMap);
+        turret    = new TurretA(hwMap, telemetry);
+        lift      = new LiftA(hwMap, telemetry, stateMap);
+        arm       = new ExtensionA(hwMap, telemetry, stateMap);
+        drive     = new SampleMecanumDrive(hwMap);
         grabber   = new GrabberA(hwMap, telemetry, stateMap);
+        alignment = new AlignmentA(hwMap, telemetry);
 
         // Set run mode (due to lack of a separate initialization function)
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -146,10 +148,11 @@ public class BrainStemRobotA {
         grabber.grabberOpenWide();
     }
 
-    public void dropCone() throws InterruptedException {
+    public void dropConeHighPoleNoAlign() throws InterruptedException {
         lift.raiseHeightTo(lift.getPosition() - 200);
         sleep(100); // was 100
         grabber.grabberOpen();
+        lift.raiseHeightTo(lift.getPosition() + 200);
         sleep(100); // was 100
 
         // move away from the pole so the grabber does not hit the pole when swinging back
@@ -158,6 +161,15 @@ public class BrainStemRobotA {
         sleep(200);
     }
 
+    public void dropConeHighPoleWithAlign() throws InterruptedException {
+        lift.raiseHeightTo(lift.getPosition() - 200);
+        sleep(100); // was 100
+        grabber.grabberOpen();
+        sleep(100); // was 100
+        arm.extendHome();
+        alignment.alignUp();
+        sleep(100); // was 100
+    }
 
     public void pickupCone() throws InterruptedException {
         grabber.grabberClose();
