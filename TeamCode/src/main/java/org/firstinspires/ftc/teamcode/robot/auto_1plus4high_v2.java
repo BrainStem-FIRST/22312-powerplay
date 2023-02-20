@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot.autoclasses;
+package org.firstinspires.ftc.teamcode.robot;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Config
-@Autonomous(name="Robot: Auto 1+2 at High v2", group="Robot")
+@Autonomous(name="Robot: Auto 1+X at High v2", group="Robot")
 public class auto_1plus4high_v2 extends LinearOpMode {
     //camera
     public OpenCvCamera camera;
@@ -677,34 +677,7 @@ public class auto_1plus4high_v2 extends LinearOpMode {
     }//camera
 
     private void setProgram() {
-        allianceIsSet = false;
         orientationIsSet = false;
-
-        telemetry.clearAll();
-        telemetry.addLine("Set Alliance: Driver 1-> X=Blue or B=Red.");
-        telemetry.update();
-        while (!allianceIsSet && !isStopRequested()) {
-            if (gamepad1.x) {
-                isAllianceRED = false;
-                allianceIsSet = true;
-            } else if (gamepad1.b) {
-                isAllianceRED = true;
-                allianceIsSet = true;
-            }
-        }
-
-        String allianceColor;
-        if (isAllianceRED) {
-            allianceColor = "RED";
-        } else {
-            allianceColor = "BLUE";
-        }
-
-        telemetry.clearAll();
-        telemetry.addData("Alliance Set: ", allianceColor);
-        telemetry.update();
-
-        sleep(500);
 
         telemetry.clearAll();
         telemetry.addLine("Set Orientation: Driver 1-> dpad left or right.");
@@ -727,13 +700,8 @@ public class auto_1plus4high_v2 extends LinearOpMode {
             orientation = "RIGHT";
         }
 
-        telemetry.addData("Orientation Set: ", orientation);
-        telemetry.update();
-
-        sleep(500);
         telemetry.clearAll();
         telemetry.addLine("Confirm Program:");
-        telemetry.addData("Alliance   :", allianceColor);
         telemetry.addData("Orientation:", orientation);
         telemetry.addLine("Driver 2-> A To Confirm. B to Restart.");
         telemetry.update();
