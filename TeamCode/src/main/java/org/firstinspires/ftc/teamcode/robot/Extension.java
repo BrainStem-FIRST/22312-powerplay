@@ -15,7 +15,7 @@ public class Extension {
 
     // Three servos (plus the turret) work together to place cone to desired location
     public ServoImplEx extension;
-    public ServoImplEx twoBar;
+//    public ServoImplEx twoBar;
 
     static final double MM_TO_INCHES = 0.0393700787;
     static final double MINIMUM_CLEARANCE_DISTANCE = 95.875 * MM_TO_INCHES;
@@ -28,8 +28,8 @@ public class Extension {
 
     public int EDITABLE_SERVO_MAX_PWM = 565;
 
-    public final double TWOBAR_POSITION_HOME    = 0;    // vertical position
-    public final double TWOBAR_POSITION_MAX     = 1;    // fully tilted
+//    public final double TWOBAR_POSITION_HOME    = 0;    // vertical position
+//    public final double TWOBAR_POSITION_MAX     = 1;    // fully tilted
 
     // extension statemap values
     public final String SYSTEM_NAME = "EXTENSION"; //statemap key
@@ -50,14 +50,14 @@ public class Extension {
         this.telemetry = telemetry;
         this.stateMap = stateMap;
         extension = (ServoImplEx) hwMap.servo.get("Extension");
-        twoBar = (ServoImplEx) hwMap.servo.get("Two Bar");
+//        twoBar = (ServoImplEx) hwMap.servo.get("Two Bar");
 
         // Scale the operating range of Servos and set initial position
         extension.setPwmRange(new PwmControl.PwmRange(565,640)); //low cap was 1250 and it was not retracting all the way
         extendHome();
 
-        twoBar.setPwmRange(new PwmControl.PwmRange(1745,2400));
-        tiltDown();
+//        twoBar.setPwmRange(new PwmControl.PwmRange(1745,2400));
+//        tiltDown();
 
     }
 
@@ -173,19 +173,19 @@ public class Extension {
 
     // Tilt the two-bar to its max position.
     // No micro adjustments envisioned for the two-bar
-    public void tiltUp() {
-        twoBar.setPosition(TWOBAR_POSITION_MAX);
-    }
+//    public void tiltUp() {
+//        twoBar.setPosition(TWOBAR_POSITION_MAX);
+//    }
 
     // Tilt the two-bar to its starting position (vertical).
     // No micro adjustments envisioned for the two-bar
-    public void tiltDown() {
-        twoBar.setPosition(TWOBAR_POSITION_HOME);
-    }
+//    public void tiltDown() {
+//        twoBar.setPosition(TWOBAR_POSITION_HOME);
+//    }
 
-    public boolean isExtensionOut(){
-        return extensionGetPosition() > EXTENSION_POSITION_HOME;
-    }
+//    public boolean isExtensionOut(){
+//        return extensionGetPosition() > EXTENSION_POSITION_HOME;
+//    }
 //    public void fineAdjustments(){
 //        extension.setPosition(adjustmentPosition);
 //    }

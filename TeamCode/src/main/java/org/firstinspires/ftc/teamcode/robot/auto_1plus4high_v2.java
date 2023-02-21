@@ -126,21 +126,21 @@ public class auto_1plus4high_v2 extends LinearOpMode {
                     robot.lift.goToHighPoleHeight();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     robot.alignment.alignDown(); //TODO: fix timing
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(0.15, () -> {
                     robot.turret.gotoPreloadPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.3, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(0.6, () -> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PRELOAD);
                 })
 
                 // Needed to allow turret/extension move to complete.
                 // Immediately after the trajectory is complete, cone cycle starts
-                .waitSeconds(1.0)  //0.6  // TODO: may not need this, or make it smaller
+//                .waitSeconds(5.0)  //0.6  // TODO: may not need this, or make it smaller
 
                 // Start trajectory ends with holding the cone above the pole
                 .build();
@@ -161,25 +161,25 @@ public class auto_1plus4high_v2 extends LinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(90))
 
                 // Timer is from start of the trajectory; it is not an offset
-                .addTemporalMarker(0, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     robot.arm.extendHome();
                 })
 
                 // Timer is from start of the trajectory; it is not an offset
-                .addTemporalMarker(0.2, () -> { //0.4
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> { //0.4
                     robot.lift.goToHighPoleHeight();
                 })
 
-                .addTemporalMarker(0.4, () ->{
-                    robot.alignment.alignDown(); //TODO: fix timing
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () ->{
+                    robot.alignment.alignDown();
                 })
 
-                .addTemporalMarker(0.6, () -> { //1.0
-                    robot.turret.goToDepositPosition();
+                .UNSTABLE_addTemporalMarkerOffset(0.15, () -> {
+                    robot.turret.gotoPreloadPosition();
                 })
 
-                .addTemporalMarker(0.9, () -> { //1.2
-                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
+                .UNSTABLE_addTemporalMarkerOffset(0.4, () -> {
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PRELOAD);
                 })
 
                 // Needed to allow turret/extension move to complete.
@@ -206,8 +206,12 @@ public class auto_1plus4high_v2 extends LinearOpMode {
                 // Cone dropped prior to this trajectory, which also extendsHome and alignUp
 
                 // Clear the pole before adjusting height. Lift move trails the turret move
-                .addTemporalMarker(0.4,()-> {
+                .addTemporalMarker(0.2,()-> {
                     robot.turret.goToPickupPosition();
+                })
+
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () ->{
+                    robot.alignment.alignUp(); //TODO: fix timing
                 })
 
                 .addTemporalMarker(0.5, ()-> {
@@ -298,12 +302,12 @@ public class auto_1plus4high_v2 extends LinearOpMode {
             //           DURING TOURNAMENT           //
             ///////////////////////////////////////////
 
-            robot.turret.turret_PRELOAD_POSITION_VALUE  = 170;
-            robot.turret.turret_PICKUP_POSITION_VALUE   = 0;
-            robot.turret.turret_DEPOSIT_POSITION_VALUE  = 270;  //hitting hard stop
+            robot.turret.turret_PRELOAD_POSITION_VALUE = 170;
+            robot.turret.turret_PICKUP_POSITION_VALUE = 0;
+            robot.turret.turret_DEPOSIT_POSITION_VALUE = 270;  //hitting hard stop
 
             robot.arm.EXTENSION_POSITION_PICKUP = 0;
-            robot.arm.EXTENSION_POSITION_PRELOAD = 0.49;
+            robot.arm.EXTENSION_POSITION_PRELOAD = 0.40;  // it was 0.49; extending a little more to hit the pole
             robot.arm.EXTENSION_POSITION_DEPOSIT = 0.69;
 
             ///////////////////////////////////////////
@@ -319,8 +323,7 @@ public class auto_1plus4high_v2 extends LinearOpMode {
 
             depositDeltaX = 0;
             depositDeltaY = 0;
-        }
-        else {                  // RIGHT TODO: adjust for different quadrant
+        } else {                  // RIGHT TODO: adjust for different quadrant
 
             ///////////////////////////////////////////
             //             DO NOT CHANGE             //
@@ -374,7 +377,8 @@ public class auto_1plus4high_v2 extends LinearOpMode {
         telemetry.addLine("Load Cone.  Driver 1 Hit A.");
         telemetry.update();
 
-        while(!gamepad1.a && !isStopRequested()) {}
+        while (!gamepad1.a && !isStopRequested()) {
+        }
 
         // grab the preloaded cone
         robot.grabber.grabberClose();
@@ -390,17 +394,17 @@ public class auto_1plus4high_v2 extends LinearOpMode {
 
 
         // Determine trajectory segment positions based on Alliance and Orientation
-        startingPose    = new Pose2d(XFORM_X * 36, XFORM_Y * 63, Math.toRadians(startingHeading));
-        preloadPose     = new Pose2d(XFORM_X * (18 + preloadDeltaX), XFORM_Y * (11.5 + preloadDeltaY), Math.toRadians(preloadHeading));
-        depositPose     = new Pose2d(XFORM_X * (27 + depositDeltaX), XFORM_Y * (11.5 + depositDeltaY), Math.toRadians(depositHeading));
-        pickupPose      = new Pose2d(XFORM_X * (52.2 + pickupDeltaX), XFORM_Y * (11.5 + pickupDeltaY), Math.toRadians(pickupHeading));
-        parkingPose     = new Pose2d(); // to be defined after reading the signal cone
+        startingPose = new Pose2d(XFORM_X * 36, XFORM_Y * 63, Math.toRadians(startingHeading));
+        preloadPose = new Pose2d(XFORM_X * (18 + preloadDeltaX), XFORM_Y * (11.5 + preloadDeltaY), Math.toRadians(preloadHeading));
+        depositPose = new Pose2d(XFORM_X * (27 + depositDeltaX), XFORM_Y * (11.5 + depositDeltaY), Math.toRadians(depositHeading));
+        pickupPose = new Pose2d(XFORM_X * (52.2 + pickupDeltaX), XFORM_Y * (11.5 + pickupDeltaY), Math.toRadians(pickupHeading));
+        parkingPose = new Pose2d(); // to be defined after reading the signal cone
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
 
         // Build trajectory sequences before Start signal
-        TrajectorySequence startTrajectory   = buildStartTrajectory(robot);
-        TrajectorySequence pickupTrajectory  = buildPickupTrajectory(robot,depositPose);
+        TrajectorySequence startTrajectory = buildStartTrajectory(robot);
+        TrajectorySequence pickupTrajectory = buildPickupTrajectory(robot, depositPose);
         TrajectorySequence depositTrajectory = buildDepositTrajectory(robot);
         Trajectory trajectoryPark;
 
@@ -488,7 +492,7 @@ public class auto_1plus4high_v2 extends LinearOpMode {
              */
             // Assign PARKING_NUMBER based on tagOfInterest
             // Determine parking position based on Alliance and Orientation
-            if(tagOfInterest.id == LEFT)
+            if (tagOfInterest.id == LEFT)
                 PARKING_NUMBER = 1;
             else if (tagOfInterest.id == MIDDLE)
                 PARKING_NUMBER = 2;
@@ -496,66 +500,36 @@ public class auto_1plus4high_v2 extends LinearOpMode {
                 PARKING_NUMBER = 3;
         }
 
-        if(isAllianceRED) {
-            if(isOrientationLEFT)   // RED-LEFT
-                switch (PARKING_NUMBER) {
-                    case 1:
-                        parkingPose = new Pose2d (-58.75, -11.75, Math.toRadians(180));
-                        break;
+        if (isOrientationLEFT) {   // LEFT
+            switch (PARKING_NUMBER) {
+                case 1:
+                    parkingPose = new Pose2d(-58.75, -11.75, Math.toRadians(180));
+                    break;
 
-                    case 2:
-                        parkingPose = new Pose2d (-35.25, -11.75, Math.toRadians(180));
-                        break;
+                case 2:
+                    parkingPose = new Pose2d(-35.25, -11.75, Math.toRadians(180));
+                    break;
 
-                    case 3:
-                        parkingPose = new Pose2d (-11.75, -11.75, Math.toRadians(180));
-                        break;
-                }
-            else                    // RED-RIGHT
-                switch (PARKING_NUMBER) {
-                    case 1:
-                        parkingPose = new Pose2d (11.75, -11.75, Math.toRadians(0));
-                        break;
-
-                    case 2:
-                        parkingPose = new Pose2d (35.25, -11.75, Math.toRadians(0));
-                        break;
-
-                    case 3:
-                        parkingPose = new Pose2d (58.75, -11.75, Math.toRadians(0));
-                        break;
-                }
-        } else {
-            if(isOrientationLEFT)   // BLUE-LEFT
-                switch (PARKING_NUMBER) {
-                    case 1:
-                        parkingPose = new Pose2d (58.75, 11.75, Math.toRadians(0));
-                        break;
-
-                    case 2:
-                        parkingPose = new Pose2d (35.25, 11.75, Math.toRadians(0));
-                        break;
-
-                    case 3:
-                        parkingPose = new Pose2d (11.75, 11.75, Math.toRadians(0));
-                        break;
-                }
-            else                    // BLUE-RIGHT
-                switch (PARKING_NUMBER) {
-                    case 1:
-                        parkingPose = new Pose2d (-11.75, 11.75, Math.toRadians(180));
-                        break;
-
-                    case 2:
-                        parkingPose = new Pose2d (-35.25, 11.75, Math.toRadians(180));
-                        break;
-
-                    case 3:
-                        parkingPose = new Pose2d (-58.75, 11.75, Math.toRadians(180));
-                        break;
-                }
+                case 3:
+                    parkingPose = new Pose2d(-11.75, -11.75, Math.toRadians(180));
+                    break;
+            }
         }
+        else {                     // RED-RIGHT
+            switch (PARKING_NUMBER) {
+                case 1:
+                    parkingPose = new Pose2d(11.75, -11.75, Math.toRadians(0));
+                    break;
 
+                case 2:
+                    parkingPose = new Pose2d(35.25, -11.75, Math.toRadians(0));
+                    break;
+
+                case 3:
+                    parkingPose = new Pose2d(58.75, -11.75, Math.toRadians(0));
+                    break;
+            }
+        }
 
         // initiate first trajectory asynchronous (go to pickup location) at the start of autonomous
         // Need to call drive.update() to make things move within the loop

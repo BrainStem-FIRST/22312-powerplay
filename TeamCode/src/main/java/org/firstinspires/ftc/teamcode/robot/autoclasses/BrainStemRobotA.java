@@ -165,10 +165,9 @@ public class BrainStemRobotA {
         lift.raiseHeightTo(lift.getPosition() - 200);
         sleep(100); // was 100
         grabber.grabberOpen();
-        sleep(100); // was 100
+        sleep(200); // was 100
         arm.extendHome();
-        alignment.alignUp();
-        sleep(100); // was 100
+        sleep(200); // was 100
     }
 
     public void pickupCone() throws InterruptedException {

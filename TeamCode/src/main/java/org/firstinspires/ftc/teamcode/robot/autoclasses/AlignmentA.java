@@ -14,15 +14,16 @@ public class AlignmentA {
     public ServoImplEx alignment;
 
     // Servo Positions TODO: find all positions
-    public final double ALIGNMENT_POSITION_UP     = 1.0;   // above grabber
-    public final double ALIGNMENT_POSITION_DOWN      = 0;     // below grabber
+    public final double ALIGNMENT_POSITION_UP     = 0;      // above grabber
+    public final double ALIGNMENT_POSITION_DOWN   = 1.0;    // below grabber
 
     public AlignmentA(HardwareMap hwMap, Telemetry telemetry) {
         this.telemetry = telemetry;
         alignment = (ServoImplEx) hwMap.servo.get("Alignment");
 
         // Scale the operating range of Servos and set initial position
-        alignment.setPwmRange(new PwmControl.PwmRange(400,644)); //TODO: set pwm range
+        // lower boundary for alignUp; higher boundary for alignDown
+        alignment.setPwmRange(new PwmControl.PwmRange(940,2200));
         alignUp();
 
     }
