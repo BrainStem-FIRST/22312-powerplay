@@ -124,8 +124,10 @@ public class RobotTeleOp extends LinearOpMode {
               if (toggleMap.get(GAMEPAD_1_A_STATE)) {
                   robot.lift.liftPickup = 0;
                   robot.lift.LIFT_POSITION_GROUND = 0;
+                  stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
                   telemetry.addData("Lift pickup", robot.lift.liftPickup);
                   stateMap.put(robot.lift.LIFT_SYSTEM_NAME, stateMap.get(constants.DRIVER_2_SELECTED_LIFT));
+                  stateMap.put(robot.turret.SYSTEM_NAME, stateMap.get(constants.DRIVER_2_SELECTED_TURRET));
               } else {
                   stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_GROUND);
               }
@@ -146,7 +148,7 @@ public class RobotTeleOp extends LinearOpMode {
                       elapsedTime.reset();
                       elapsedTime.startTime();
                       retractionInProgress = true;
-                      stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.FULLY_OPEN_STATE);
+                      stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
                       toggleMap.put(GAMEPAD_1_B_STATE, false);
                   }
 
@@ -168,11 +170,11 @@ public class RobotTeleOp extends LinearOpMode {
               }
 
               if (gamepad2.dpad_right) {
-                  stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.RIGHT_POSITION);
+                  stateMap.put(constants.DRIVER_2_SELECTED_TURRET, robot.turret.RIGHT_POSITION);
               } else if (gamepad2.dpad_left) {
-                  stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.LEFT_POSITION);
+                  stateMap.put(constants.DRIVER_2_SELECTED_TURRET, robot.turret.LEFT_POSITION);
               } else if (gamepad2.dpad_up) {
-                  stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
+                  stateMap.put(constants.DRIVER_2_SELECTED_TURRET, robot.turret.CENTER_POSITION);
               }
 
               if(gamepad2.right_trigger > 0.2){

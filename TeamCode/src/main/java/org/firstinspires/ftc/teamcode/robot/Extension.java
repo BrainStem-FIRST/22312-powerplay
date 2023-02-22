@@ -15,6 +15,7 @@ public class Extension {
 
     // Three servos (plus the turret) work together to place cone to desired location
     public ServoImplEx extension;
+    public ServoImplEx alignment;
 //    public ServoImplEx twoBar;
 
     static final double MM_TO_INCHES = 0.0393700787;
@@ -39,7 +40,6 @@ public class Extension {
     public final String FINE_ADJUSTMENTS = "FINE_ADJUSTMENTS";
     public final String TRANSITION_STATE = "TRANSITION";
     public double adjustmentPosition = 0;
-
     private Map stateMap;
 
     public double extensionGetPosition(){
@@ -50,11 +50,13 @@ public class Extension {
         this.telemetry = telemetry;
         this.stateMap = stateMap;
         extension = (ServoImplEx) hwMap.servo.get("Extension");
-//        twoBar = (ServoImplEx) hwMap.servo.get("Two Bar");
-
+//      twoBar = (ServoImplEx) hwMap.servo.get("Two Bar");
+        alignment = (ServoImplEx) hwMap.servo.get("Alignment");
         // Scale the operating range of Servos and set initial position
         extension.setPwmRange(new PwmControl.PwmRange(565,640)); //low cap was 1250 and it was not retracting all the way
         extendHome();
+        alignment.setPwmRange(new PwmControl.PwmRange(940,2200));
+        alignUp();
 
 //        twoBar.setPwmRange(new PwmControl.PwmRange(1745,2400));
 //        tiltDown();
@@ -73,6 +75,9 @@ public class Extension {
         double targetPosition = Range.clip(currentPosition + speed*0.10, 0, 1);
         extension.setPosition(targetPosition/EXTENSION_POSITION_MAX);
 
+    }
+    public void alignUp(){
+        alignment.setPosition(0);
     }
 
     // Move the extension's position to the specified distance in inches
