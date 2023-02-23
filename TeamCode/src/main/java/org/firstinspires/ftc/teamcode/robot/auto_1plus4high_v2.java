@@ -126,21 +126,24 @@ public class auto_1plus4high_v2 extends LinearOpMode {
 
 
                 // Timer is from start of the trajectory; it is not an offset
-                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                .addTemporalMarker(2.0, () -> {
                     robot.arm.extendHome();
-                })
-
-                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     robot.lift.goToHighPoleHeight();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.15, () -> {
+//                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+//                    robot.lift.goToHighPoleHeight();
+//                })
+
+                .addTemporalMarker(2.20, () -> {
                     robot.turret.gotoPreloadPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(4, () -> {
+                .addTemporalMarker(3.00, () -> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PRELOAD);
                 })
+
+                .waitSeconds(1.00)
 
                 // Needed to allow turret/extension move to complete.
                 // Immediately after the trajectory is complete, cone cycle starts
@@ -203,7 +206,7 @@ public class auto_1plus4high_v2 extends LinearOpMode {
                 // Move to the cone stack head first, stop at arm's reach
                 .setTangent(pickupTangent)
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
-                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(180), 9.75),
                         SampleMecanumDrive.getAccelerationConstraint(90))
 
                 // Cone dropped prior to this trajectory, which also extendsHome and alignUp
@@ -312,7 +315,7 @@ public class auto_1plus4high_v2 extends LinearOpMode {
 
             robot.arm.EXTENSION_POSITION_PICKUP = 0;
             robot.arm.EXTENSION_POSITION_PRELOAD = 0.40;  // it was 0.49; extending a little more to hit the pole
-            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.64; //0.69
+            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.60; //0.64
 
             ///////////////////////////////////////////
             //      MAKE ADJUSTMENTS ON POSES        //
@@ -598,6 +601,7 @@ public class auto_1plus4high_v2 extends LinearOpMode {
                 case TRAJECTORY_PARKING_STATE:
 
                     robot.arm.extendHome();
+                    robot.alignment.alignUp();
                     robot.grabber.grabberOpen();
                     robot.turret.moveTo(robot.turret.CENTER_POSITION_VALUE);
 
