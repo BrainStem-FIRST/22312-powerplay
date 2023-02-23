@@ -113,6 +113,10 @@ public class auto_1plus4high_v2 extends LinearOpMode {
                     robot.lift.goToClear();
                 })
 
+                .addTemporalMarker(0.3, () -> {
+                    robot.alignment.alignDown(); //TODO: fix timing
+                })
+
                 .setTangent(Math.toRadians(startingTangent))
 
                 // 2.55 sec to reach destination
@@ -123,24 +127,23 @@ public class auto_1plus4high_v2 extends LinearOpMode {
 
                 // Timer is from start of the trajectory; it is not an offset
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    robot.lift.goToHighPoleHeight();
+                    robot.arm.extendHome();
                 })
 
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    robot.alignment.alignDown(); //TODO: fix timing
+                    robot.lift.goToHighPoleHeight();
                 })
 
                 .UNSTABLE_addTemporalMarkerOffset(0.15, () -> {
                     robot.turret.gotoPreloadPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.6, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(4, () -> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PRELOAD);
                 })
 
                 // Needed to allow turret/extension move to complete.
                 // Immediately after the trajectory is complete, cone cycle starts
-//                .waitSeconds(5.0)  //0.6  // TODO: may not need this, or make it smaller
 
                 // Start trajectory ends with holding the cone above the pole
                 .build();
@@ -161,30 +164,30 @@ public class auto_1plus4high_v2 extends LinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(90))
 
                 // Timer is from start of the trajectory; it is not an offset
-                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                .addTemporalMarker(0, () -> {
                     robot.arm.extendHome();
                 })
 
                 // Timer is from start of the trajectory; it is not an offset
-                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> { //0.4
+                .addTemporalMarker(0.2, () -> { //0.4
                     robot.lift.goToHighPoleHeight();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.2, () ->{
+                .addTemporalMarker(0.4, () ->{
                     robot.alignment.alignDown();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.15, () -> {
-                    robot.turret.gotoPreloadPosition();
+                .addTemporalMarker(0.4, () -> {
+                    robot.turret.goToDepositPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.4, () -> {
-                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PRELOAD);
+                .addTemporalMarker(2.0, () -> {
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
                 })
 
                 // Needed to allow turret/extension move to complete.
                 // Immediately after the trajectory is complete, cone cycle starts
-//                .waitSeconds(0.2)
+//                .waitSeconds(5)
 
                 // ConeCycle will be outside of trajectory
                 .build();
@@ -200,17 +203,18 @@ public class auto_1plus4high_v2 extends LinearOpMode {
                 // Move to the cone stack head first, stop at arm's reach
                 .setTangent(pickupTangent)
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
-                        SampleMecanumDrive.getVelocityConstraint(28, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
                         SampleMecanumDrive.getAccelerationConstraint(90))
 
                 // Cone dropped prior to this trajectory, which also extendsHome and alignUp
 
                 // Clear the pole before adjusting height. Lift move trails the turret move
+
                 .addTemporalMarker(0.2,()-> {
                     robot.turret.goToPickupPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.2, () ->{
+                .addTemporalMarker(0.3, () ->{
                     robot.alignment.alignUp(); //TODO: fix timing
                 })
 
@@ -304,11 +308,11 @@ public class auto_1plus4high_v2 extends LinearOpMode {
 
             robot.turret.turret_PRELOAD_POSITION_VALUE = 170;
             robot.turret.turret_PICKUP_POSITION_VALUE = 0;
-            robot.turret.turret_DEPOSIT_POSITION_VALUE = 270;  //hitting hard stop
+            robot.turret.turret_DEPOSIT_POSITION_VALUE = 290;  //270 //hitting hard stop
 
             robot.arm.EXTENSION_POSITION_PICKUP = 0;
             robot.arm.EXTENSION_POSITION_PRELOAD = 0.40;  // it was 0.49; extending a little more to hit the pole
-            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.69;
+            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.64; //0.69
 
             ///////////////////////////////////////////
             //      MAKE ADJUSTMENTS ON POSES        //

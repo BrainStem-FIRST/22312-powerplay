@@ -115,6 +115,10 @@ public class Auto_1plus4high extends LinearOpMode {
                     robot.lift.goToClear();
                 })
 
+                .addTemporalMarker(0.3, () -> {
+                    robot.turret.gotoPreloadPosition();
+                })
+
                 .setTangent(Math.toRadians(startingTangent))
 
                 // 2.55 sec to reach destination
@@ -126,10 +130,6 @@ public class Auto_1plus4high extends LinearOpMode {
                 // Timer is from start of the trajectory; it is not an offset
                 .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     robot.lift.goToHighPoleHeight();
-                })
-
-                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
-                    robot.turret.gotoPreloadPosition();
                 })
 
                 .UNSTABLE_addTemporalMarkerOffset(0.3, () -> {
