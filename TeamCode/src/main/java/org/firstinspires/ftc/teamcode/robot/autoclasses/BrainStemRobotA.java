@@ -162,12 +162,12 @@ public class BrainStemRobotA {
     }
 
     public void dropConeHighPoleWithAlign() throws InterruptedException {
-        lift.raiseHeightTo(lift.getPosition() - 200);
+        lift.raiseHeightTo(lift.getPosition() - 100);
         sleep(100); // was 100
         grabber.grabberOpen();
         sleep(200); // was 100
         arm.extendHome();
-        sleep(200); // was 100
+        sleep(100); // was 100
     }
 
     public void pickupCone() throws InterruptedException {

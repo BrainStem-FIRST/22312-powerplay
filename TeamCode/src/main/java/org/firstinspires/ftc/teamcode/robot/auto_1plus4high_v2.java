@@ -114,7 +114,7 @@ public class auto_1plus4high_v2 extends LinearOpMode {
                 })
 
                 .addTemporalMarker(0.3, () -> {
-                    robot.alignment.alignDown(); //TODO: fix timing
+                    robot.alignment.alignDown();
                 })
 
                 .setTangent(Math.toRadians(startingTangent))
@@ -135,15 +135,15 @@ public class auto_1plus4high_v2 extends LinearOpMode {
 //                    robot.lift.goToHighPoleHeight();
 //                })
 
-                .addTemporalMarker(2.20, () -> {
+                .addTemporalMarker(2.2, () -> {
                     robot.turret.gotoPreloadPosition();
                 })
 
-                .addTemporalMarker(3.00, () -> {
+                .addTemporalMarker(2.4, () -> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PRELOAD);
                 })
 
-                .waitSeconds(1.00)
+                .waitSeconds(0.8)
 
                 // Needed to allow turret/extension move to complete.
                 // Immediately after the trajectory is complete, cone cycle starts
@@ -207,30 +207,34 @@ public class auto_1plus4high_v2 extends LinearOpMode {
                 .setTangent(pickupTangent)
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
                         SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(180), 9.75),
-                        SampleMecanumDrive.getAccelerationConstraint(90))
+                        SampleMecanumDrive.getAccelerationConstraint(60))
 
                 // Cone dropped prior to this trajectory, which also extendsHome and alignUp
 
                 // Clear the pole before adjusting height. Lift move trails the turret move
 
-                .addTemporalMarker(0.2,()-> {
+                .addTemporalMarker(0,()-> {
                     robot.turret.goToPickupPosition();
                 })
 
-                .addTemporalMarker(0.3, () ->{
-                    robot.alignment.alignUp(); //TODO: fix timing
+                .addTemporalMarker(0.2, ()-> {
+                    robot.arm.extendHome();
                 })
 
-                .addTemporalMarker(0.5, ()-> {
+                .addTemporalMarker(0.3, () ->{
+                    robot.alignment.alignUp();
+                })
+
+                .addTemporalMarker(0.8, ()-> {
                     robot.lift.goToPickupHeight();
                 })
 
                 // Reach arm to touch the cone
-                .addTemporalMarker(0.7,()-> {   //0.8
+                .addTemporalMarker(1.0,()-> {   //0.8
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
-                .addTemporalMarker(0.85,()->{    //0.7
+                .addTemporalMarker(1.25,()->{    //0.7
                     robot.grabber.grabberOpenWide();
                 })
 
@@ -298,7 +302,7 @@ public class auto_1plus4high_v2 extends LinearOpMode {
             preloadHeading = 180;
             preloadTangent = 0;
 
-            pickupHeading = 180;
+            pickupHeading = 175;
             pickupTangent = 179;
 
             depositHeading = 180;
@@ -356,13 +360,13 @@ public class auto_1plus4high_v2 extends LinearOpMode {
             //           DURING TOURNAMENT           //
             ///////////////////////////////////////////
 
-            robot.turret.turret_PRELOAD_POSITION_VALUE  = -175;
+            robot.turret.turret_PRELOAD_POSITION_VALUE  = -170;
             robot.turret.turret_PICKUP_POSITION_VALUE   = 0;
-            robot.turret.turret_DEPOSIT_POSITION_VALUE  = -275;  //hitting hard stop
+            robot.turret.turret_DEPOSIT_POSITION_VALUE  = -290;  //hitting hard stop
 
             robot.arm.EXTENSION_POSITION_PICKUP = 0;
-            robot.arm.EXTENSION_POSITION_PRELOAD = 0.45;
-            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.62;
+            robot.arm.EXTENSION_POSITION_PRELOAD = 0.40;
+            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.60;
 
             ///////////////////////////////////////////
             //      MAKE ADJUSTMENTS ON POSES        //
@@ -372,7 +376,7 @@ public class auto_1plus4high_v2 extends LinearOpMode {
             preloadDeltaX = 0;
             preloadDeltaY = 0; //-2;
 
-            pickupDeltaX = 0; //1.2;
+            pickupDeltaX = 1; //1.2;
             pickupDeltaY = 0; //-2;
 
             depositDeltaX = 0;
@@ -404,7 +408,7 @@ public class auto_1plus4high_v2 extends LinearOpMode {
         startingPose = new Pose2d(XFORM_X * 36, XFORM_Y * 63, Math.toRadians(startingHeading));
         preloadPose = new Pose2d(XFORM_X * (18 + preloadDeltaX), XFORM_Y * (11.5 + preloadDeltaY), Math.toRadians(preloadHeading));
         depositPose = new Pose2d(XFORM_X * (27 + depositDeltaX), XFORM_Y * (11.5 + depositDeltaY), Math.toRadians(depositHeading));
-        pickupPose = new Pose2d(XFORM_X * (52.2 + pickupDeltaX), XFORM_Y * (11.5 + pickupDeltaY), Math.toRadians(pickupHeading));
+        pickupPose = new Pose2d(XFORM_X * (52 + pickupDeltaX), XFORM_Y * (11.5 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose = new Pose2d(); // to be defined after reading the signal cone
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
