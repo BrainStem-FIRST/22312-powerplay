@@ -122,9 +122,11 @@ public class RobotTeleOp extends LinearOpMode {
               }
 
               if (toggleMap.get(GAMEPAD_1_A_STATE)) {
+                  if(gamepad1.a){
+                      toggleMap.put(GAMEPAD_1_B_STATE, true);
+                  }
                   robot.lift.liftPickup = 0;
                   robot.lift.LIFT_POSITION_GROUND = 0;
-                  stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
                   telemetry.addData("Lift pickup", robot.lift.liftPickup);
                   stateMap.put(robot.lift.LIFT_SYSTEM_NAME, stateMap.get(constants.DRIVER_2_SELECTED_LIFT));
                   stateMap.put(robot.turret.SYSTEM_NAME, stateMap.get(constants.DRIVER_2_SELECTED_TURRET));
