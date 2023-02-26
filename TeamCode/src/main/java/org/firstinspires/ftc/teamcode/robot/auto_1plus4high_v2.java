@@ -143,7 +143,7 @@ public class auto_1plus4high_v2 extends LinearOpMode {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PRELOAD);
                 })
 
-                .waitSeconds(0.8)
+                .waitSeconds(0.65)
 
                 // Needed to allow turret/extension move to complete.
                 // Immediately after the trajectory is complete, cone cycle starts
@@ -225,7 +225,7 @@ public class auto_1plus4high_v2 extends LinearOpMode {
                     robot.alignment.alignUp();
                 })
 
-                .addTemporalMarker(0.8, ()-> {
+                .addTemporalMarker(0.65, ()-> {
                     robot.lift.goToPickupHeight();
                 })
 
@@ -302,7 +302,7 @@ public class auto_1plus4high_v2 extends LinearOpMode {
             preloadHeading = 180;
             preloadTangent = 0;
 
-            pickupHeading = 175;
+            pickupHeading = 176;
             pickupTangent = 179;
 
             depositHeading = 180;
@@ -366,7 +366,7 @@ public class auto_1plus4high_v2 extends LinearOpMode {
 
             robot.arm.EXTENSION_POSITION_PICKUP = 0;
             robot.arm.EXTENSION_POSITION_PRELOAD = 0.40;
-            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.60;
+            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.55;
 
             ///////////////////////////////////////////
             //      MAKE ADJUSTMENTS ON POSES        //
@@ -604,7 +604,7 @@ public class auto_1plus4high_v2 extends LinearOpMode {
 
                 case TRAJECTORY_PARKING_STATE:
 
-                    robot.arm.extendHome();
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_HOME - 0.35);
                     robot.alignment.alignUp();
                     robot.grabber.grabberOpen();
                     robot.turret.moveTo(robot.turret.CENTER_POSITION_VALUE);
