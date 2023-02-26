@@ -336,7 +336,7 @@ public class LiftA {
     }
 
     public void goToHighPoleHeight() {
-        raiseHeightTo(LIFT_POSITION_HIGHPOLE);
+        raiseHeightTo(LIFT_POSITION_MIDPOLE);
     }
 
     public void goToMediumPoleHeight(){raiseHeightTo(LIFT_POSITION_MIDPOLE);}
