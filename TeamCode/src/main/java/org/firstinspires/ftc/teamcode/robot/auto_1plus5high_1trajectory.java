@@ -177,25 +177,25 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.arm.extendHome();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.1, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
                     robot.alignment.alignUp();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.35, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.65, ()-> {
                     robot.lift.goToPickupHeight();
                 })
 
                 // Reach arm to touch the cone
-                .UNSTABLE_addTemporalMarkerOffset(0.35,()-> {   //0.8
+                .UNSTABLE_addTemporalMarkerOffset(1.0,()-> {   //0.8
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.25,()->{    //0.7
+                .UNSTABLE_addTemporalMarkerOffset(1.25,()->{    //0.7
                     robot.grabber.grabberOpenWide();
                 })
 
                 // Pickup Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->{
+                .UNSTABLE_addTemporalMarkerOffset(1.5, ()->{
                     robot.grabber.grabberClose();
                     sleep(200); // wait for servo to grab
                     robot.lift.goToClear();
@@ -225,19 +225,19 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.lift.goToHighPoleHeight();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.2, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.4, () ->{
                     robot.alignment.alignDown();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(0.4, () -> {
                     robot.turret.goToDepositPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.8, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(2.0, () -> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(1.5,  ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(2.6,  ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
                     sleep(100); // was 100
                     robot.grabber.grabberOpen();
@@ -274,25 +274,25 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.arm.extendHome();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.1, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
                     robot.alignment.alignUp();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.35, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.65, ()-> {
                     robot.lift.goToPickupHeight();
                 })
 
                 // Reach arm to touch the cone
-                .UNSTABLE_addTemporalMarkerOffset(0.35,()-> {   //0.8
+                .UNSTABLE_addTemporalMarkerOffset(1.0,()-> {   //0.8
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.25,()->{    //0.7
+                .UNSTABLE_addTemporalMarkerOffset(1.25,()->{    //0.7
                     robot.grabber.grabberOpenWide();
                 })
 
                 // Pickup Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->{
+                .UNSTABLE_addTemporalMarkerOffset(1.5, ()->{
                     robot.grabber.grabberClose();
                     sleep(200); // wait for servo to grab
                     robot.lift.goToClear();
@@ -322,19 +322,19 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.lift.goToHighPoleHeight();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.2, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.4, () ->{
                     robot.alignment.alignDown();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(0.4, () -> {
                     robot.turret.goToDepositPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.8, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(2.0, () -> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(1.5,  ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(2.6,  ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
                     sleep(100); // was 100
                     robot.grabber.grabberOpen();
@@ -370,25 +370,25 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.arm.extendHome();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.1, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
                     robot.alignment.alignUp();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.35, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.65, ()-> {
                     robot.lift.goToPickupHeight();
                 })
 
                 // Reach arm to touch the cone
-                .UNSTABLE_addTemporalMarkerOffset(0.35,()-> {   //0.8
+                .UNSTABLE_addTemporalMarkerOffset(1.0,()-> {   //0.8
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.25,()->{    //0.7
+                .UNSTABLE_addTemporalMarkerOffset(1.25,()->{    //0.7
                     robot.grabber.grabberOpenWide();
                 })
 
                 // Pickup Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->{
+                .UNSTABLE_addTemporalMarkerOffset(1.5, ()->{
                     robot.grabber.grabberClose();
                     sleep(200); // wait for servo to grab
                     robot.lift.goToClear();
@@ -418,19 +418,19 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.lift.goToHighPoleHeight();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.2, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.4, () ->{
                     robot.alignment.alignDown();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(0.4, () -> {
                     robot.turret.goToDepositPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.8, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(2.0, () -> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(1.5,  ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(2.6,  ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
                     sleep(100); // was 100
                     robot.grabber.grabberOpen();
@@ -467,25 +467,25 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.arm.extendHome();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.1, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
                     robot.alignment.alignUp();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.35, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.65, ()-> {
                     robot.lift.goToPickupHeight();
                 })
 
                 // Reach arm to touch the cone
-                .UNSTABLE_addTemporalMarkerOffset(0.35,()-> {   //0.8
+                .UNSTABLE_addTemporalMarkerOffset(1.0,()-> {   //0.8
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.25,()->{    //0.7
+                .UNSTABLE_addTemporalMarkerOffset(1.25,()->{    //0.7
                     robot.grabber.grabberOpenWide();
                 })
 
                 // Pickup Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->{
+                .UNSTABLE_addTemporalMarkerOffset(1.5, ()->{
                     robot.grabber.grabberClose();
                     sleep(200); // wait for servo to grab
                     robot.lift.goToClear();
@@ -515,19 +515,19 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.lift.goToHighPoleHeight();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.2, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.4, () ->{
                     robot.alignment.alignDown();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(0.4, () -> {
                     robot.turret.goToDepositPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.8, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(2.0, () -> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(1.5,  ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(2.6,  ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
                     sleep(100); // was 100
                     robot.grabber.grabberOpen();
@@ -564,25 +564,25 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.arm.extendHome();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.1, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
                     robot.alignment.alignUp();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.35, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.65, ()-> {
                     robot.lift.goToPickupHeight();
                 })
 
                 // Reach arm to touch the cone
-                .UNSTABLE_addTemporalMarkerOffset(0.35,()-> {   //0.8
+                .UNSTABLE_addTemporalMarkerOffset(1.0,()-> {   //0.8
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.25,()->{    //0.7
+                .UNSTABLE_addTemporalMarkerOffset(1.25,()->{    //0.7
                     robot.grabber.grabberOpenWide();
                 })
 
                 // Pickup Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->{
+                .UNSTABLE_addTemporalMarkerOffset(1.5, ()->{
                     robot.grabber.grabberClose();
                     sleep(200); // wait for servo to grab
                     robot.lift.goToClear();
@@ -612,19 +612,19 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.lift.goToHighPoleHeight();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.2, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.4, () ->{
                     robot.alignment.alignDown();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(0.4, () -> {
                     robot.turret.goToDepositPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.8, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(2.0, () -> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(1.5,  ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(2.6,  ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
                     sleep(100); // was 100
                     robot.grabber.grabberOpen();
