@@ -408,7 +408,7 @@ public class auto_1plus4high_v2 extends LinearOpMode {
         startingPose = new Pose2d(XFORM_X * 36, XFORM_Y * 63, Math.toRadians(startingHeading));
         preloadPose = new Pose2d(XFORM_X * (18 + preloadDeltaX), XFORM_Y * (11.5 + preloadDeltaY), Math.toRadians(preloadHeading));
         depositPose = new Pose2d(XFORM_X * (27 + depositDeltaX), XFORM_Y * (11.5 + depositDeltaY), Math.toRadians(depositHeading));
-        pickupPose = new Pose2d(XFORM_X * (52 + pickupDeltaX), XFORM_Y * (11.5 + pickupDeltaY), Math.toRadians(pickupHeading));
+        pickupPose = new Pose2d(XFORM_X * (51.5 + pickupDeltaX), XFORM_Y * (11.5 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose = new Pose2d(); // to be defined after reading the signal cone
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
@@ -604,7 +604,7 @@ public class auto_1plus4high_v2 extends LinearOpMode {
 
                 case TRAJECTORY_PARKING_STATE:
 
-                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_HOME - 0.35);
+                    robot.arm.extendHome();
                     robot.alignment.alignUp();
                     robot.grabber.grabberOpen();
                     robot.turret.moveTo(robot.turret.CENTER_POSITION_VALUE);

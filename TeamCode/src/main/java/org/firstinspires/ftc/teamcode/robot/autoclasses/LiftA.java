@@ -33,7 +33,7 @@ public class LiftA {
     public final int LIFT_POSITION_GROUND = 125;
     public final int LIFT_POSITION_LOWPOLE = 380;   // 450
     public final int LIFT_POSITION_MIDPOLE = 700;   //685;
-    public final int LIFT_POSITION_HIGHPOLE = 820;  //960
+    public final int LIFT_POSITION_HIGHPOLE = 820;  //960o
 
 
     // Lift pick up position is only 4 cone bases higher than the starting position,
@@ -336,7 +336,7 @@ public class LiftA {
     }
 
     public void goToHighPoleHeight() {
-        raiseHeightTo(LIFT_POSITION_MIDPOLE);
+        raiseHeightTo(LIFT_POSITION_HIGHPOLE);
     }
 
     public void goToMediumPoleHeight(){raiseHeightTo(LIFT_POSITION_MIDPOLE);}

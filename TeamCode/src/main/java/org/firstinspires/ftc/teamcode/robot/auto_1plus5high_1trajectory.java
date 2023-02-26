@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Config
-@Autonomous(name="Robot: Auto 1+X at High v2", group="Robot")
+@Autonomous(name="Robot: Auto 1+5 with one trajectory", group="Robot")
 
 public class auto_1plus5high_1trajectory extends LinearOpMode {
     //camera
@@ -140,17 +140,18 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PRELOAD);
                 })
 
-                .addTemporalMarker(2.6, ()-> {
-//                    robot.dropConeHighPoleWithAlign();
+                // Drop Cone
+                .addTemporalMarker(3.0, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
-                    sleep(100); // was 100
+                })
+                .addTemporalMarker(3.1, ()-> {
                     robot.grabber.grabberOpen();
-                    sleep(200); // was 100
+                })
+                .addTemporalMarker(3.3, ()-> {
                     robot.arm.extendHome();
-                    sleep(100); // was 100
                 })
 
-                .waitSeconds(0.65)
+                .waitSeconds(0.1)
 
                 /*********PRELOAD FINISHED*********/
 
@@ -168,32 +169,33 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 // Clear the pole before adjusting height. Lift move trails the turret move
 
-                .addTemporalMarker(3.5,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
                     robot.turret.goToPickupPosition();
                 })
 
-                .addTemporalMarker(3.7, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
                     robot.arm.extendHome();
                 })
 
-                .addTemporalMarker(3.8, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.1, () ->{
                     robot.alignment.alignUp();
                 })
 
-                .addTemporalMarker(4.15, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.35, ()-> {
                     robot.lift.goToPickupHeight();
                 })
 
                 // Reach arm to touch the cone
-                .addTemporalMarker(4.5,()-> {   //0.8
+                .UNSTABLE_addTemporalMarkerOffset(0.35,()-> {   //0.8
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
-                .addTemporalMarker(4.75,()->{    //0.7
+                .UNSTABLE_addTemporalMarkerOffset(0.25,()->{    //0.7
                     robot.grabber.grabberOpenWide();
                 })
 
-                .addTemporalMarker(5.1, ()->{
+                // Pickup Cone
+                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->{
                     robot.grabber.grabberClose();
                     sleep(200); // wait for servo to grab
                     robot.lift.goToClear();
@@ -204,7 +206,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.lift.updateLiftPickupPosition();
                 })
 
-                .waitSeconds(0.65)
+//                .waitSeconds(0.65)
 
                 // Stop at the pickup position. Cone will be picked up outside of trajectory
 
@@ -214,28 +216,28 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(90))
 
                 // Timer is from start of the trajectory; it is not an offset
-                .addTemporalMarker(6, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     robot.arm.extendHome();
                 })
 
                 // Timer is from start of the trajectory; it is not an offset
-                .addTemporalMarker(6.2, () -> { //0.4
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> { //0.4
                     robot.lift.goToHighPoleHeight();
                 })
 
-                .addTemporalMarker(6.4, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () ->{
                     robot.alignment.alignDown();
                 })
 
-                .addTemporalMarker(6.4, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> {
                     robot.turret.goToDepositPosition();
                 })
 
-                .addTemporalMarker(8.0, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(0.8, () -> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
                 })
 
-                .addTemporalMarker(8.2, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(1.5,  ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
                     sleep(100); // was 100
                     robot.grabber.grabberOpen();
@@ -264,32 +266,33 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 // Clear the pole before adjusting height. Lift move trails the turret move
 
-                .addTemporalMarker(3.5,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
                     robot.turret.goToPickupPosition();
                 })
 
-                .addTemporalMarker(3.7, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
                     robot.arm.extendHome();
                 })
 
-                .addTemporalMarker(3.8, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.1, () ->{
                     robot.alignment.alignUp();
                 })
 
-                .addTemporalMarker(4.15, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.35, ()-> {
                     robot.lift.goToPickupHeight();
                 })
 
                 // Reach arm to touch the cone
-                .addTemporalMarker(4.5,()-> {   //0.8
+                .UNSTABLE_addTemporalMarkerOffset(0.35,()-> {   //0.8
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
-                .addTemporalMarker(4.75,()->{    //0.7
+                .UNSTABLE_addTemporalMarkerOffset(0.25,()->{    //0.7
                     robot.grabber.grabberOpenWide();
                 })
 
-                .addTemporalMarker(5.1, ()->{
+                // Pickup Cone
+                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->{
                     robot.grabber.grabberClose();
                     sleep(200); // wait for servo to grab
                     robot.lift.goToClear();
@@ -300,7 +303,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.lift.updateLiftPickupPosition();
                 })
 
-                .waitSeconds(0.65)
+//                .waitSeconds(0.65)
 
                 // Stop at the pickup position. Cone will be picked up outside of trajectory
 
@@ -310,28 +313,28 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(90))
 
                 // Timer is from start of the trajectory; it is not an offset
-                .addTemporalMarker(6, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     robot.arm.extendHome();
                 })
 
                 // Timer is from start of the trajectory; it is not an offset
-                .addTemporalMarker(6.2, () -> { //0.4
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> { //0.4
                     robot.lift.goToHighPoleHeight();
                 })
 
-                .addTemporalMarker(6.4, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () ->{
                     robot.alignment.alignDown();
                 })
 
-                .addTemporalMarker(6.4, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> {
                     robot.turret.goToDepositPosition();
                 })
 
-                .addTemporalMarker(8.0, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(0.8, () -> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
                 })
 
-                .addTemporalMarker(8.2, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(1.5,  ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
                     sleep(100); // was 100
                     robot.grabber.grabberOpen();
@@ -350,7 +353,6 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 /*********CYCLE TWO FINISHED*********/
 
-
                 .setTangent(pickupTangent)
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
                         SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(180), 9.75),
@@ -360,32 +362,33 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 // Clear the pole before adjusting height. Lift move trails the turret move
 
-                .addTemporalMarker(3.5,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
                     robot.turret.goToPickupPosition();
                 })
 
-                .addTemporalMarker(3.7, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
                     robot.arm.extendHome();
                 })
 
-                .addTemporalMarker(3.8, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.1, () ->{
                     robot.alignment.alignUp();
                 })
 
-                .addTemporalMarker(4.15, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.35, ()-> {
                     robot.lift.goToPickupHeight();
                 })
 
                 // Reach arm to touch the cone
-                .addTemporalMarker(4.5,()-> {   //0.8
+                .UNSTABLE_addTemporalMarkerOffset(0.35,()-> {   //0.8
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
-                .addTemporalMarker(4.75,()->{    //0.7
+                .UNSTABLE_addTemporalMarkerOffset(0.25,()->{    //0.7
                     robot.grabber.grabberOpenWide();
                 })
 
-                .addTemporalMarker(5.1, ()->{
+                // Pickup Cone
+                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->{
                     robot.grabber.grabberClose();
                     sleep(200); // wait for servo to grab
                     robot.lift.goToClear();
@@ -396,7 +399,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.lift.updateLiftPickupPosition();
                 })
 
-                .waitSeconds(0.65)
+//                .waitSeconds(0.65)
 
                 // Stop at the pickup position. Cone will be picked up outside of trajectory
 
@@ -406,28 +409,28 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(90))
 
                 // Timer is from start of the trajectory; it is not an offset
-                .addTemporalMarker(6, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     robot.arm.extendHome();
                 })
 
                 // Timer is from start of the trajectory; it is not an offset
-                .addTemporalMarker(6.2, () -> { //0.4
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> { //0.4
                     robot.lift.goToHighPoleHeight();
                 })
 
-                .addTemporalMarker(6.4, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () ->{
                     robot.alignment.alignDown();
                 })
 
-                .addTemporalMarker(6.4, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> {
                     robot.turret.goToDepositPosition();
                 })
 
-                .addTemporalMarker(8.0, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(0.8, () -> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
                 })
 
-                .addTemporalMarker(8.2, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(1.5,  ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
                     sleep(100); // was 100
                     robot.grabber.grabberOpen();
@@ -435,6 +438,8 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.arm.extendHome();
                     sleep(100); // was 100
                 })
+
+                .waitSeconds(0.65)
 
                 // Needed to allow turret/extension move to complete.
                 // Immediately after the trajectory is complete, cone cycle starts
@@ -454,32 +459,33 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 // Clear the pole before adjusting height. Lift move trails the turret move
 
-                .addTemporalMarker(3.5,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
                     robot.turret.goToPickupPosition();
                 })
 
-                .addTemporalMarker(3.7, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
                     robot.arm.extendHome();
                 })
 
-                .addTemporalMarker(3.8, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.1, () ->{
                     robot.alignment.alignUp();
                 })
 
-                .addTemporalMarker(4.15, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.35, ()-> {
                     robot.lift.goToPickupHeight();
                 })
 
                 // Reach arm to touch the cone
-                .addTemporalMarker(4.5,()-> {   //0.8
+                .UNSTABLE_addTemporalMarkerOffset(0.35,()-> {   //0.8
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
-                .addTemporalMarker(4.75,()->{    //0.7
+                .UNSTABLE_addTemporalMarkerOffset(0.25,()->{    //0.7
                     robot.grabber.grabberOpenWide();
                 })
 
-                .addTemporalMarker(5.1, ()->{
+                // Pickup Cone
+                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->{
                     robot.grabber.grabberClose();
                     sleep(200); // wait for servo to grab
                     robot.lift.goToClear();
@@ -490,7 +496,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.lift.updateLiftPickupPosition();
                 })
 
-                .waitSeconds(0.65)
+//                .waitSeconds(0.65)
 
                 // Stop at the pickup position. Cone will be picked up outside of trajectory
 
@@ -500,28 +506,28 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(90))
 
                 // Timer is from start of the trajectory; it is not an offset
-                .addTemporalMarker(6, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     robot.arm.extendHome();
                 })
 
                 // Timer is from start of the trajectory; it is not an offset
-                .addTemporalMarker(6.2, () -> { //0.4
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> { //0.4
                     robot.lift.goToHighPoleHeight();
                 })
 
-                .addTemporalMarker(6.4, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () ->{
                     robot.alignment.alignDown();
                 })
 
-                .addTemporalMarker(6.4, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> {
                     robot.turret.goToDepositPosition();
                 })
 
-                .addTemporalMarker(8.0, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(0.8, () -> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
                 })
 
-                .addTemporalMarker(8.2, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(1.5,  ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
                     sleep(100); // was 100
                     robot.grabber.grabberOpen();
@@ -529,6 +535,8 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.arm.extendHome();
                     sleep(100); // was 100
                 })
+
+                .waitSeconds(0.65)
 
                 // Needed to allow turret/extension move to complete.
                 // Immediately after the trajectory is complete, cone cycle starts
@@ -548,32 +556,33 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 // Clear the pole before adjusting height. Lift move trails the turret move
 
-                .addTemporalMarker(3.5,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
                     robot.turret.goToPickupPosition();
                 })
 
-                .addTemporalMarker(3.7, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
                     robot.arm.extendHome();
                 })
 
-                .addTemporalMarker(3.8, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.1, () ->{
                     robot.alignment.alignUp();
                 })
 
-                .addTemporalMarker(4.15, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.35, ()-> {
                     robot.lift.goToPickupHeight();
                 })
 
                 // Reach arm to touch the cone
-                .addTemporalMarker(4.5,()-> {   //0.8
+                .UNSTABLE_addTemporalMarkerOffset(0.35,()-> {   //0.8
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
-                .addTemporalMarker(4.75,()->{    //0.7
+                .UNSTABLE_addTemporalMarkerOffset(0.25,()->{    //0.7
                     robot.grabber.grabberOpenWide();
                 })
 
-                .addTemporalMarker(5.1, ()->{
+                // Pickup Cone
+                .UNSTABLE_addTemporalMarkerOffset(0.25, ()->{
                     robot.grabber.grabberClose();
                     sleep(200); // wait for servo to grab
                     robot.lift.goToClear();
@@ -584,7 +593,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.lift.updateLiftPickupPosition();
                 })
 
-                .waitSeconds(0.65)
+//                .waitSeconds(0.65)
 
                 // Stop at the pickup position. Cone will be picked up outside of trajectory
 
@@ -594,28 +603,28 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(90))
 
                 // Timer is from start of the trajectory; it is not an offset
-                .addTemporalMarker(6, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
                     robot.arm.extendHome();
                 })
 
                 // Timer is from start of the trajectory; it is not an offset
-                .addTemporalMarker(6.2, () -> { //0.4
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> { //0.4
                     robot.lift.goToHighPoleHeight();
                 })
 
-                .addTemporalMarker(6.4, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () ->{
                     robot.alignment.alignDown();
                 })
 
-                .addTemporalMarker(6.4, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> {
                     robot.turret.goToDepositPosition();
                 })
 
-                .addTemporalMarker(8.0, () -> {
+                .UNSTABLE_addTemporalMarkerOffset(0.8, () -> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
                 })
 
-                .addTemporalMarker(8.2, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(1.5,  ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
                     sleep(100); // was 100
                     robot.grabber.grabberOpen();
@@ -623,6 +632,8 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.arm.extendHome();
                     sleep(100); // was 100
                 })
+
+                .waitSeconds(0.65)
 
                 // Needed to allow turret/extension move to complete.
                 // Immediately after the trajectory is complete, cone cycle starts

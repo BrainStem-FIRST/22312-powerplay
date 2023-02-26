@@ -22,7 +22,7 @@ public class ExtensionA {
     static final double MAXIMUM_REACH = 11; // inches of extension from position 0 to 1.0
 
     // Servo Positions
-    public final double EXTENSION_POSITION_HOME     = 0.95;   // Fully retracted
+    public final double EXTENSION_POSITION_HOME     = 1.0;   // Fully retracted
     public final double EXTENSION_POSITION_MAX      = 0;     // Fully extended
 
     public final double EXTENSION_POSITION_LEFT     = 0.5;   // Extend to the pole on the left from center of isle
