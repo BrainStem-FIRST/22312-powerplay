@@ -158,6 +158,32 @@ public class ExtensionA {
         }
     }
 
+    public double getPickupExtension(int cyclesComplete){
+        double extensionPosition = 0;
+        switch(cyclesComplete){
+            case 0:{
+                extensionPosition =  0.6;
+                break;
+            }
+            case 1:{
+                extensionPosition = 0.65;
+                break;
+            }
+            case 2:{
+                extensionPosition = 0.7;
+                break;
+            }
+            case 3:{
+                extensionPosition =  0.75;
+                break;
+            }
+            case 4:{
+                extensionPosition  = 0.8;
+            }
+        }
+        return extensionPosition;
+    }
+
     public double getExtensionPosition() {
         return extension.getPosition();
     }
