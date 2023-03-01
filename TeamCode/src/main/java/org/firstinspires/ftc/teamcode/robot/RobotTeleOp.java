@@ -163,6 +163,7 @@ public class RobotTeleOp extends LinearOpMode {
               if (retractionInProgress) {
                   if (elapsedTime.seconds() > 0.1) {
                       stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
+                      stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_COMPLETELY);
                   }
                   if (elapsedTime.seconds() > 0.4) {
 //                stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
