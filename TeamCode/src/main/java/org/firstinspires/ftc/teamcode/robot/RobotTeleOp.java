@@ -57,11 +57,16 @@ public class RobotTeleOp extends LinearOpMode {
     private boolean leftTriggerPressed = false;
     private boolean retractionInProgress = false;
     private final double SLOWMODE  = 0.45;
+    private boolean CAP_MODE = false;
 
     Constants constants = new Constants();
 
+    private ElapsedTime grabberCapCycleTime = new ElapsedTime();
     private ElapsedTime grabberCycleTime = new ElapsedTime();
     private boolean grabberCycleInProgress = false;
+    private boolean grabberyCapCycleInProgress = false;
+
+    private double k_regularTurningSpeed = 0.4;
 
 
     Map<String, Boolean> toggleMap = new HashMap<String, Boolean>() {{
@@ -130,6 +135,7 @@ public class RobotTeleOp extends LinearOpMode {
                   telemetry.addData("Lift pickup", robot.lift.liftPickup);
                   stateMap.put(robot.lift.LIFT_SYSTEM_NAME, stateMap.get(constants.DRIVER_2_SELECTED_LIFT));
                   stateMap.put(robot.turret.SYSTEM_NAME, stateMap.get(constants.DRIVER_2_SELECTED_TURRET));
+                  CAP_MODE = false;
               } else {
                   stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_GROUND);
               }
@@ -159,6 +165,7 @@ public class RobotTeleOp extends LinearOpMode {
               if (retractionInProgress) {
                   if (elapsedTime.seconds() > 0.1) {
                       stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
+                      stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_COMPLETELY);
                   }
                   if (elapsedTime.seconds() > 0.4) {
 //                stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
@@ -166,9 +173,11 @@ public class RobotTeleOp extends LinearOpMode {
                       telemetry.addData("timer in ", true);
                       retractionInProgress = false;
                       elapsedTime.reset();
-                  } else if (elapsedTime.seconds() > 0.3) {
-                      stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
                   }
+              }
+
+              if(gamepad1.dpad_left || gamepad1.dpad_right || gamepad1.dpad_up || gamepad1.dpad_down){
+                  CAP_MODE = true;
               }
 
               if (gamepad2.dpad_right) {
@@ -191,12 +200,17 @@ public class RobotTeleOp extends LinearOpMode {
                   } else {
                       robot.lift.setAdjustmentHeight(0);
                   }
-              } else if (gamepad1.right_trigger > 0.5) {
+              } else if (gamepad1.right_trigger > 0.5 && !CAP_MODE) {
                   grabberCycleTime.reset();
                   grabberCycleTime.startTime();
                   stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_STATE);
                   grabberCycleInProgress = true;
 //              stateMap.put(constants.CONE_CYCLE, constants.STATE_IN_PROGRESS);
+              } else if(gamepad1.right_trigger > 0.5 && CAP_MODE){
+                  grabberCycleTime.reset();
+                  grabberCycleTime.startTime();
+                  stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_STATE);
+                  grabberyCapCycleInProgress = true;
               }
 //          telemetry.addData("Time",grabberCycleTime.milliseconds());
 //          telemetry.addData("grabberCycleInProgress", grabberCycleInProgress);
@@ -212,6 +226,13 @@ public class RobotTeleOp extends LinearOpMode {
                   } else if(grabberCycleTime.milliseconds() > 300 && robot.lift.LIFT_POSITION_GROUND != 0){
                       robot.lift.liftPickup = 100;
                       grabberCycleInProgress = false;
+                  }
+              }
+
+              if(grabberyCapCycleInProgress){
+                  if(grabberCapCycleTime.milliseconds() > 200){
+                      robot.lift.liftPickup = 60;
+                      grabberyCapCycleInProgress = false;
                   }
               }
 //        if(gamepad1.left_trigger > 0.2){
@@ -230,40 +251,40 @@ public class RobotTeleOp extends LinearOpMode {
                   robot.arm.extension.setPwmRange(new PwmControl.PwmRange(robot.arm.EDITABLE_SERVO_MAX_PWM, 640));
               }
 
-              if (stateMap.get(DRIVE_MODE).equalsIgnoreCase(MANUAL_DRIVE_MODE)) {
-                  if (gamepad1.dpad_down) {
-                      stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
-                      stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
-                      drive.setPoseEstimate(new Pose2d(0, 0, 0));
-                      Pose2d currentPosition = drive.getPoseEstimate();
-                      Pose2d targetPosition = new Pose2d(currentPosition.getX() - 40, currentPosition.getY(), currentPosition.getHeading());
-                      TrajectorySequence reverseTrajectory = drive.highSpeedTrajectoryBuilder(drive.getPoseEstimate())
-                              .lineToLinearHeading(targetPosition)
-                              .UNSTABLE_addTemporalMarkerOffset(-1, () -> toggleMap.put(GAMEPAD_1_A_STATE, false))
-                              .UNSTABLE_addTemporalMarkerOffset(0, () -> stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE))
-                              .build();
-                      drive.followTrajectorySequenceAsync(reverseTrajectory);
-
-                  } else if (gamepad1.dpad_up) {
-                      stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
-                      toggleMap.put(GAMEPAD_1_A_STATE, true);
-                      Pose2d currentPosition = drive.getPoseEstimate();
-                      Pose2d targetPosition = new Pose2d(currentPosition.getX() + 41.5, currentPosition.getY(), currentPosition.getHeading());
-                      TrajectorySequence forwardTrajectory = drive.highSpeedTrajectoryBuilder(drive.getPoseEstimate())
-                              .lineToLinearHeading(targetPosition)
-                              .UNSTABLE_addTemporalMarkerOffset(0, () -> stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE))
-                              .build();
-                      drive.followTrajectorySequenceAsync(forwardTrajectory);
-
-                  }
-              }
+//              if (stateMap.get(DRIVE_MODE).equalsIgnoreCase(MANUAL_DRIVE_MODE)) {
+//                  if (gamepad1.dpad_down) {
+//                      stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
+//                      stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
+//                      drive.setPoseEstimate(new Pose2d(0, 0, 0));
+//                      Pose2d currentPosition = drive.getPoseEstimate();
+//                      Pose2d targetPosition = new Pose2d(currentPosition.getX() - 40, currentPosition.getY(), currentPosition.getHeading());
+//                      TrajectorySequence reverseTrajectory = drive.highSpeedTrajectoryBuilder(drive.getPoseEstimate())
+//                              .lineToLinearHeading(targetPosition)
+//                              .UNSTABLE_addTemporalMarkerOffset(-1, () -> toggleMap.put(GAMEPAD_1_A_STATE, false))
+//                              .UNSTABLE_addTemporalMarkerOffset(0, () -> stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE))
+//                              .build();
+//                      drive.followTrajectorySequenceAsync(reverseTrajectory);
+//
+//                  } else if (gamepad1.dpad_up) {
+//                      stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
+//                      toggleMap.put(GAMEPAD_1_A_STATE, true);
+//                      Pose2d currentPosition = drive.getPoseEstimate();
+//                      Pose2d targetPosition = new Pose2d(currentPosition.getX() + 41.5, currentPosition.getY(), currentPosition.getHeading());
+//                      TrajectorySequence forwardTrajectory = drive.highSpeedTrajectoryBuilder(drive.getPoseEstimate())
+//                              .lineToLinearHeading(targetPosition)
+//                              .UNSTABLE_addTemporalMarkerOffset(0, () -> stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE))
+//                              .build();
+//                      drive.followTrajectorySequenceAsync(forwardTrajectory);
+//
+//                  }
+//              }
 
               if (stateMap.get(DRIVE_MODE).equals(MANUAL_DRIVE_MODE)) {
                   if (gamepad2.left_stick_x <= -0.1 || gamepad2.left_stick_x >= 0.1) {
                       drive.setWeightedDrivePower(
                               new Pose2d(
                                       0,
-                                      -(0.5 * gamepad1.left_stick_x),
+                                      -(k_regularTurningSpeed * gamepad1.left_stick_x),
                                       0
                               )
                       );
@@ -297,6 +318,8 @@ public class RobotTeleOp extends LinearOpMode {
               telemetry.addData("Cycle Lift up", stateMap.get(constants.CYCLE_LIFT_UP));
               telemetry.addData("Lift selected", stateMap.get(robot.lift.LIFT_SYSTEM_NAME));
               telemetry.addData("Lift subheight adding", robot.lift.liftPickup);
+              telemetry.addData("Lift Motor 1 ticks", robot.lift.liftMotor.getCurrentPosition());
+              telemetry.addData("Lift Motor 2", robot.lift.liftMotor2.getCurrentPosition());
               telemetry.update();
           }
         }
@@ -329,6 +352,10 @@ public class RobotTeleOp extends LinearOpMode {
         }
 
         return toggleMap.get(buttonStateName);
+    }
+
+    private void close() {
+
     }
 
 }
