@@ -32,8 +32,8 @@ public class LiftA {
     // Empirical numbers are for holding the cone above the pole prior to coneCycle drop
     public final int LIFT_POSITION_GROUND = 125;
     public final int LIFT_POSITION_LOWPOLE = 380;   // 450
-    public final int LIFT_POSITION_MIDPOLE = 700;   //685;
-    public final int LIFT_POSITION_HIGHPOLE = 820;  //960o
+    public final int LIFT_POSITION_MIDPOLE = 700;   //685
+    public final int LIFT_POSITION_HIGHPOLE = 900;  //820
 
 
     // Lift pick up position is only 4 cone bases higher than the starting position,
