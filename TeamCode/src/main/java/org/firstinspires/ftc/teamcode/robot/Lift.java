@@ -163,8 +163,8 @@ public class Lift {
     public void setRawPower(double power) {
         liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        liftMotor2.setPower(1.0);
-        liftMotor.setPower(1.0);
+        liftMotor2.setPower(power);
+        liftMotor.setPower(power);
     }
 
     private long coneCycleStartTime() {

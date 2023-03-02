@@ -35,7 +35,7 @@ public class Grabber {
     Constants constants = new Constants();
 
     public final double FULLY_OPEN_VALUE = 0.01;
-    private final double CONE_OPEN_VALUE = 0.65;
+    private final double CONE_OPEN_VALUE = 0.7;
     public final double CLOSED_VALUE = 0.93;
     public final double COMPLETELY_CLOSED_VALUE = 1.0;
     public ElapsedTime grabberCycleTime;
@@ -86,7 +86,7 @@ public class Grabber {
             grabber.setPosition(CLOSED_VALUE);
     } else if(((String) stateMap.get(SYSTEM_NAME)).equalsIgnoreCase(CLOSED_COMPLETELY)){
             if(shouldGrabberFullyClose(lift)) {
-                grabber.setPosition(CLOSED_VALUE);
+                grabber.setPosition(COMPLETELY_CLOSED_VALUE);
             } else {
                 grabber.setPosition(CONE_OPEN_VALUE);
             }
@@ -99,7 +99,7 @@ public class Grabber {
     }
 
     public boolean shouldGrabberFullyClose(Lift lift){
-        return lift.getPosition() > 200;
+        return lift.getPosition() > 100;
     }
 
     /************************* GRABBER UTILITIES **************************/

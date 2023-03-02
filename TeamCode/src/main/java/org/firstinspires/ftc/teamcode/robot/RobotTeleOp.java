@@ -165,14 +165,12 @@ public class RobotTeleOp extends LinearOpMode {
                       stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
                       stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_COMPLETELY);
                   }
-                  if (elapsedTime.seconds() > 0.4) {
+                  if (elapsedTime.seconds() > 0.6) {
 //                stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
                       toggleMap.put(GAMEPAD_1_A_STATE, false);
                       telemetry.addData("timer in ", true);
                       retractionInProgress = false;
                       elapsedTime.reset();
-                  } else if (elapsedTime.seconds() > 0.3) {
-                      stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
                   }
               }
 
@@ -318,6 +316,8 @@ public class RobotTeleOp extends LinearOpMode {
               telemetry.addData("Cycle Lift up", stateMap.get(constants.CYCLE_LIFT_UP));
               telemetry.addData("Lift selected", stateMap.get(robot.lift.LIFT_SYSTEM_NAME));
               telemetry.addData("Lift subheight adding", robot.lift.liftPickup);
+              telemetry.addData("Lift Motor 1 ticks", robot.lift.liftMotor.getCurrentPosition());
+              telemetry.addData("Lift Motor 2", robot.lift.liftMotor2.getCurrentPosition());
               telemetry.update();
           }
         }
