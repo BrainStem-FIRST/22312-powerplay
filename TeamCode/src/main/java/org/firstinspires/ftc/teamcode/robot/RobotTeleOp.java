@@ -66,6 +66,8 @@ public class RobotTeleOp extends LinearOpMode {
     private boolean grabberCycleInProgress = false;
     private boolean grabberyCapCycleInProgress = false;
 
+    private double k_regularTurningSpeed = 0.4;
+
 
     Map<String, Boolean> toggleMap = new HashMap<String, Boolean>() {{
         put(GAMEPAD_1_A_STATE, false);
@@ -282,7 +284,7 @@ public class RobotTeleOp extends LinearOpMode {
                       drive.setWeightedDrivePower(
                               new Pose2d(
                                       0,
-                                      -(0.5 * gamepad1.left_stick_x),
+                                      -(k_regularTurningSpeed * gamepad1.left_stick_x),
                                       0
                               )
                       );
