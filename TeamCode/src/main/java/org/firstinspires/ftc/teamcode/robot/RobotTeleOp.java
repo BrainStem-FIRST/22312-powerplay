@@ -127,9 +127,6 @@ public class RobotTeleOp extends LinearOpMode {
               }
 
               if (toggleMap.get(GAMEPAD_1_A_STATE)) {
-                  if(gamepad1.a){
-                      toggleMap.put(GAMEPAD_1_B_STATE, true);
-                  }
                   robot.lift.liftPickup = 0;
                   robot.lift.LIFT_POSITION_GROUND = 0;
                   telemetry.addData("Lift pickup", robot.lift.liftPickup);

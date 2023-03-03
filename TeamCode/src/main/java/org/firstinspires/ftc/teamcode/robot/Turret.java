@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.teamcode.robot.autoclasses.PIDController;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -31,11 +32,12 @@ public class Turret {
 
 
     public final int        ANGLE_TOLERANCE = 5;
-    public final int        LIFT_MIN_HEIGHT_TO_MOVE_TURRET = 60;
+    public final int        LIFT_MIN_HEIGHT_TO_MOVE_TURRET = 120;
 
     public Telemetry telemetry;
     public DcMotorEx turretMotor;
 
+    private PIDController turretPIDController;
     public Extension extension;
     public Turret(HardwareMap hwMap, Telemetry telemetry) {
         this.telemetry = telemetry;
@@ -46,6 +48,11 @@ public class Turret {
         turretMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //      liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        //PID SETUP
+        turretPIDController = new PIDController(0.07, 0.0, 0);
+        turretPIDController.setInputBounds(0, 512);
+        turretPIDController.setOutputBounds(0, 1);
     }
 
     public void setState(String desiredState, Lift lift, Extension extension){
@@ -79,7 +86,8 @@ public class Turret {
     }
 
     private void transitionToPosition(int ticks){
-        moveTo(ticks);
+        //moveTo(ticks);
+        moveToPID(ticks);
     }
 
     public void moveTo (int positionInTicks) {
@@ -88,7 +96,26 @@ public class Turret {
         turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         turretMotor.setPower(1.0);
     }
+    public void moveToPID (int positionInTicks) {
+        // move to desired tick position
+        int error = Math.abs(turretMotor.getCurrentPosition() - positionInTicks);
+        if (error < 7) {
+            turretMotor.setTargetPosition(positionInTicks);
+            turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            turretMotor.setPower(1.0);
+        }
+        else if (turretMotor.getCurrentPosition() > positionInTicks) {
+            turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            turretMotor.setPower(-turretPIDController.updateWithError(error));
+        }
+        else {
+            turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            turretMotor.setPower(turretPIDController.updateWithError(error));
+        }
 
+        telemetry.addData("Turret Error=", error);
+        telemetry.addData("Turret Power=", turretMotor.getPower());
+    }
     public String getCurrentState() {
         String state = TRANSITION_STATE;
         double currentPosition = getPosition();
