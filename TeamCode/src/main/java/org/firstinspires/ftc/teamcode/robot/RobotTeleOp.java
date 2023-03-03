@@ -127,6 +127,9 @@ public class RobotTeleOp extends LinearOpMode {
               }
 
               if (toggleMap.get(GAMEPAD_1_A_STATE)) {
+                  if(gamepad1.a){
+                      toggleMap.put(GAMEPAD_1_B_STATE, true);
+                  }
                   robot.lift.liftPickup = 0;
                   robot.lift.LIFT_POSITION_GROUND = 0;
                   telemetry.addData("Lift pickup", robot.lift.liftPickup);
@@ -164,7 +167,7 @@ public class RobotTeleOp extends LinearOpMode {
                       stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
                       stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_COMPLETELY);
                   }
-                  if (elapsedTime.seconds() > 0.4) {
+                  if (elapsedTime.seconds() > 0.6) {
 //                stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
                       toggleMap.put(GAMEPAD_1_A_STATE, false);
                       telemetry.addData("timer in ", true);
@@ -231,6 +234,10 @@ public class RobotTeleOp extends LinearOpMode {
                       robot.lift.liftPickup = 60;
                       grabberyCapCycleInProgress = false;
                   }
+              }
+
+              if(gamepad1.left_trigger > 0.7){
+                  robot.lift.liftPositionPickup = 0;
               }
 //        if(gamepad1.left_trigger > 0.2){
 //            stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_CHECK_STATE);
