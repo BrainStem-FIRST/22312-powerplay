@@ -109,7 +109,7 @@ public class Extension {
     // Pulls the extension arm to its starting position (it is NOT in clear)
     public void extendHome() {
         telemetry.addData("adjustmentPosition", adjustmentPosition);
-        extension.setPosition(EXTENSION_POSITION_HOME + adjustmentPosition);
+        extension.setPosition(EXTENSION_POSITION_HOME);
     }
 
     public void joyStickExtension(double addedPosition){
@@ -124,7 +124,7 @@ public class Extension {
     // Extends arm to left position
     public void extendLeft() {
         telemetry.addData("adjustmentPosition", adjustmentPosition);
-        extension.setPosition(EXTENSION_POSITION_LEFT + adjustmentPosition);
+        extension.setPosition(EXTENSION_POSITION_LEFT);
     }
 
     public void setAdjustmentPosition(){

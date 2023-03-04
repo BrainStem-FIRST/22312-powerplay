@@ -376,7 +376,7 @@ public class auto_1plus4high_v2 extends LinearOpMode {
             preloadDeltaX = 0;
             preloadDeltaY = 0; //-2;
 
-            pickupDeltaX = 1; //1.2;
+            pickupDeltaX = 0; //1.2;
             pickupDeltaY = 0; //-2;
 
             depositDeltaX = 0;

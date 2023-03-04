@@ -66,7 +66,7 @@ public class RobotTeleOp extends LinearOpMode {
     private boolean grabberCycleInProgress = false;
     private boolean grabberyCapCycleInProgress = false;
 
-    private double k_regularTurningSpeed = 0.4;
+    private double k_regularTurningSpeed = 0.6;
 
 
     Map<String, Boolean> toggleMap = new HashMap<String, Boolean>() {{
@@ -127,7 +127,7 @@ public class RobotTeleOp extends LinearOpMode {
               }
 
               if (toggleMap.get(GAMEPAD_1_A_STATE)) {
-                  if(gamepad1.a){
+                  if(gamepad1.a && !CAP_MODE){
                       toggleMap.put(GAMEPAD_1_B_STATE, true);
                   }
                   robot.lift.liftPickup = 0;
@@ -238,6 +238,7 @@ public class RobotTeleOp extends LinearOpMode {
 
               if(gamepad1.left_trigger > 0.7){
                   robot.lift.liftPositionPickup = 0;
+                  telemetry.addData("Robot lift pickup", robot.lift.liftPositionPickup);
               }
 //        if(gamepad1.left_trigger > 0.2){
 //            stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_CHECK_STATE);
