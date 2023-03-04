@@ -122,7 +122,7 @@ public class auto_1plus4high_v2 extends LinearOpMode {
                 // 2.55 sec to reach destination
                 .splineToSplineHeading(preloadPose, Math.toRadians(preloadTangent),
                         SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
-                        SampleMecanumDrive.getAccelerationConstraint(90))
+                        SampleMecanumDrive.getAccelerationConstraint(85))
 
 
                 // Timer is from start of the trajectory; it is not an offset
@@ -326,7 +326,7 @@ public class auto_1plus4high_v2 extends LinearOpMode {
             //           DURING TOURNAMENT           //
             ///////////////////////////////////////////
 
-            preloadDeltaX = 0;
+            preloadDeltaX = 1;
             preloadDeltaY = 0;
 
             pickupDeltaX = 0;
