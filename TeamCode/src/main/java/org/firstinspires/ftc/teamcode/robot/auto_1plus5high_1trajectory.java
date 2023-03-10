@@ -261,15 +261,15 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // Drop Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.4, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
                 })
-                .UNSTABLE_addTemporalMarkerOffset(0.3, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
                     robot.grabber.grabberOpen();
                 })
 
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
-                .UNSTABLE_addTemporalMarkerOffset(0.4, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.6, ()-> {
                     robot.arm.extendHome();
                 })
 
@@ -277,34 +277,31 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // the start of the robot moving for the next pickup cycle.
                 //
                 // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
-                .waitSeconds(0.6)   // TODO: Fine tune this duration to adjust start of the robot's move
+                .waitSeconds(0.8)   // TODO: Fine tune this duration to adjust start of the robot's move
 
 
 
-
-                /********* DEPOSIT CYCLE 2 *********/
 
                 /********* PICKUP CYCLE 2 *********/
 
+                /********* DEPOSIT CYCLE 2 *********/
 
-                /********* DEPOSIT CYCLE 3 *********/
 
                 /********* PICKUP CYCLE 3 *********/
 
+                /********* DEPOSIT CYCLE 3 *********/
 
-                /********* DEPOSIT CYCLE 4 *********/
 
                 /********* PICKUP CYCLE 4 *********/
 
+                /********* DEPOSIT CYCLE 4 *********/
 
-                /********* DEPOSIT CYCLE 5 *********/
 
                 /********* PICKUP CYCLE 5 *********/
 
+                /********* DEPOSIT CYCLE 5 *********/
 
-                /********* DEPOSIT CYCLE 2 *********/
 
-                /********* PICKUP CYCLE 2 *********/
 
                 .build();
 
