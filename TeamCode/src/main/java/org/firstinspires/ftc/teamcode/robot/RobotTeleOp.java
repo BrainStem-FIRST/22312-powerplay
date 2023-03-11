@@ -50,7 +50,7 @@ public class RobotTeleOp extends LinearOpMode {
     private final String AUTO_DRIVE_MODE = "AUTO";
     private final String DRIVE_MODE = "DRIVE_MODE";
     private final int checkTicks = 10;
-    private final int extensionAddition = 6;
+    private final double extensionAddition = 0.02;
 
     private int CONE_COUNT = 1;
 
@@ -121,8 +121,6 @@ public class RobotTeleOp extends LinearOpMode {
               if (toggleMap.get(GAMEPAD_1_B_STATE)) {
                   stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.FULL_EXTEND);
               } else {
-                  robot.arm.EDITABLE_SERVO_MAX_PWM = 565;
-                  robot.arm.extension.setPwmRange(new PwmControl.PwmRange(robot.arm.EDITABLE_SERVO_MAX_PWM, 640));
                   stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
               }
 
@@ -138,6 +136,7 @@ public class RobotTeleOp extends LinearOpMode {
                   CAP_MODE = false;
               } else {
                   stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_GROUND);
+                  robot.arm.adjustmentPosition = 0;
               }
 
 
@@ -244,16 +243,12 @@ public class RobotTeleOp extends LinearOpMode {
 //            stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_CHECK_STATE);
 //        }
               if (gamepad2.right_bumper) {
-                  robot.arm.EDITABLE_SERVO_MAX_PWM -= extensionAddition;
-                  robot.arm.extension.setPwmRange(new PwmControl.PwmRange(robot.arm.EDITABLE_SERVO_MAX_PWM, 640));
+                  robot.arm.adjustmentPosition -= extensionAddition;
 //
               }
 
               if (gamepad2.left_bumper) {
-                  robot.arm.EDITABLE_SERVO_MAX_PWM += extensionAddition;
-                  telemetry.addData("Editable Servo Max PWM", robot.arm.EDITABLE_SERVO_MAX_PWM);
-                  telemetry.addData("Mihir", true);
-                  robot.arm.extension.setPwmRange(new PwmControl.PwmRange(robot.arm.EDITABLE_SERVO_MAX_PWM, 640));
+                  robot.arm.adjustmentPosition += extensionAddition;
               }
 
 //              if (stateMap.get(DRIVE_MODE).equalsIgnoreCase(MANUAL_DRIVE_MODE)) {
