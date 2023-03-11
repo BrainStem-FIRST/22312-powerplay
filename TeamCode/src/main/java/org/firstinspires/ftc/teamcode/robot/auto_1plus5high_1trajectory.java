@@ -106,8 +106,6 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
     TrajectorySequence buildTrajectory(BrainStemRobotA robot) {
         TrajectorySequence trajectory;
 
-        SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(180), 9.75),
-                        SampleMecanumDrive.getAccelerationConstraint(60))
         trajectory = robot.drive.trajectorySequenceBuilder(startingPose)
 
                 //make sure the cone is lifted a little from the ground before robot starts moving
