@@ -143,7 +143,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // Add a timer here to catchup with the subsystem movement after the robot stopped
                 // This is the time that passes between the robot positioned itself next to
                 // the high pole and the arm was extended positioning the cone right above the pole
-                .waitSeconds(.65) // TODO: adjust time value so right after it the drop cone can start
+                .waitSeconds(0.45) // TODO: adjust time value so right after it the drop cone can start
 
                 // Drop Cone
                 .UNSTABLE_addTemporalMarkerOffset(0, ()-> {
@@ -194,12 +194,12 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.2,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
                     robot.grabber.grabberOpenWide();
                 })
 
                 // Pickup Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.3, ()-> {
                     robot.grabber.grabberClose();
                 })
 
@@ -251,7 +251,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // Add a timer here to catchup with the subsystem movement after the robot stopped
                 // This is the time that passes between the robot positioned itself next to
                 // the high pole and lift/turret finished moving right before extending the arm
-                .waitSeconds(0) // TODO: adjust time value so right after it arm cen be extended
+                .waitSeconds(0.1) // TODO: adjust time value so right after it arm cen be extended
 
                 // Extend arm only after the lift completed its rise
                 .UNSTABLE_addTemporalMarkerOffset(0.0, () -> {
@@ -275,13 +275,56 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // the start of the robot moving for the next pickup cycle.
                 //
                 // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
-                .waitSeconds(0.8)   // TODO: Fine tune this duration to adjust start of the robot's move
-
-
-
+                .waitSeconds(0.3)   // TODO: Fine tune this duration to adjust start of the robot's move
 
                 /********* PICKUP CYCLE 2 *********/
 
+                // Move turret at the same time as robot start moving away from high pole,
+                // which is the end of previous .waitseconds
+                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
+                    robot.turret.goToPickupPosition();
+                })
+
+                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
+                    robot.alignment.alignUp();
+                })
+
+                // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
+                .setTangent(pickupTangent)
+                .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
+                        SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getAccelerationConstraint(60))
+
+                // lower the lift after the turret repositioned and before the robot reached its target
+                // offset is relative to when robot reached its destination
+                .UNSTABLE_addTemporalMarkerOffset(-0.7, ()-> {
+                    robot.lift.goToPickupHeight();
+                })
+
+                // Reach arm to touch the cone after the robot stopped
+                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
+                })
+
+                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
+                    robot.grabber.grabberOpenWide();
+                })
+
+                // Pickup Cone
+                .UNSTABLE_addTemporalMarkerOffset(0.3, ()-> {
+                    robot.grabber.grabberClose();
+                })
+
+                .UNSTABLE_addTemporalMarkerOffset(0.7, ()-> {
+                    robot.lift.goToClear();
+
+                    // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
+                    robot.lift.numCyclesCompleted++;
+                    robot.lift.updateLiftPickupPosition();
+                })
+
+                // This is the duration the robot waits at the pickup station (while its subsystems are picking the cone up)
+                .waitSeconds(1.0)
                 /********* DEPOSIT CYCLE 2 *********/
 
 
@@ -381,7 +424,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
             robot.arm.EXTENSION_POSITION_PICKUP = 0;
             robot.arm.EXTENSION_POSITION_PRELOAD = 0.40;  // it was 0.49; extending a little more to hit the pole
-            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.60; //0.64
+            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.5; //0.64
 
             ///////////////////////////////////////////
             //      MAKE ADJUSTMENTS ON POSES        //
@@ -470,7 +513,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
         startingPose = new Pose2d(XFORM_X * 36, XFORM_Y * 63, Math.toRadians(startingHeading));
         preloadPose = new Pose2d(XFORM_X * (18 + preloadDeltaX), XFORM_Y * (11.5 + preloadDeltaY), Math.toRadians(preloadHeading));
         depositPose = new Pose2d(XFORM_X * (27 + depositDeltaX), XFORM_Y * (11.5 + depositDeltaY), Math.toRadians(depositHeading));
-        pickupPose = new Pose2d(XFORM_X * (52 + pickupDeltaX), XFORM_Y * (11.5 + pickupDeltaY), Math.toRadians(pickupHeading));
+        pickupPose = new Pose2d(XFORM_X * (54 + pickupDeltaX), XFORM_Y * (11.5 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose = new Pose2d(); // to be defined after reading the signal cone
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory

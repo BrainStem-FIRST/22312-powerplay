@@ -302,7 +302,7 @@ public class LiftA {
                 break;
             }
             case 1: {
-                liftPositionPickup = 99 - LIFT_ADJUSTMENT; //165
+                liftPositionPickup = 120 - LIFT_ADJUSTMENT; //165
                 break;
             }
             case 2: {
