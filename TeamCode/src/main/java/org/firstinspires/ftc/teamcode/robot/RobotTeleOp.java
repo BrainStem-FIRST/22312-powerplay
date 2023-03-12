@@ -53,6 +53,8 @@ public class RobotTeleOp extends LinearOpMode {
     private final double extensionAddition = 0.02;
 
     private int CONE_COUNT = 1;
+    public boolean LIFT_GOING_UP = false;
+    public ElapsedTime liftUp = new ElapsedTime();
 
     private boolean leftTriggerPressed = false;
     private boolean retractionInProgress = false;
@@ -125,6 +127,9 @@ public class RobotTeleOp extends LinearOpMode {
               }
 
               if (toggleMap.get(GAMEPAD_1_A_STATE)) {
+                  LIFT_GOING_UP = true;
+                  liftUp.reset();
+                  liftUp.startTime();
                   if(gamepad1.a && !CAP_MODE){
                       toggleMap.put(GAMEPAD_1_B_STATE, true);
                   }
@@ -137,8 +142,15 @@ public class RobotTeleOp extends LinearOpMode {
               } else {
                   stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_GROUND);
                   robot.arm.adjustmentPosition = 0;
+                  robot.arm.alignUp();
               }
 
+              if(LIFT_GOING_UP){
+                  if(liftUp.seconds() > 1){
+                      stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.ALIGN_DOWN);
+                      LIFT_GOING_UP = false;
+                  }
+              }
 
               if (gamepad2.a) {
                   stateMap.put(constants.DRIVER_2_SELECTED_LIFT, robot.lift.LIFT_POLE_LOW);
@@ -165,6 +177,7 @@ public class RobotTeleOp extends LinearOpMode {
                   if (elapsedTime.seconds() > 0.1) {
                       stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
                       stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.CLOSED_COMPLETELY);
+                      stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.ALIGN_UP);
                   }
                   if (elapsedTime.seconds() > 0.6) {
 //                stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
@@ -306,7 +319,7 @@ public class RobotTeleOp extends LinearOpMode {
 
                                       -gamepad1.left_stick_y,
                                       -gamepad1.left_stick_x,
-                                      -gamepad1.right_stick_x
+                                      -gamepad1.right_stick_x * 0.75
                               )
                       );
                   }

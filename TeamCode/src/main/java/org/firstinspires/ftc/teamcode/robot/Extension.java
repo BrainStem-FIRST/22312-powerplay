@@ -37,9 +37,12 @@ public class Extension {
     public final String DEFAULT_VALUE = "RETRACTED";
     public final String FULL_EXTEND = "EXTENDED_R";
     public final String EXTEND_LEFT = "EXTENDED_L";
+    public final String ALIGN_DOWN = "ALIGN DOWN";
+    public final String ALIGN_UP = "ALIGN UP";
     public final String FINE_ADJUSTMENTS = "FINE_ADJUSTMENTS";
     public final String TRANSITION_STATE = "TRANSITION";
     public double adjustmentPosition = 0;
+    public double adjustmentPositionDown = 1;
     private Map stateMap;
 
     public double extensionGetPosition(){
@@ -79,6 +82,8 @@ public class Extension {
     public void alignUp(){
         alignment.setPosition(0);
     }
+
+    public void alignDown(){alignment.setPosition(1);}
 
     // Move the extension's position to the specified distance in inches
     // Predefined values can be passed by using class constants (to be defined later)
@@ -163,10 +168,14 @@ public class Extension {
                 extendLeft();
                 break;
             }
-//            case FINE_ADJUSTMENTS:{
-//                fineAdjustments();
-//                break;
-//            }
+            case ALIGN_DOWN: {
+                alignDown();
+                break;
+            }
+            case ALIGN_UP:{
+                alignUp();
+                break;
+            }
         }
     }
 
