@@ -22,7 +22,7 @@ public class Extension {
     static final double MINIMUM_CLEARANCE_DISTANCE = 95.875 * MM_TO_INCHES;
 
     // Servo Positions
-    public final double EXTENSION_POSITION_MAX = 0.6;    // Fully retracted
+    public final double EXTENSION_POSITION_MAX = 0.8;    // Fully retracted
     public final double EXTENSION_POSITION_HOME = 1;  // Fully extended
     public final double EXTENSION_POSITION_LEFT = 0.4;  // Extended to left position
 
@@ -53,7 +53,7 @@ public class Extension {
 //      twoBar = (ServoImplEx) hwMap.servo.get("Two Bar");
         alignment = (ServoImplEx) hwMap.servo.get("Alignment");
         // Scale the operating range of Servos and set initial position
-        extension.setPwmRange(new PwmControl.PwmRange(200,640)); //low cap was 1250 and it was not retracting all the way
+        extension.setPwmRange(new PwmControl.PwmRange(300,640)); //low cap was 1250 and it was not retracting all the way
         extendHome();
         alignment.setPwmRange(new PwmControl.PwmRange(940,2200));
         alignUp();
