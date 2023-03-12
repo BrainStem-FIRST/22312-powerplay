@@ -298,23 +298,26 @@ public class LiftA {
     public void updateLiftPickupPosition() {
         switch (numCyclesCompleted){
             case 0: {
-                liftPositionPickup = 132 - LIFT_ADJUSTMENT; //195
+                liftPositionPickup = 132 - LIFT_ADJUSTMENT; //132
+                telemetry.addData("number of cycles:", numCyclesCompleted);
                 break;
             }
             case 1: {
-                liftPositionPickup = 120 - LIFT_ADJUSTMENT; //165
+                liftPositionPickup = 130 - LIFT_ADJUSTMENT; //120
+                telemetry.addData("number of cycles:", numCyclesCompleted);
                 break;
             }
             case 2: {
-                liftPositionPickup = 66 - LIFT_ADJUSTMENT; //130
+                liftPositionPickup = 106 - LIFT_ADJUSTMENT; //66
+                telemetry.addData("number of cycles:", numCyclesCompleted);
                 break;
             }
             case 3: {
-                liftPositionPickup = 33 - LIFT_ADJUSTMENT; //90
+                liftPositionPickup = 100 - LIFT_ADJUSTMENT; //13
                 break;
             }
             case 4: {
-                liftPositionPickup = 0 - LIFT_ADJUSTMENT; //70
+                liftPositionPickup = 90 - LIFT_ADJUSTMENT; //0
                 break;
             }
             default: {

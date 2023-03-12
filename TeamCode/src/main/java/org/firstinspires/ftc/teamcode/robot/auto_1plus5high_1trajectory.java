@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import static java.lang.Thread.currentThread;
 import static java.lang.Thread.sleep;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -66,7 +67,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
     public static int PARKING_NUMBER = 3; // Controlled by the dashboard for test purposes
     public static double SPEED = 60.0;    // Controlled by the dashboard for test purposes
     private ElapsedTime autoTime = new ElapsedTime();
-    private double TIME_TO_PARK = 27;  //25
+    private double TIME_TO_PARK = 50;  //27
 
     // used for trajectory state machine
     enum    TrajectoryState {
@@ -143,7 +144,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // Add a timer here to catchup with the subsystem movement after the robot stopped
                 // This is the time that passes between the robot positioned itself next to
                 // the high pole and the arm was extended positioning the cone right above the pole
-                .waitSeconds(0.45) // TODO: adjust time value so right after it the drop cone can start
+                .waitSeconds(0.2) // TODO: adjust time value so right after it the drop cone can start
 
                 // Drop Cone
                 .UNSTABLE_addTemporalMarkerOffset(0, ()-> {
@@ -162,7 +163,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // the start of the robot moving for the next pickup cycle.
                 //
                 // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
-                .waitSeconds(0.4)   // TODO: Fine tune this duration to adjust start of the robot's move
+                .waitSeconds(0.3)   // TODO: Fine tune this duration to adjust start of the robot's move
 
 
                 /********* PICKUP CYCLE 1 **********/
@@ -190,7 +191,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // Reach arm to touch the cone after the robot stopped
-                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(-0.2,()-> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
@@ -199,11 +200,11 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // Pickup Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.3, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
                     robot.grabber.grabberClose();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.7, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
                     robot.lift.goToClear();
 
                     // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
@@ -212,7 +213,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // This is the duration the robot waits at the pickup station (while its subsystems are picking the cone up)
-                .waitSeconds(1.0)
+                .waitSeconds(0.75)
 
                 /********** DEPOSIT CYCLE 1 ***********/
 
@@ -251,7 +252,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // Add a timer here to catchup with the subsystem movement after the robot stopped
                 // This is the time that passes between the robot positioned itself next to
                 // the high pole and lift/turret finished moving right before extending the arm
-                .waitSeconds(0.1) // TODO: adjust time value so right after it arm cen be extended
+                .waitSeconds(0.1) // TODO: adjust time value so right after it arm can be extended
 
                 // Extend arm only after the lift completed its rise
                 .UNSTABLE_addTemporalMarkerOffset(0.0, () -> {
@@ -259,7 +260,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // Drop Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.4, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.35, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
                 })
                 .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
@@ -267,7 +268,120 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
-                .UNSTABLE_addTemporalMarkerOffset(0.6, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.7, ()-> {
+                    robot.arm.extendHome();
+                })
+
+                // Add time to cover the duration between the end of previous marker (.waitseconds) and
+                // the start of the robot moving for the next pickup cycle.
+
+                // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
+                .waitSeconds(0.85)   // TODO: Fine tune this duration to adjust start of the robot's move
+
+                /********* PICKUP CYCLE 2 *********/
+
+                // Move turret at the same time as robot start moving away from high pole,
+                // which is the end of previous .waitseconds
+                .UNSTABLE_addTemporalMarkerOffset(0.0,()-> {
+                    robot.turret.goToPickupPosition();
+                })
+
+                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
+                    robot.alignment.alignUp();
+                })
+
+                // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
+                .setTangent(pickupTangent)
+                .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
+                        SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getAccelerationConstraint(60))
+
+                // lower the lift after the turret repositioned and before the robot reached its target
+                // offset is relative to when robot reached its destination
+                .UNSTABLE_addTemporalMarkerOffset(-0.5, ()-> {
+                    robot.lift.goToPickupHeight();
+                })
+
+                // Reach arm to touch the cone after the robot stopped
+                .UNSTABLE_addTemporalMarkerOffset(-0.2,()-> {
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
+                })
+
+                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
+                    robot.grabber.grabberOpenWide();
+                })
+
+                // Pickup Cone
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
+                    robot.grabber.grabberClose();
+                })
+
+                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                    robot.lift.goToClear();
+
+                    // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
+                    robot.lift.numCyclesCompleted++;
+                    robot.lift.updateLiftPickupPosition();
+                })
+
+                // This is the duration the robot waits at the pickup station (while its subsystems are picking the cone up)
+                .waitSeconds(0.75)
+
+
+                /********* DEPOSIT CYCLE 2 *********/
+
+                // The drivetrain move is placed in the trajectory after the subsystem sequence so that
+                // the subsystem marker offsets can be calculated from the end of the .waitseconds that
+                // marks the end of the pickup cycle.
+
+                // Timer is offset from the end of .waitseconds
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                    robot.arm.extendHome();
+                })
+
+                // Timer is from start of the trajectory; it is not an offset
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> {
+                    robot.lift.goToHighPoleHeight();
+                })
+
+                .UNSTABLE_addTemporalMarkerOffset(0.4, () ->{
+                    robot.alignment.alignDown();
+                })
+
+                .UNSTABLE_addTemporalMarkerOffset(0.5, () -> {
+                    robot.turret.goToDepositPosition();
+                })
+
+                // This drivetrain move will start after the .waitsecond that marks the end of the pickup cycle.
+                // It is independent of the subsystem moves and will be concurrent with the above marker offsets.
+                // Note that the robot will stop before the subsystem moves are complete. Need to add an idle time
+                // after the drivetrain command to mark the start of the deposit cone cycle.
+
+                .setTangent(depositTangent)
+                .splineToSplineHeading(depositPose, Math.toRadians(depositTangent),
+                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getAccelerationConstraint(90))
+
+                // Add a timer here to catchup with the subsystem movement after the robot stopped
+                // This is the time that passes between the robot positioned itself next to
+                // the high pole and lift/turret finished moving right before extending the arm
+                .waitSeconds(0.1) // TODO: adjust time value so right after it arm can be extended
+
+                // Extend arm only after the lift completed its rise
+                .UNSTABLE_addTemporalMarkerOffset(0.0, () -> {
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
+                })
+
+                // Drop Cone
+                .UNSTABLE_addTemporalMarkerOffset(0.35, ()-> {
+                    robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
+                })
+                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                    robot.grabber.grabberOpen();
+                })
+
+                // Pull extension immediately, and turn turret afterwards when the robot started moving
+                .UNSTABLE_addTemporalMarkerOffset(0.7, ()-> {
                     robot.arm.extendHome();
                 })
 
@@ -275,9 +389,10 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // the start of the robot moving for the next pickup cycle.
                 //
                 // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
-                .waitSeconds(0.3)   // TODO: Fine tune this duration to adjust start of the robot's move
+                .waitSeconds(0.85)   // TODO: Fine tune this duration to adjust start of the robot's move
 
-                /********* PICKUP CYCLE 2 *********/
+
+                /********* PICKUP CYCLE 3 *********/
 
                 // Move turret at the same time as robot start moving away from high pole,
                 // which is the end of previous .waitseconds
@@ -302,7 +417,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // Reach arm to touch the cone after the robot stopped
-                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(-0.2,()-> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
@@ -311,11 +426,11 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // Pickup Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.3, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
                     robot.grabber.grabberClose();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.7, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
                     robot.lift.goToClear();
 
                     // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
@@ -324,25 +439,295 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // This is the duration the robot waits at the pickup station (while its subsystems are picking the cone up)
-                .waitSeconds(1.0)
-                /********* DEPOSIT CYCLE 2 *********/
-
-
-                /********* PICKUP CYCLE 3 *********/
+                .waitSeconds(0.75)
 
                 /********* DEPOSIT CYCLE 3 *********/
+
+                // The drivetrain move is placed in the trajectory after the subsystem sequence so that
+                // the subsystem marker offsets can be calculated from the end of the .waitseconds that
+                // marks the end of the pickup cycle.
+
+                // Timer is offset from the end of .waitseconds
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                    robot.arm.extendHome();
+                })
+
+                // Timer is from start of the trajectory; it is not an offset
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> {
+                    robot.lift.goToHighPoleHeight();
+                })
+
+                .UNSTABLE_addTemporalMarkerOffset(0.4, () ->{
+                    robot.alignment.alignDown();
+                })
+
+                .UNSTABLE_addTemporalMarkerOffset(0.5, () -> {
+                    robot.turret.goToDepositPosition();
+                })
+
+                // This drivetrain move will start after the .waitsecond that marks the end of the pickup cycle.
+                // It is independent of the subsystem moves and will be concurrent with the above marker offsets.
+                // Note that the robot will stop before the subsystem moves are complete. Need to add an idle time
+                // after the drivetrain command to mark the start of the deposit cone cycle.
+
+                .setTangent(depositTangent)
+                .splineToSplineHeading(depositPose, Math.toRadians(depositTangent),
+                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getAccelerationConstraint(90))
+
+                // Add a timer here to catchup with the subsystem movement after the robot stopped
+                // This is the time that passes between the robot positioned itself next to
+                // the high pole and lift/turret finished moving right before extending the arm
+                .waitSeconds(0.1) // TODO: adjust time value so right after it arm can be extended
+
+                // Extend arm only after the lift completed its rise
+                .UNSTABLE_addTemporalMarkerOffset(0.0, () -> {
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
+                })
+
+                // Drop Cone
+                .UNSTABLE_addTemporalMarkerOffset(0.35, ()-> {
+                    robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
+                })
+                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                    robot.grabber.grabberOpen();
+                })
+
+                // Pull extension immediately, and turn turret afterwards when the robot started moving
+                .UNSTABLE_addTemporalMarkerOffset(0.7, ()-> {
+                    robot.arm.extendHome();
+                })
+
+                // Add time to cover the duration between the end of previous marker (.waitseconds) and
+                // the start of the robot moving for the next pickup cycle.
+                //
+                // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
+                .waitSeconds(0.85)   // TODO: Fine tune this duration to adjust start of the robot's move
 
 
                 /********* PICKUP CYCLE 4 *********/
 
+                // Move turret at the same time as robot start moving away from high pole,
+                // which is the end of previous .waitseconds
+                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
+                    robot.turret.goToPickupPosition();
+                })
+
+                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
+                    robot.alignment.alignUp();
+                })
+
+                // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
+                .setTangent(pickupTangent)
+                .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
+                        SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getAccelerationConstraint(60))
+
+                // lower the lift after the turret repositioned and before the robot reached its target
+                // offset is relative to when robot reached its destination
+                .UNSTABLE_addTemporalMarkerOffset(-0.7, ()-> {
+                    robot.lift.goToPickupHeight();
+                })
+
+                // Reach arm to touch the cone after the robot stopped
+                .UNSTABLE_addTemporalMarkerOffset(-0.2,()-> {
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
+                })
+
+                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
+                    robot.grabber.grabberOpenWide();
+                })
+
+                // Pickup Cone
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
+                    robot.grabber.grabberClose();
+                })
+
+                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                    robot.lift.goToClear();
+
+                    // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
+                    robot.lift.numCyclesCompleted++;
+                    robot.lift.updateLiftPickupPosition();
+                })
+
+                // This is the duration the robot waits at the pickup station (while its subsystems are picking the cone up)
+                .waitSeconds(0.75)
+
                 /********* DEPOSIT CYCLE 4 *********/
 
+                // The drivetrain move is placed in the trajectory after the subsystem sequence so that
+                // the subsystem marker offsets can be calculated from the end of the .waitseconds that
+                // marks the end of the pickup cycle.
+
+                // Timer is offset from the end of .waitseconds
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                    robot.arm.extendHome();
+                })
+
+                // Timer is from start of the trajectory; it is not an offset
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> {
+                    robot.lift.goToHighPoleHeight();
+                })
+
+                .UNSTABLE_addTemporalMarkerOffset(0.4, () ->{
+                    robot.alignment.alignDown();
+                })
+
+                .UNSTABLE_addTemporalMarkerOffset(0.5, () -> {
+                    robot.turret.goToDepositPosition();
+                })
+
+                // This drivetrain move will start after the .waitsecond that marks the end of the pickup cycle.
+                // It is independent of the subsystem moves and will be concurrent with the above marker offsets.
+                // Note that the robot will stop before the subsystem moves are complete. Need to add an idle time
+                // after the drivetrain command to mark the start of the deposit cone cycle.
+
+                .setTangent(depositTangent)
+                .splineToSplineHeading(depositPose, Math.toRadians(depositTangent),
+                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getAccelerationConstraint(90))
+
+                // Add a timer here to catchup with the subsystem movement after the robot stopped
+                // This is the time that passes between the robot positioned itself next to
+                // the high pole and lift/turret finished moving right before extending the arm
+                .waitSeconds(0.1) // TODO: adjust time value so right after it arm can be extended
+
+                // Extend arm only after the lift completed its rise
+                .UNSTABLE_addTemporalMarkerOffset(0.0, () -> {
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
+                })
+
+                // Drop Cone
+                .UNSTABLE_addTemporalMarkerOffset(0.35, ()-> {
+                    robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
+                })
+                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                    robot.grabber.grabberOpen();
+                })
+
+                // Pull extension immediately, and turn turret afterwards when the robot started moving
+                .UNSTABLE_addTemporalMarkerOffset(0.7, ()-> {
+                    robot.arm.extendHome();
+                })
+
+                // Add time to cover the duration between the end of previous marker (.waitseconds) and
+                // the start of the robot moving for the next pickup cycle.
+                //
+                // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
+                .waitSeconds(0.85)
 
                 /********* PICKUP CYCLE 5 *********/
 
+                // Move turret at the same time as robot start moving away from high pole,
+                // which is the end of previous .waitseconds
+                .UNSTABLE_addTemporalMarkerOffset(0.0,()-> {
+                    robot.turret.goToPickupPosition();
+                })
+
+                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
+                    robot.alignment.alignUp();
+                })
+
+                // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
+                .setTangent(pickupTangent)
+                .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
+                        SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getAccelerationConstraint(60))
+
+                // lower the lift after the turret repositioned and before the robot reached its target
+                // offset is relative to when robot reached its destination
+                .UNSTABLE_addTemporalMarkerOffset(-0.5, ()-> {
+                    robot.lift.goToPickupHeight();
+                })
+
+                // Reach arm to touch the cone after the robot stopped
+                .UNSTABLE_addTemporalMarkerOffset(-0.2,()-> {
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
+                })
+
+                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
+                    robot.grabber.grabberOpenWide();
+                })
+
+                // Pickup Cone
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
+                    robot.grabber.grabberClose();
+                })
+
+                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                    robot.lift.goToClear();
+
+                    // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
+                    robot.lift.numCyclesCompleted++;
+                    robot.lift.updateLiftPickupPosition();
+                })
+
+                // This is the duration the robot waits at the pickup station (while its subsystems are picking the cone up)
+                .waitSeconds(0.75)
+
                 /********* DEPOSIT CYCLE 5 *********/
 
+                // The drivetrain move is placed in the trajectory after the subsystem sequence so that
+                // the subsystem marker offsets can be calculated from the end of the .waitseconds that
+                // marks the end of the pickup cycle.
 
+                // Timer is offset from the end of .waitseconds
+                .UNSTABLE_addTemporalMarkerOffset(0, () -> {
+                    robot.arm.extendHome();
+                })
+
+                // Timer is from start of the trajectory; it is not an offset
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () -> {
+                    robot.lift.goToHighPoleHeight();
+                })
+
+                .UNSTABLE_addTemporalMarkerOffset(0.4, () ->{
+                    robot.alignment.alignDown();
+                })
+
+                .UNSTABLE_addTemporalMarkerOffset(0.5, () -> {
+                    robot.turret.goToDepositPosition();
+                })
+
+                // This drivetrain move will start after the .waitsecond that marks the end of the pickup cycle.
+                // It is independent of the subsystem moves and will be concurrent with the above marker offsets.
+                // Note that the robot will stop before the subsystem moves are complete. Need to add an idle time
+                // after the drivetrain command to mark the start of the deposit cone cycle.
+
+                .setTangent(depositTangent)
+                .splineToSplineHeading(depositPose, Math.toRadians(depositTangent),
+                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getAccelerationConstraint(90))
+
+                // Add a timer here to catchup with the subsystem movement after the robot stopped
+                // This is the time that passes between the robot positioned itself next to
+                // the high pole and lift/turret finished moving right before extending the arm
+                .waitSeconds(0.1) // TODO: adjust time value so right after it arm can be extended
+
+                // Extend arm only after the lift completed its rise
+                .UNSTABLE_addTemporalMarkerOffset(0.0, () -> {
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
+                })
+
+                // Drop Cone
+                .UNSTABLE_addTemporalMarkerOffset(0.35, ()-> {
+                    robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
+                })
+                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                    robot.grabber.grabberOpen();
+                })
+
+                // Pull extension immediately, and turn turret afterwards when the robot started moving
+                .UNSTABLE_addTemporalMarkerOffset(0.7, ()-> {
+                    robot.arm.extendHome();
+                })
+
+                // Add time to cover the duration between the end of previous marker (.waitseconds) and
+                // the start of the robot moving for the next pickup cycle.
+                //
+                // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
+                .waitSeconds(1.0)
 
                 .build();
 
@@ -434,8 +819,8 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
             preloadDeltaX = 0;
             preloadDeltaY = 0;
 
-            pickupDeltaX = 0;
-            pickupDeltaY = 0;
+            pickupDeltaX = -1.5;
+            pickupDeltaY = -2;
 
             depositDeltaX = 0;
             depositDeltaY = 0;
