@@ -182,17 +182,18 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.alignment.alignUp();
                 })
 
+                // lower the lift after the turret repositioned and before the robot reached its target
+                // offset is relative to when robot reached its destination
+                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                    robot.lift.goToPickupHeight();
+                })
+
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
                 .setTangent(pickupTangent)
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
                         SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(180), 9.75),
                         SampleMecanumDrive.getAccelerationConstraint(60))
 
-                // lower the lift after the turret repositioned and before the robot reached its target
-                // offset is relative to when robot reached its destination
-                .UNSTABLE_addTemporalMarkerOffset(-0.7, ()-> {
-                    robot.lift.goToPickupHeight();
-                })
 
                 // Reach arm to touch the cone after the robot stopped
                 .UNSTABLE_addTemporalMarkerOffset(-0.2,()-> {
@@ -204,11 +205,11 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // Pickup Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.1, ()-> {
                     robot.grabber.grabberClose();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.4, ()-> {
                     robot.lift.goToClear();
 
                     // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
@@ -256,7 +257,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // Add a timer here to catchup with the subsystem movement after the robot stopped
                 // This is the time that passes between the robot positioned itself next to
                 // the high pole and lift/turret finished moving right before extending the arm
-                .waitSeconds(0.1) // TODO: adjust time value so right after it arm can be extended
+                .waitSeconds(0.0) // TODO: adjust time value so right after it arm can be extended
 
                 // Extend arm only after the lift completed its rise
                 .UNSTABLE_addTemporalMarkerOffset(0.0, () -> {
@@ -316,11 +317,11 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // Pickup Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.1, ()-> {
                     robot.grabber.grabberClose();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.4, ()-> {
                     robot.lift.goToClear();
 
                     // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
