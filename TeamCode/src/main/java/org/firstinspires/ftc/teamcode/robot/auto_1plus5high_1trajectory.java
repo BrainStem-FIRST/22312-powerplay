@@ -199,16 +199,16 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(-0.1,()-> {
                     robot.grabber.grabberOpenWide();
                 })
 
                 // Pickup Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0, ()-> {
                     robot.grabber.grabberClose();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
                     robot.lift.goToClear();
 
                     // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
@@ -217,7 +217,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // This is the duration the robot waits at the pickup station (while its subsystems are picking the cone up)
-                .waitSeconds(0.75)
+                .waitSeconds(0.6)
 
                 /********** DEPOSIT CYCLE 1 ***********/
 
@@ -796,7 +796,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
             preloadHeading = 180;
             preloadTangent = 0;
 
-            pickupHeading = 176;
+            pickupHeading = 184;
             pickupTangent = 179;
 
             depositHeading = 180;
