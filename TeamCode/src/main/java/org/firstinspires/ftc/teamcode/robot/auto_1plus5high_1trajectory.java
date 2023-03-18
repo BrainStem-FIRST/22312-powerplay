@@ -191,7 +191,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
                 .setTangent(pickupTangent)
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
-                        SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
                         SampleMecanumDrive.getAccelerationConstraint(60))
 
 
@@ -210,9 +210,10 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
-
                     robot.lift.goToClear();
+                })
 
+                .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
                     // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
                     robot.lift.numCyclesCompleted++;
                     robot.lift.updateLiftPickupPosition();
@@ -305,7 +306,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
                 .setTangent(pickupTangent)
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
-                        SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
                         SampleMecanumDrive.getAccelerationConstraint(60))
 
 
@@ -324,9 +325,10 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
-
                     robot.lift.goToClear();
+                })
 
+                .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
                     // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
                     robot.lift.numCyclesCompleted++;
                     robot.lift.updateLiftPickupPosition();
@@ -422,7 +424,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
                 .setTangent(pickupTangent)
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
-                        SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
                         SampleMecanumDrive.getAccelerationConstraint(60))
 
 
@@ -441,9 +443,10 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
-
                     robot.lift.goToClear();
+                })
 
+                .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
                     // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
                     robot.lift.numCyclesCompleted++;
                     robot.lift.updateLiftPickupPosition();
@@ -538,7 +541,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
                 .setTangent(pickupTangent)
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
-                        SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
                         SampleMecanumDrive.getAccelerationConstraint(60))
 
 
@@ -557,9 +560,10 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
-
                     robot.lift.goToClear();
+                })
 
+                .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
                     // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
                     robot.lift.numCyclesCompleted++;
                     robot.lift.updateLiftPickupPosition();
@@ -654,7 +658,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
                 .setTangent(pickupTangent)
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
-                        SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
                         SampleMecanumDrive.getAccelerationConstraint(60))
 
 
@@ -673,9 +677,10 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
-
                     robot.lift.goToClear();
+                })
 
+                .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
                     // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
                     robot.lift.numCyclesCompleted++;
                     robot.lift.updateLiftPickupPosition();
@@ -1096,12 +1101,15 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
             }
             else {
 
-                telemetry.addData("Heading=",Math.toDegrees(robot.drive.getPoseEstimate().getHeading()));
-                telemetry.addData("X=",robot.drive.getPoseEstimate().getX());
-                telemetry.addData("Y=",robot.drive.getPoseEstimate().getY());
-                telemetry.addData("Lift Position=",robot.lift.getPosition());
-                telemetry.addData("Current Turret Position=", robot.turret.getPosition());
-                telemetry.addData("Target Turret Position =", robot.turret.currentTargetPosition);
+//                telemetry.addData("Heading=",Math.toDegrees(robot.drive.getPoseEstimate().getHeading()));
+//                telemetry.addData("X=",robot.drive.getPoseEstimate().getX());
+//                telemetry.addData("Y=",robot.drive.getPoseEstimate().getY());
+//                telemetry.addData("Lift Position=",robot.lift.getPosition());
+//                telemetry.addData("Current Turret Position=", robot.turret.getPosition());
+//                telemetry.addData("Target Turret Position =", robot.turret.currentTargetPosition);
+
+                telemetry.addData("Current Cycle: ", robot.lift.numCyclesCompleted);
+                telemetry.addData("Pickup Height: ", robot.lift.liftPositionPickup);
 
                 telemetry.update();
 

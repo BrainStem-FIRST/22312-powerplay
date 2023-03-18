@@ -308,16 +308,16 @@ public class LiftA {
                 break;
             }
             case 2: {
-                liftPositionPickup = 106 - LIFT_ADJUSTMENT; //66
+                liftPositionPickup = 112 - LIFT_ADJUSTMENT; //66
                 telemetry.addData("number of cycles:", numCyclesCompleted);
                 break;
             }
             case 3: {
-                liftPositionPickup = 104 - LIFT_ADJUSTMENT; //13
+                liftPositionPickup = 109 - LIFT_ADJUSTMENT; //13
                 break;
             }
             case 4: {
-                liftPositionPickup = 90 - LIFT_ADJUSTMENT; //0
+                liftPositionPickup = 95 - LIFT_ADJUSTMENT; //0
                 break;
             }
             default: {
