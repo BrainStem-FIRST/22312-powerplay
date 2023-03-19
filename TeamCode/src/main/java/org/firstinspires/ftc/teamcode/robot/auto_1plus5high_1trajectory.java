@@ -124,7 +124,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // 2.55 sec to reach destination
                 .splineToSplineHeading(preloadPose, Math.toRadians(preloadTangent),
                         SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
-                        SampleMecanumDrive.getAccelerationConstraint(90))
+                        SampleMecanumDrive.getAccelerationConstraint(95))
 
 
                 // Timer is from start of the trajectory; it is not an offset
@@ -191,7 +191,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
                 .setTangent(pickupTangent)
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
-                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
                         SampleMecanumDrive.getAccelerationConstraint(60))
 
 
@@ -247,8 +247,8 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 .setTangent(depositTangent)
                 .splineToSplineHeading(depositPose, Math.toRadians(depositTangent),
-                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
-                        SampleMecanumDrive.getAccelerationConstraint(90))
+                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getAccelerationConstraint(95))
 
                 // Add a timer here to catchup with the subsystem movement after the robot stopped
                 // This is the time that passes between the robot positioned itself next to
@@ -261,15 +261,15 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // Drop Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.1, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
                 })
-                .UNSTABLE_addTemporalMarkerOffset(0.4, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.3, ()-> {
                     robot.grabber.grabberOpen();
                 })
 
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.4, ()-> {
                     robot.arm.extendHome();
                 })
 
@@ -300,7 +300,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
                 .setTangent(pickupTangent)
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
-                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
                         SampleMecanumDrive.getAccelerationConstraint(60))
 
 
@@ -357,8 +357,8 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 .setTangent(depositTangent)
                 .splineToSplineHeading(depositPose, Math.toRadians(depositTangent),
-                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
-                        SampleMecanumDrive.getAccelerationConstraint(90))
+                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getAccelerationConstraint(95))
 
                 // Add a timer here to catchup with the subsystem movement after the robot stopped
                 // This is the time that passes between the robot positioned itself next to
@@ -412,7 +412,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
                 .setTangent(pickupTangent)
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
-                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
                         SampleMecanumDrive.getAccelerationConstraint(60))
 
 
@@ -469,8 +469,8 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 .setTangent(depositTangent)
                 .splineToSplineHeading(depositPose, Math.toRadians(depositTangent),
-                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
-                        SampleMecanumDrive.getAccelerationConstraint(90))
+                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getAccelerationConstraint(95))
 
                 // Add a timer here to catchup with the subsystem movement after the robot stopped
                 // This is the time that passes between the robot positioned itself next to
@@ -523,7 +523,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
                 .setTangent(pickupTangent)
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
-                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
                         SampleMecanumDrive.getAccelerationConstraint(60))
 
 
@@ -580,8 +580,8 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 .setTangent(depositTangent)
                 .splineToSplineHeading(depositPose, Math.toRadians(depositTangent),
-                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
-                        SampleMecanumDrive.getAccelerationConstraint(90))
+                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getAccelerationConstraint(95))
 
                 // Add a timer here to catchup with the subsystem movement after the robot stopped
                 // This is the time that passes between the robot positioned itself next to
@@ -634,9 +634,8 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
                 .setTangent(pickupTangent)
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent),
-                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
                         SampleMecanumDrive.getAccelerationConstraint(60))
-
 
                 // Reach arm to touch the cone after the robot stopped
                 .UNSTABLE_addTemporalMarkerOffset(-0.2,()-> {
@@ -691,8 +690,8 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 .setTangent(depositTangent)
                 .splineToSplineHeading(depositPose, Math.toRadians(depositTangent),
-                        SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(180), 9.75),
-                        SampleMecanumDrive.getAccelerationConstraint(90))
+                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
+                        SampleMecanumDrive.getAccelerationConstraint(95))
 
                 // Add a timer here to catchup with the subsystem movement after the robot stopped
                 // This is the time that passes between the robot positioned itself next to
@@ -803,8 +802,8 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
             robot.turret.turret_DEPOSIT_POSITION_VALUE = 290;  //270 //hitting hard stop
 
             robot.arm.EXTENSION_POSITION_PICKUP = 0;
-            robot.arm.EXTENSION_POSITION_PRELOAD = 0.40;  // it was 0.49; extending a little more to hit the pole
-            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.5; //0.64
+            robot.arm.EXTENSION_POSITION_PRELOAD = 0.4;  // it was 0.49; extending a little more to hit the pole
+            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.4; //0.64
 
             ///////////////////////////////////////////
             //      MAKE ADJUSTMENTS ON POSES        //
@@ -818,7 +817,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
             pickupDeltaY = -2;
 
             depositDeltaX = 0;
-            depositDeltaY = 0;
+            depositDeltaY = -2;
         } else {                  // RIGHT TODO: adjust for different quadrant
 
             ///////////////////////////////////////////

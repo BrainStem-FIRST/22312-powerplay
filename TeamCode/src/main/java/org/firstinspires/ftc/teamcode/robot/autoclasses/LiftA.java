@@ -357,22 +357,22 @@ public class LiftA {
         // For pickups from stack, negate the approach height adjustment
         switch (currentCycle){
             case 0: {
-                raiseHeightTo(132);
+                raiseHeightTo(140);
                 telemetry.addData("number of cycles:", numCyclesCompleted);
                 break;
             }
             case 1: {
-                raiseHeightTo(99);
+                raiseHeightTo(100);
                 telemetry.addData("number of cycles:", numCyclesCompleted);
                 break;
             }
             case 2: {
-                raiseHeightTo(66);
+                raiseHeightTo(70);
                 telemetry.addData("number of cycles:", numCyclesCompleted);
                 break;
             }
             case 3: {
-                raiseHeightTo(33);
+                raiseHeightTo(37);
                 break;
             }
             case 4: {
