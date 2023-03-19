@@ -344,12 +344,51 @@ public class LiftA {
 
     public void goToMediumPoleHeight(){raiseHeightTo(LIFT_POSITION_MIDPOLE);}
 
+    // Legacy function used by 1+4High and 1+5Low classes. Not used by 1+5High Single Trajectory
     public void goToPickupHeight() {
-        // For pickups from stack, negate the approach height adjustment
         raiseHeightTo(liftPositionPickup + LIFT_ADJUSTMENT);
     }
 
-    public void goToClear() {
+    // This version of goPickupHeight is used by single trajectory 1+5
+    // because the numCyclesCompleted++ cannot be executed correctly
+    // within the RoadRunner trajectory (it somehow is executed double)
+    // Absolute tick positions are given, no need to adjust the values with LIFT_ADJUSTMENT
+    public void goToPickupHeight(int currentCycle) {
+        // For pickups from stack, negate the approach height adjustment
+        switch (currentCycle){
+            case 0: {
+                raiseHeightTo(132);
+                telemetry.addData("number of cycles:", numCyclesCompleted);
+                break;
+            }
+            case 1: {
+                raiseHeightTo(99);
+                telemetry.addData("number of cycles:", numCyclesCompleted);
+                break;
+            }
+            case 2: {
+                raiseHeightTo(66);
+                telemetry.addData("number of cycles:", numCyclesCompleted);
+                break;
+            }
+            case 3: {
+                raiseHeightTo(33);
+                break;
+            }
+            case 4: {
+                raiseHeightTo(0);
+                break;
+            }
+            default: {
+                // No cones left, congratulations.
+                //41 so it's not case 4 and doesn't have yellow line (to look clean)
+                liftPositionPickup = 0;
+                break;
+            }
+        }
+    }
+
+    public void goToClear () {
         raiseHeightTo(LIFT_CLEAR_HEIGHT);
     }
 }

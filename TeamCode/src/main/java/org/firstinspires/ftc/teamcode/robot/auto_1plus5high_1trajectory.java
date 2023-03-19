@@ -185,7 +185,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // lower the lift after the turret repositioned and before the robot reached its target
                 // offset is relative to when robot reached its destination
                 .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
-                    robot.lift.goToPickupHeight();
+                    robot.lift.goToPickupHeight(0);
                 })
 
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
@@ -211,12 +211,6 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
                     robot.lift.goToClear();
-                })
-
-                .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
-                    // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
-                    robot.lift.numCyclesCompleted++;
-                    robot.lift.updateLiftPickupPosition();
                 })
 
                 // This is the duration the robot waits at the pickup station (while its subsystems are picking the cone up)
@@ -300,7 +294,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // lower the lift after the turret repositioned and before the robot reached its target
                 // offset is relative to when robot reached its destination
                 .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
-                    robot.lift.goToPickupHeight();
+                    robot.lift.goToPickupHeight(1);
                 })
 
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
@@ -326,12 +320,6 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
                     robot.lift.goToClear();
-                })
-
-                .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
-                    // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
-                    robot.lift.numCyclesCompleted++;
-                    robot.lift.updateLiftPickupPosition();
                 })
 
                 // This is the duration the robot waits at the pickup station (while its subsystems are picking the cone up)
@@ -418,7 +406,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // lower the lift after the turret repositioned and before the robot reached its target
                 // offset is relative to when robot reached its destination
                 .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
-                    robot.lift.goToPickupHeight();
+                    robot.lift.goToPickupHeight(2);
                 })
 
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
@@ -444,12 +432,6 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
                     robot.lift.goToClear();
-                })
-
-                .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
-                    // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
-                    robot.lift.numCyclesCompleted++;
-                    robot.lift.updateLiftPickupPosition();
                 })
 
                 // This is the duration the robot waits at the pickup station (while its subsystems are picking the cone up)
@@ -535,7 +517,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // lower the lift after the turret repositioned and before the robot reached its target
                 // offset is relative to when robot reached its destination
                 .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
-                    robot.lift.goToPickupHeight();
+                    robot.lift.goToPickupHeight(3);
                 })
 
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
@@ -561,12 +543,6 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
                     robot.lift.goToClear();
-                })
-
-                .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
-                    // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
-                    robot.lift.numCyclesCompleted++;
-                    robot.lift.updateLiftPickupPosition();
                 })
 
                 // This is the duration the robot waits at the pickup station (while its subsystems are picking the cone up)
@@ -652,7 +628,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // lower the lift after the turret repositioned and before the robot reached its target
                 // offset is relative to when robot reached its destination
                 .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
-                    robot.lift.goToPickupHeight();
+                    robot.lift.goToPickupHeight(4);
                 })
 
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
@@ -678,12 +654,6 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
                     robot.lift.goToClear();
-                })
-
-                .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
-                    // Increase number of cones delivered from the stack. This is used to calculate the lift position when returned back to the stack
-                    robot.lift.numCyclesCompleted++;
-                    robot.lift.updateLiftPickupPosition();
                 })
 
                 // This is the duration the robot waits at the pickup station (while its subsystems are picking the cone up)
