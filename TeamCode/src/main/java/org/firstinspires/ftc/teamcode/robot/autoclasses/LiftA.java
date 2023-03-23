@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot.autoclasses;
 
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,8 +9,8 @@ import java.util.Map;
 
 public class LiftA {
     private Telemetry telemetry;
-    public DcMotor liftMotor;
-    public DcMotor liftMotor2;
+    public DcMotorEx liftMotor;
+    public DcMotorEx liftMotor2;
     static final double MM_TO_INCHES = 0.0393700787;
 
     static final double COUNTS_PER_MOTOR_REV = 28;     // ticks at the motor shaft
@@ -78,8 +79,8 @@ public class LiftA {
     public LiftA(HardwareMap hwMap, Telemetry telemetry, Map stateMap) {
         this.telemetry = telemetry;
         this.stateMap = stateMap;
-        liftMotor = hwMap.dcMotor.get("Lift");
-        liftMotor2 = hwMap.dcMotor.get("LiftMotor2");
+        liftMotor = hwMap.get(DcMotorEx.class, "Lift");
+        liftMotor2 = hwMap.get(DcMotorEx.class, "LiftMotor2");
 
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -264,9 +265,10 @@ public class LiftA {
         liftMotor2.setTargetPosition(heightInTicks);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftMotor.setTargetPositionTolerance(2);
+        liftMotor2.setTargetPositionTolerance(2);
         liftMotor.setPower(1.0);    //1.0
         liftMotor2.setPower(1.0);   //1.0
-
     }
 
     // Not used -> DELETE

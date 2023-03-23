@@ -67,7 +67,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
     public static int PARKING_NUMBER = 3; // Controlled by the dashboard for test purposes
     public static double SPEED = 60.0;    // Controlled by the dashboard for test purposes
     private ElapsedTime autoTime = new ElapsedTime();
-    private double TIME_TO_PARK = 50;  //27
+    private double TIME_TO_PARK = 28.5;  //27
 
     // used for trajectory state machine
     enum    TrajectoryState {
@@ -214,7 +214,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // This is the duration the robot waits at the pickup station (while its subsystems are picking the cone up)
-                .waitSeconds(0.2)
+                .waitSeconds(0.25)
 
                 /********** DEPOSIT CYCLE 1 ***********/
 
@@ -261,7 +261,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // Drop Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.1, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
                 })
                 .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
@@ -371,7 +371,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // Drop Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.1, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
                 })
                 .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
@@ -483,7 +483,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // Drop Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.1, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
                 })
                 .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
@@ -594,7 +594,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // Drop Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.1, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
                 })
                 .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
@@ -704,7 +704,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // Drop Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.1, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
                 })
                 .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
@@ -1040,7 +1040,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 case TRAJECTORY_PARKING_STATE:
                     // TODO: Check if this passed value is still good. Note that the EXTENSION_POSITION_HOME value was changed in ExtensionA class
-                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_HOME - 0.35);
+                    robot.arm.extendHome();
                     robot.alignment.alignUp();
                     robot.grabber.grabberOpen();
                     robot.turret.moveTo(robot.turret.CENTER_POSITION_VALUE);
