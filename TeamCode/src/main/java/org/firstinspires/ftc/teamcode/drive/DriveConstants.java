@@ -47,7 +47,7 @@ public class DriveConstants {
     public static double WHEEL_RADIUS = 1.4763; // in
     public static double GEAR_RATIO = 1.0/10.5;      // output (wheel) speed / input (motor) speed
                                                      // 4:1 + 3:1 Combined gear reduction is 10.5,
-    public static double TRACK_WIDTH = 9.75;         // previously was 3.5 in
+    public static double TRACK_WIDTH = 11;         // previously was 3.5 in
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -66,9 +66,9 @@ public class DriveConstants {
      * small and gradually increase them later after everything is working. All distance units are
      * inches.
      */
-    public static double MAX_VEL = 30;      // TODO: Why is this so low?
+    public static double MAX_VEL = 60;      // TODO: Why is this so low?
     public static double HI_MAX_VEL = 60;
-    public static double MAX_ACCEL = 30;
+    public static double MAX_ACCEL = 75;
     public static double HI_MAX_ACCEL = 30;
     public static double MAX_ANG_VEL = Math.toRadians(180);
     public static double MAX_ANG_ACCEL = Math.toRadians(180);    // Default value per documentation. Previously was 60
