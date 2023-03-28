@@ -102,6 +102,8 @@ public class RobotTeleOp extends LinearOpMode {
         stateMap.put(robot.lift.LIFT_SUBHEIGHT, robot.lift.APPROACH_HEIGHT);
         stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
         stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
+        stateMap.put(robot.flippers.SYSTEM_NAME, robot.flippers.LEFT_FLIPPER_UP);
+        stateMap.put(robot.flippers.SYSTEM_NAME, robot.flippers.LEFT_FLIPPER_UP);
 
         stateMap.put(constants.DRIVER_2_SELECTED_LIFT, robot.lift.LIFT_POLE_HIGH);
         stateMap.put(constants.DRIVER_2_SELECTED_TURRET, robot.turret.CENTER_POSITION);

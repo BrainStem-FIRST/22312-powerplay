@@ -38,6 +38,7 @@ public class BrainStemRobot {
     public Extension arm;
     public SampleMecanumDrive drive;
     public Grabber grabber;
+    public Flippers flippers;
     private Map stateMap;
     Constants constants = new Constants();
     private ElapsedTime coneCycleTimer = new ElapsedTime();
@@ -53,6 +54,7 @@ public class BrainStemRobot {
         arm = new Extension(hwMap, telemetry, stateMap);
         drive = new SampleMecanumDrive(hwMap);
         grabber = new Grabber(hwMap, telemetry, stateMap);
+        flippers = new Flippers(hwMap, telemetry, stateMap);
 
         // Set run mode (due to lack of a separate initialization function)
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
