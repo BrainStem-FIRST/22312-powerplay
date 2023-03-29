@@ -17,15 +17,17 @@ public class Flippers {
     //values of positions
     public final double leftFlipperDown = 1.0;
     public final double leftFlipperUp = 0;
-    public final double rightFlipperUp = 0.0;
-    public final double rightFlipperDown = 1.0;
+    public final double rightFlipperUp = 1.0;
+    public final double rightFlipperDown = 0;
 
     //Statemap strings and states
     public final String SYSTEM_NAME = "FLIPPERS";
     public final String LEFT_FLIPPER_DOWN = "LEFT_FLIPPER_DOWN";
     public final String RIGHT_FLIPPER_DOWN = "RIGHT_FLIPPER_DOWN";
-    public final String LEFT_FLIPPER_UP = "LIFT_FLIPPER_UP";
+    public final String LEFT_FLIPPER_UP = "LEFT_FLIPPER_UP";
     public final String RIGHT_FLIPPER_UP = "RIGHT_FLIPPER_UP";
+    public final String FLIPPERS_DOWN = "FLIPPERS_DOWN";
+    public final String FLIPPERS_UP = "FLIPPERS UP";
     private Map stateMap;
 
     public Flippers(HardwareMap hwMap, Telemetry telemetry, Map stateMap){
@@ -33,10 +35,10 @@ public class Flippers {
         this.stateMap = stateMap;
         rightFlipper = (ServoImplEx)hwMap.get("RightConeFlipper");
         leftFlipper = (ServoImplEx) hwMap.get("LeftConeFlipper");
-        rightFlipper.setPwmRange(new PwmControl.PwmRange(1000,2500));//2500 up and 1000 down
-        leftFlipper.setPwmRange(new PwmControl.PwmRange(490,2000));//490 up and 2000 down
-        rightFlipperUp();
-        leftFlipperUp();
+        rightFlipper.setPwmRange(new PwmControl.PwmRange(1026,2500));//2500 up and 1000 down
+        leftFlipper.setPwmRange(new PwmControl.PwmRange(536,2000));//490 up and 2000 down
+        bothFlippersUp();
+
     }
 
     public void setState(String desiredState){
@@ -45,34 +47,22 @@ public class Flippers {
 
     private void selectTransition(String desiredState){
         switch(desiredState){
-            case LEFT_FLIPPER_DOWN:{
-                leftFlipperDown();
+            case FLIPPERS_DOWN:{
+                bothFlippersDown();
                 break;
             }
-            case RIGHT_FLIPPER_DOWN:{
-                rightFlipperDown();
-                break;
-            }
-            case LEFT_FLIPPER_UP:{
-                leftFlipperUp();
-                break;
-            }
-            case RIGHT_FLIPPER_UP:{
-                rightFlipperUp();
+            case FLIPPERS_UP:{
+                bothFlippersUp();
                 break;
             }
         }
     }
-    private void leftFlipperDown(){
-        leftFlipper.setPosition(leftFlipperDown);
-    }
-    private void rightFlipperDown(){
+    public void bothFlippersUp(){
         leftFlipper.setPosition(leftFlipperUp);
+        rightFlipper.setPosition(rightFlipperUp);
     }
-    private void leftFlipperUp(){
-        leftFlipper.setPosition(rightFlipperUp);
-    }
-    private void rightFlipperUp(){
-        rightFlipper.setPosition(rightFlipperDown);
+    public void bothFlippersDown(){
+        leftFlipper.setPosition(leftFlipperDown);
+        leftFlipper.setPosition(rightFlipperDown);
     }
 }

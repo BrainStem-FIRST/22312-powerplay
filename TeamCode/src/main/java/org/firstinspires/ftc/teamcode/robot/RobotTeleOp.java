@@ -102,8 +102,7 @@ public class RobotTeleOp extends LinearOpMode {
         stateMap.put(robot.lift.LIFT_SUBHEIGHT, robot.lift.APPROACH_HEIGHT);
         stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
         stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
-        stateMap.put(robot.flippers.SYSTEM_NAME, robot.flippers.LEFT_FLIPPER_UP);
-        stateMap.put(robot.flippers.SYSTEM_NAME, robot.flippers.LEFT_FLIPPER_UP);
+        stateMap.put(robot.flippers.SYSTEM_NAME, robot.flippers.FLIPPERS_UP);
 
         stateMap.put(constants.DRIVER_2_SELECTED_LIFT, robot.lift.LIFT_POLE_HIGH);
         stateMap.put(constants.DRIVER_2_SELECTED_TURRET, robot.turret.CENTER_POSITION);
@@ -250,6 +249,11 @@ public class RobotTeleOp extends LinearOpMode {
                   }
               }
 
+              if(toggleMap.get(GAMEPAD_1_LEFT_BUTTON_STATE)){
+                  robot.flippers.bothFlippersDown();
+              } else{
+                  robot.flippers.bothFlippersDown();
+              }
               if(gamepad1.left_trigger > 0.7){
                   robot.lift.liftPositionPickup = 0;
                   telemetry.addData("Robot lift pickup", robot.lift.liftPositionPickup);
@@ -295,36 +299,13 @@ public class RobotTeleOp extends LinearOpMode {
 //              }
 
               if (stateMap.get(DRIVE_MODE).equals(MANUAL_DRIVE_MODE)) {
-                  if (gamepad2.left_stick_x <= -0.1 || gamepad2.left_stick_x >= 0.1) {
-                      drive.setWeightedDrivePower(
-                              new Pose2d(
-                                      0,
-                                      -(k_regularTurningSpeed * gamepad1.left_stick_x),
-                                      0
+                  drive.setWeightedDrivePower(
+                          new Pose2d(
+                                  -gamepad1.left_stick_y,
+                                  -gamepad1.left_stick_x,
+                                  -gamepad1.right_stick_x * 0.75
                               )
                       );
-
-                  }
-
-                  if (toggleMap.get(GAMEPAD_1_LEFT_BUTTON_STATE)) {
-                      drive.setWeightedDrivePower(
-                              new Pose2d(
-
-                                      (SLOWMODE * -gamepad1.left_stick_y),
-                                      (SLOWMODE * -gamepad1.left_stick_x),
-                                      (SLOWMODE * -gamepad1.right_stick_x)
-                              )
-                      );
-                  } else {
-                      drive.setWeightedDrivePower(
-                              new Pose2d(
-
-                                      -gamepad1.left_stick_y,
-                                      -gamepad1.left_stick_x,
-                                      -gamepad1.right_stick_x * 0.75
-                              )
-                      );
-                  }
               }
 
               drive.update();
@@ -335,6 +316,7 @@ public class RobotTeleOp extends LinearOpMode {
               telemetry.addData("Lift subheight adding", robot.lift.liftPickup);
               telemetry.addData("Lift Motor 1 ticks", robot.lift.liftMotor.getCurrentPosition());
               telemetry.addData("Lift Motor 2", robot.lift.liftMotor2.getCurrentPosition());
+              telemetry.addData("Toggle map", toggleMap);
               telemetry.update();
           }
         }

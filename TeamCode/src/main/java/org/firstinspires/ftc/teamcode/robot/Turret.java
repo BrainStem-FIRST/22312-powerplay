@@ -28,7 +28,7 @@ public class Turret {
     // Turret position values when the initial position is on the CENTER
     public final int        LEFT_POSITION_VALUE = -256; // 8 -> 0 - (264-8)
     public final int        CENTER_POSITION_VALUE = 0;  // 264 -> 0
-    public final int        RIGHT_POSITION_VALUE = 256; // 500 -> 0 + (500-264)
+    public final int        RIGHT_POSITION_VALUE = 262; // 500 -> 0 + (500-264)
 
 
     public final int        ANGLE_TOLERANCE = 5;
@@ -50,7 +50,7 @@ public class Turret {
         turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //PID SETUP
-        turretPIDController = new PIDController(0.07, 0.0, 0);
+        turretPIDController = new PIDController(0.075, 0.0, 0);
         turretPIDController.setInputBounds(0, 512);
         turretPIDController.setOutputBounds(0, 1);
     }
@@ -115,6 +115,7 @@ public class Turret {
 
         telemetry.addData("Turret Error=", error);
         telemetry.addData("Turret Power=", turretMotor.getPower());
+        telemetry.addData("Turret ticks", turretMotor.getCurrentPosition());
     }
     public String getCurrentState() {
         String state = TRANSITION_STATE;

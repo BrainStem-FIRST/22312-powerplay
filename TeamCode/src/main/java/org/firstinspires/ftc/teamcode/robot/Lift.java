@@ -35,7 +35,7 @@ public class Lift {
     public final int GROUND_ORIGINAL_POSITION = 0;
     public final int LIFT_POSITION_LOWPOLE = 480;
     public final int LIFT_POSITION_MIDPOLE = 700;   //685;
-    public final int LIFT_POSITION_HIGHPOLE = 960;
+    public final int LIFT_POSITION_HIGHPOLE = 860;
     public final int LIFT_POSITION_MOVING = 100;
 
     public final int LIFT_POSITION_CONE_5 = 200;
@@ -101,7 +101,8 @@ public class Lift {
 
         liftMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        liftMotor2.setDirection(DcMotor.Direction.REVERSE);
+        liftMotor.setDirection(DcMotor.Direction.REVERSE);
+
     }
 
     public boolean isCollectionHeight() {
