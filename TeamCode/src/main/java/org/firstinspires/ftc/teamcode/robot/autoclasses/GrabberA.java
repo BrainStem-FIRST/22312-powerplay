@@ -22,7 +22,7 @@ public class GrabberA {
     ConstantsA constants = new ConstantsA();
 
     public final double WIDE_OPEN_VALUE = 0.0;
-    public final double OPEN_VALUE      = 0.65;      // 0.27
+    public final double OPEN_VALUE      = 0.75;      // 0.27
     public final double CLOSED_VALUE    = 0.90;     // 0.12
 
     private Map stateMap;
