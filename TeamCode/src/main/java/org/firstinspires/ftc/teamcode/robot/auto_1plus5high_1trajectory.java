@@ -114,10 +114,10 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     // lift off the ground for transportation
                     robot.lift.goToClear();
                 })
-//
-//                .addTemporalMarker(0.3, () -> {
-//                    robot.alignment.alignDown();
-//                })
+
+                .addTemporalMarker(0.3, () -> {
+                    robot.alignment.alignDown();
+                })
 
                 .setTangent(Math.toRadians(startingTangent))
 
@@ -154,9 +154,9 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 150);
                 })
-//                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
-//                    robot.grabber.grabberOpen();
-//                })
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
+                    robot.grabber.grabberOpen();
+                })
 
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
                 .UNSTABLE_addTemporalMarkerOffset(0.3, ()-> {
@@ -178,10 +178,10 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.turret.goToPickupPosition();
                 })
 
-//                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
-//                    robot.alignment.alignUp();
-//                })
-//
+                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
+                    robot.alignment.alignUp();
+                })
+
                 // lower the lift after the turret repositioned and before the robot reached its target
                 // offset is relative to when robot reached its destination
                 .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
@@ -200,14 +200,14 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
-//                .UNSTABLE_addTemporalMarkerOffset(-0.1,()-> {
-//                    robot.grabber.grabberOpenWide();
-//                })
+                .UNSTABLE_addTemporalMarkerOffset(-0.1,()-> {
+                    robot.grabber.grabberOpenWide();
+                })
 
-                // Pickup Cone
-//                .UNSTABLE_addTemporalMarkerOffset(0, ()-> {
-//                    robot.grabber.grabberClose();
-//                })
+                //Pickup Cone
+                .UNSTABLE_addTemporalMarkerOffset(0, ()-> {
+                    robot.grabber.grabberClose();
+                })
 
                 .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
                     robot.lift.goToClear();
@@ -232,9 +232,9 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.lift.goToHighPoleHeight();
                 })
 
-//                .UNSTABLE_addTemporalMarkerOffset(0.4, () ->{
-//                    robot.alignment.alignDown();
-//                })
+                .UNSTABLE_addTemporalMarkerOffset(0.4, () ->{
+                    robot.alignment.alignDown();
+                })
 
                 .UNSTABLE_addTemporalMarkerOffset(0.5, () -> {
                     robot.turret.goToDepositPosition();
@@ -264,9 +264,9 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0.1, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
                 })
-//                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
-//                    robot.grabber.grabberOpen();
-//                })
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
+                    robot.grabber.grabberOpen();
+                })
 
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
                 .UNSTABLE_addTemporalMarkerOffset(0.3, ()-> {
@@ -286,11 +286,11 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0,()-> {
                     robot.turret.goToPickupPosition();
                 })
-//
-//                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
-//                    robot.alignment.alignUp();
-//                })
-//
+
+                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
+                    robot.alignment.alignUp();
+                })
+
                 // lower the lift after the turret repositioned and before the robot reached its target
                 // offset is relative to when robot reached its destination
                 .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
@@ -308,16 +308,16 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(-0.2,()-> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
-//
-//                .UNSTABLE_addTemporalMarkerOffset(-0.1,()-> {
-//                    robot.grabber.grabberOpenWide();
-//                })
-//
-//                // Pickup Cone
-//                .UNSTABLE_addTemporalMarkerOffset(0, ()-> {
-//                    robot.grabber.grabberClose();
-//                })
-//
+
+                .UNSTABLE_addTemporalMarkerOffset(-0.1,()-> {
+                    robot.grabber.grabberOpenWide();
+                })
+
+                // Pickup Cone
+                .UNSTABLE_addTemporalMarkerOffset(0, ()-> {
+                    robot.grabber.grabberClose();
+                })
+
                 .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
                     robot.lift.goToClear();
                 })
@@ -342,10 +342,10 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.lift.goToHighPoleHeight();
                 })
 
-//                .UNSTABLE_addTemporalMarkerOffset(0.4, () ->{
-//                    robot.alignment.alignDown();
-//                })
-//
+                .UNSTABLE_addTemporalMarkerOffset(0.4, () ->{
+                    robot.alignment.alignDown();
+                })
+
                 .UNSTABLE_addTemporalMarkerOffset(0.5, () -> {
                     robot.turret.goToDepositPosition();
                 })
@@ -374,9 +374,9 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0.1, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
                 })
-//                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
-//                    robot.grabber.grabberOpen();
-//                })
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
+                    robot.grabber.grabberOpen();
+                })
 
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
                 .UNSTABLE_addTemporalMarkerOffset(0.3, ()-> {
@@ -421,14 +421,14 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
-//                .UNSTABLE_addTemporalMarkerOffset(-0.1,()-> {
-//                    robot.grabber.grabberOpenWide();
-//                })
-//
-//                // Pickup Cone
-//                .UNSTABLE_addTemporalMarkerOffset(0, ()-> {
-//                    robot.grabber.grabberClose();
-//                })
+                .UNSTABLE_addTemporalMarkerOffset(-0.1,()-> {
+                    robot.grabber.grabberOpenWide();
+                })
+
+                // Pickup Cone
+                .UNSTABLE_addTemporalMarkerOffset(0, ()-> {
+                    robot.grabber.grabberClose();
+                })
 
                 .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
                     robot.lift.goToClear();
@@ -454,9 +454,9 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.lift.goToHighPoleHeight();
                 })
 
-//                .UNSTABLE_addTemporalMarkerOffset(0.4, () ->{
-//                    robot.alignment.alignDown();
-//                })
+                .UNSTABLE_addTemporalMarkerOffset(0.4, () ->{
+                    robot.alignment.alignDown();
+                })
 
                 .UNSTABLE_addTemporalMarkerOffset(0.5, () -> {
                     robot.turret.goToDepositPosition();
@@ -486,10 +486,10 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0.1, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
                 })
-//                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
-//                    robot.grabber.grabberOpen();
-//                })
-//
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
+                    robot.grabber.grabberOpen();
+                })
+
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
                 .UNSTABLE_addTemporalMarkerOffset(0.3, ()-> {
                     robot.arm.extendHome();
@@ -510,9 +510,9 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.turret.goToPickupPosition();
                 })
 
-//                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
-//                    robot.alignment.alignUp();
-//                })
+                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
+                    robot.alignment.alignUp();
+                })
 
                 // lower the lift after the turret repositioned and before the robot reached its target
                 // offset is relative to when robot reached its destination
@@ -532,14 +532,14 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
-//                .UNSTABLE_addTemporalMarkerOffset(-0.1,()-> {
-//                    robot.grabber.grabberOpenWide();
-//                })
-//
-//                // Pickup Cone
-//                .UNSTABLE_addTemporalMarkerOffset(0, ()-> {
-//                    robot.grabber.grabberClose();
-//                })
+                .UNSTABLE_addTemporalMarkerOffset(-0.1,()-> {
+                    robot.grabber.grabberOpenWide();
+                })
+
+                // Pickup Cone
+                .UNSTABLE_addTemporalMarkerOffset(0, ()-> {
+                    robot.grabber.grabberClose();
+                })
 
                 .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
                     robot.lift.goToClear();
@@ -564,10 +564,10 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0.15, () -> {
                     robot.lift.goToHighPoleHeight();
                 })
-//
-//                .UNSTABLE_addTemporalMarkerOffset(0.4, () ->{
-//                    robot.alignment.alignDown();
-//                })
+
+                .UNSTABLE_addTemporalMarkerOffset(0.4, () ->{
+                    robot.alignment.alignDown();
+                })
 
                 .UNSTABLE_addTemporalMarkerOffset(0.5, () -> {
                     robot.turret.goToDepositPosition();
@@ -597,9 +597,9 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0.1, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
                 })
-//                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
-//                    robot.grabber.grabberOpen();
-//                })
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
+                    robot.grabber.grabberOpen();
+                })
 
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
                 .UNSTABLE_addTemporalMarkerOffset(0.3, ()-> {
@@ -621,9 +621,9 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     robot.turret.goToPickupPosition();
                 })
 
-//                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
-//                    robot.alignment.alignUp();
-//                })
+                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
+                    robot.alignment.alignUp();
+                })
 
                 // lower the lift after the turret repositioned and before the robot reached its target
                 // offset is relative to when robot reached its destination
@@ -641,15 +641,15 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(-0.2,()-> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
-//
-//                .UNSTABLE_addTemporalMarkerOffset(-0.1,()-> {
-//                    robot.grabber.grabberOpenWide();
-//                })
-//
-//                // Pickup Cone
-//                .UNSTABLE_addTemporalMarkerOffset(0, ()-> {
-//                    robot.grabber.grabberClose();
-//                })
+
+                .UNSTABLE_addTemporalMarkerOffset(-0.1,()-> {
+                    robot.grabber.grabberOpenWide();
+                })
+
+                // Pickup Cone
+                .UNSTABLE_addTemporalMarkerOffset(0, ()-> {
+                    robot.grabber.grabberClose();
+                })
 
                 .UNSTABLE_addTemporalMarkerOffset(0.05, ()-> {
                     robot.lift.goToClear();
@@ -674,10 +674,10 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0.15, () -> {
                     robot.lift.goToHighPoleHeight();
                 })
-//
-//                .UNSTABLE_addTemporalMarkerOffset(0.4, () ->{
-//                    robot.alignment.alignDown();
-//                })
+
+                .UNSTABLE_addTemporalMarkerOffset(0.4, () ->{
+                    robot.alignment.alignDown();
+                })
 
                 .UNSTABLE_addTemporalMarkerOffset(0.5, () -> {
                     robot.turret.goToDepositPosition();
@@ -707,9 +707,9 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0.1, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 100);
                 })
-//                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
-//                    robot.grabber.grabberOpen();
-//                })
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
+                    robot.grabber.grabberOpen();
+                })
 
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
                 .UNSTABLE_addTemporalMarkerOffset(0.3, ()-> {
