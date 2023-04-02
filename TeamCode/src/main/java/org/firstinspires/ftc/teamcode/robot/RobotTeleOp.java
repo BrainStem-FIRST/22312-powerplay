@@ -128,12 +128,9 @@ public class RobotTeleOp extends LinearOpMode {
               }
 
               if (toggleMap.get(GAMEPAD_1_A_STATE)) {
-                  LIFT_GOING_UP = true;
-                  liftUp.reset();
-                  liftUp.startTime();
-                  if(gamepad1.a && !CAP_MODE){
-                      toggleMap.put(GAMEPAD_1_B_STATE, true);
-                  }
+//                  LIFT_GOING_UP = true;
+//                  liftUp.reset();
+//                  liftUp.startTime();
                   robot.lift.liftPickup = 0;
                   robot.lift.LIFT_POSITION_GROUND = 0;
                   telemetry.addData("Lift pickup", robot.lift.liftPickup);
@@ -147,9 +144,9 @@ public class RobotTeleOp extends LinearOpMode {
               }
 
               if(LIFT_GOING_UP){
-                  if(liftUp.seconds() > 1){
-                      stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.ALIGN_DOWN);
-                      LIFT_GOING_UP = false;
+                  if(liftUp.seconds() > 1 && !CAP_MODE){
+                      toggleMap.put(GAMEPAD_1_B_STATE, true);
+
                   }
               }
 
@@ -312,7 +309,7 @@ public class RobotTeleOp extends LinearOpMode {
                               new Pose2d(
                                       -gamepad1.left_stick_y,
                                       -gamepad1.left_stick_x,
-                                      -gamepad1.right_stick_x * 0.75
+                                      - k_regularTurningSpeed * gamepad1.right_stick_x * 0.75
                               )
                       );
                   }
@@ -359,10 +356,6 @@ public class RobotTeleOp extends LinearOpMode {
         }
 
         return toggleMap.get(buttonStateName);
-    }
-
-    private void close() {
-
     }
 
 }

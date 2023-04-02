@@ -24,7 +24,7 @@ public class AlignmentA {
 
         // Scale the operating range of Servos and set initial position
         // lower boundary for alignUp; higher boundary for alignDown
-        alignment.setPwmRange(new PwmControl.PwmRange(465,1760));
+        alignment.setPwmRange(new PwmControl.PwmRange(460,1760));
 //        alignment.setDirection(ServoImplEx.Direction.REVERSE);
         alignUp();
 
