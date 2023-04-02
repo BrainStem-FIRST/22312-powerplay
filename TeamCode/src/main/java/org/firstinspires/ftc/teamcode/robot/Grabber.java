@@ -50,7 +50,7 @@ public class Grabber {
 
         grabber = (ServoImplEx) hwMap.servo.get("Grabber");
 
-        grabber.setPwmRange(new PwmControl.PwmRange(1150, 1650));
+        grabber.setPwmRange(new PwmControl.PwmRange(1150, 1800));
         //grabberOpen();
     }
 
