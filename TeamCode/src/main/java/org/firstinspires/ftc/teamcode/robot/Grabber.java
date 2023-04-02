@@ -35,7 +35,7 @@ public class Grabber {
     Constants constants = new Constants();
 
     public final double FULLY_OPEN_VALUE = 0.01;
-    private final double CONE_OPEN_VALUE = 0.55;
+    private final double CONE_OPEN_VALUE = 0.7; //0.55
     public final double CLOSED_VALUE = 0.93;
     public final double COMPLETELY_CLOSED_VALUE = 1.0;
     public ElapsedTime grabberCycleTime;
@@ -50,7 +50,7 @@ public class Grabber {
 
         grabber = (ServoImplEx) hwMap.servo.get("Grabber");
 
-        grabber.setPwmRange(new PwmControl.PwmRange(1150, 1800));
+        grabber.setPwmRange(new PwmControl.PwmRange(1150, 1650));
         //grabberOpen();
     }
 
