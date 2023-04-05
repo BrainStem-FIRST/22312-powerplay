@@ -58,7 +58,7 @@ public class ExtensionA {
 
         // Scale the operating range of Servos and set initial position
 //        extension.setPwmRange(new PwmControl.PwmRange(300,640)); //low cap was 1250 and it was not retracting all the way
-        extension.setPwmRange(new PwmControl.PwmRange(450,800)); //maybe
+        extension.setPwmRange(new PwmControl.PwmRange(800,1200)); //maybe //Extend max is 450 and home is 800
         extendHome();
 
 //        twoBar.setPwmRange(new PwmControl.PwmRange(1745,2400));
