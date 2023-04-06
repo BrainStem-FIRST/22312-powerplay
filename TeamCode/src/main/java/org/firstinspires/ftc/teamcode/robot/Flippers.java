@@ -17,15 +17,12 @@ public class Flippers {
     //values of positions
     public final double leftFlipperDown = 1.0;
     public final double leftFlipperUp = 0;
+
     public final double rightFlipperUp = 1.0;
     public final double rightFlipperDown = 0;
 
     //Statemap strings and states
     public final String SYSTEM_NAME = "FLIPPERS";
-    public final String LEFT_FLIPPER_DOWN = "LEFT_FLIPPER_DOWN";
-    public final String RIGHT_FLIPPER_DOWN = "RIGHT_FLIPPER_DOWN";
-    public final String LEFT_FLIPPER_UP = "LEFT_FLIPPER_UP";
-    public final String RIGHT_FLIPPER_UP = "RIGHT_FLIPPER_UP";
     public final String FLIPPERS_DOWN = "FLIPPERS_DOWN";
     public final String FLIPPERS_UP = "FLIPPERS UP";
     private Map stateMap;
@@ -63,6 +60,6 @@ public class Flippers {
     }
     public void bothFlippersDown(){
         leftFlipper.setPosition(leftFlipperDown);
-        leftFlipper.setPosition(rightFlipperDown);
+        rightFlipper.setPosition(rightFlipperDown);
     }
 }

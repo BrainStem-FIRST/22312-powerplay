@@ -95,6 +95,7 @@ public class BrainStemRobot {
             turret.setState((String) stateMap.get(turret.SYSTEM_NAME), lift, arm);
             arm.setState((String) stateMap.get(arm.SYSTEM_NAME));
             grabber.setState((String) stateMap.get(grabber.SYSTEM_NAME), lift);
+            flippers.setState((String)stateMap.get(flippers.SYSTEM_NAME));
 
         }
     }

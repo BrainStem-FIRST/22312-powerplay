@@ -102,7 +102,7 @@ public class RobotTeleOp extends LinearOpMode {
         stateMap.put(robot.lift.LIFT_SUBHEIGHT, robot.lift.APPROACH_HEIGHT);
         stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
         stateMap.put(robot.arm.SYSTEM_NAME, robot.arm.DEFAULT_VALUE);
-//        stateMap.put(robot.flippers.SYSTEM_NAME, robot.flippers.FLIPPERS_UP);
+        stateMap.put(robot.flippers.SYSTEM_NAME, robot.flippers.FLIPPERS_UP);
 
         stateMap.put(constants.DRIVER_2_SELECTED_LIFT, robot.lift.LIFT_POLE_HIGH);
         stateMap.put(constants.DRIVER_2_SELECTED_TURRET, robot.turret.CENTER_POSITION);
@@ -131,6 +131,11 @@ public class RobotTeleOp extends LinearOpMode {
 //                  LIFT_GOING_UP = true;
 //                  liftUp.reset();
 //                  liftUp.startTime();
+//                  if(gamepad1.a){
+//                      LIFT_GOING_UP = true;
+//                      liftUp.reset();
+//                      liftUp.startTime();
+//                  }
                   robot.lift.liftPickup = 0;
                   robot.lift.LIFT_POSITION_GROUND = 0;
                   telemetry.addData("Lift pickup", robot.lift.liftPickup);
@@ -144,7 +149,7 @@ public class RobotTeleOp extends LinearOpMode {
               }
 
               if(LIFT_GOING_UP){
-                  if(liftUp.seconds() > 1 && !CAP_MODE){
+                  if(liftUp.seconds() > 0.5 && !CAP_MODE){
                       toggleMap.put(GAMEPAD_1_B_STATE, true);
 
                   }
@@ -157,18 +162,16 @@ public class RobotTeleOp extends LinearOpMode {
               } else if (gamepad2.y) {
                   stateMap.put(constants.DRIVER_2_SELECTED_LIFT, robot.lift.LIFT_POLE_HIGH);
               }
+              if(toggleMap.get(GAMEPAD_1_LEFT_BUTTON_STATE)){
+                  stateMap.put(robot.flippers.SYSTEM_NAME, robot.flippers.FLIPPERS_DOWN);
+              }else{
+                  stateMap.put(robot.flippers.SYSTEM_NAME, robot.flippers.FLIPPERS_UP);
+              }
               if (gamepad1.right_bumper) {
                   telemetry.addData("time", elapsedTime);
                   if (((String) stateMap.get(robot.lift.LIFT_SYSTEM_NAME)).equalsIgnoreCase(robot.lift.LIFT_POLE_GROUND)) {
                       stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
-                  } else {
-                      elapsedTime.reset();
-                      elapsedTime.startTime();
-                      retractionInProgress = true;
-                      stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
-                      toggleMap.put(GAMEPAD_1_B_STATE, false);
                   }
-
               }
 
               if (retractionInProgress) {
@@ -194,7 +197,7 @@ public class RobotTeleOp extends LinearOpMode {
                   stateMap.put(constants.DRIVER_2_SELECTED_TURRET, robot.turret.RIGHT_POSITION);
               } else if (gamepad2.dpad_left) {
                   stateMap.put(constants.DRIVER_2_SELECTED_TURRET, robot.turret.LEFT_POSITION);
-              } else if (gamepad2.dpad_up) {
+              } else if (gamepad2.dpad_down) {
                   stateMap.put(constants.DRIVER_2_SELECTED_TURRET, robot.turret.CENTER_POSITION);
               }
 
@@ -202,11 +205,14 @@ public class RobotTeleOp extends LinearOpMode {
                   robot.lift.LIFT_POSITION_GROUND += 1;
               }
               if (stateMap.get(robot.lift.LIFT_SYSTEM_NAME) != robot.lift.LIFT_POLE_GROUND) {
-                  if (gamepad1.right_trigger > 0.05) {
+                  if (gamepad1.right_trigger > 0.05 && gamepad1.right_trigger < 0.9) {
                       robot.lift.setAdjustmentHeight(gamepad1.right_trigger);
-//              } else if (gamepad1.right_trigger >= 0.9) {
-//                  stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
-//                  robot.grabber.grabberOpen();
+              } else if (gamepad1.right_trigger >= 0.9) {
+                      elapsedTime.reset();
+                      elapsedTime.startTime();
+                      retractionInProgress = true;
+                      stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
+                      toggleMap.put(GAMEPAD_1_B_STATE, false);
                   } else {
                       robot.lift.setAdjustmentHeight(0);
                   }
