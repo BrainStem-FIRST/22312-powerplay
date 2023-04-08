@@ -783,11 +783,11 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
             startingHeading = -90;
             startingTangent = 90;
 
-            preloadHeading = 185;
+            preloadHeading = 180;
             preloadTangent = 0;
 
             pickupHeading = 180;
-            pickupTangent = 179;
+            pickupTangent = 180;    // Change it to 179 if it forms an s-curve (we want linear move)
 
             depositHeading = 180;
             depositTangent = 0;
