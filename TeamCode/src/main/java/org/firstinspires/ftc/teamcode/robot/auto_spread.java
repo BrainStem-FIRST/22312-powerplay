@@ -248,7 +248,7 @@ public class auto_spread extends LinearOpMode {
                 // after the drivetrain command to mark the start of the deposit cone cycle.
 
                 .setTangent(depositTangent)
-                .splineToSplineHeading(depositPose, Math.toRadians(depositTangent))
+                .splineToSplineHeading(depositLowPose, Math.toRadians(depositTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(95))
 
@@ -358,7 +358,7 @@ public class auto_spread extends LinearOpMode {
                 // after the drivetrain command to mark the start of the deposit cone cycle.
 
                 .setTangent(depositTangent)
-                .splineToSplineHeading(depositPose, Math.toRadians(depositTangent))
+                .splineToSplineHeading(depositLowPose, Math.toRadians(depositTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(95))
 
@@ -470,7 +470,7 @@ public class auto_spread extends LinearOpMode {
                 // after the drivetrain command to mark the start of the deposit cone cycle.
 
                 .setTangent(depositTangent)
-                .splineToSplineHeading(depositPose, Math.toRadians(depositTangent))
+                .splineToSplineHeading(depositMidPose, Math.toRadians(depositTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(95))
 
@@ -581,7 +581,7 @@ public class auto_spread extends LinearOpMode {
                 // after the drivetrain command to mark the start of the deposit cone cycle.
 
                 .setTangent(depositTangent)
-                .splineToSplineHeading(depositPose, Math.toRadians(depositTangent))
+                .splineToSplineHeading(depositMidPose, Math.toRadians(depositTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(95))
 
@@ -691,7 +691,7 @@ public class auto_spread extends LinearOpMode {
                 // after the drivetrain command to mark the start of the deposit cone cycle.
 
                 .setTangent(depositTangent)
-                .splineToSplineHeading(depositPose, Math.toRadians(depositTangent))
+                .splineToSplineHeading(depositHighPose, Math.toRadians(depositTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(95))
 

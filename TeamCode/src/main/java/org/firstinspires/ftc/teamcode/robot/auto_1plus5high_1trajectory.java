@@ -769,7 +769,6 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
         telemetry.setMsTransmissionInterval(50); //camera
 
-
         // Determine trajectory headings for all alliance combinations
         if (isOrientationLEFT) { // LEFT
 
