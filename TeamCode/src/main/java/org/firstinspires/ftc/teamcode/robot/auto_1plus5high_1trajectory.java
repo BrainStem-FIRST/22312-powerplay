@@ -857,13 +857,13 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
             ///////////////////////////////////////////
 
             preloadDeltaX = 0;
-            preloadDeltaY = 0; //-2;
+            preloadDeltaY = 0;
 
-            pickupDeltaX = 0; //1.2;
-            pickupDeltaY = 0; //-2;
+            pickupDeltaX = 0;
+            pickupDeltaY = 0;
 
-            depositDeltaX = 0;
-            depositDeltaY = 0; //-2;
+            depositDeltaX = 2;
+            depositDeltaY = 0;
         }
 
         // Load the initial cone

@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
 
 /*
  * This is a simple routine to test translational drive capabilities.
@@ -36,11 +37,20 @@ public class StraightTest extends LinearOpMode {
 
         drive.followTrajectory(trajectory);
 
-        Pose2d poseEstimate = drive.getPoseEstimate();
-        telemetry.addData("finalX", poseEstimate.getX());
-        telemetry.addData("finalY", poseEstimate.getY());
-        telemetry.addData("finalHeading", poseEstimate.getHeading());
-        telemetry.update();
+//        Pose2d poseEstimate = drive.getPoseEstimate();
+//        telemetry.addData("finalX", poseEstimate.getX());
+//        telemetry.addData("finalY", poseEstimate.getY());
+//        telemetry.addData("finalHeading", poseEstimate.getHeading());
+//
+//        telemetry.addData("left odometry", StandardTrackingWheelLocalizer.leftEncoder.getCurrentPosition());
+//        telemetry.addData("left position", StandardTrackingWheelLocalizer.left_wheel_position);
+//
+//        telemetry.addData("right odometry", StandardTrackingWheelLocalizer.rightEncoder.getCurrentPosition());
+//        telemetry.addData("right position", StandardTrackingWheelLocalizer.right_wheel_position);
+//
+//        telemetry.addData("back odometry", StandardTrackingWheelLocalizer.frontEncoder.getCurrentPosition());
+//        telemetry.addData("back position", StandardTrackingWheelLocalizer.back_wheel_position);
+//        telemetry.update();
 
         while (!isStopRequested() && opModeIsActive()) ;
     }
