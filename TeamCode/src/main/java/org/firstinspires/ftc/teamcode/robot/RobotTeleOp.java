@@ -58,7 +58,9 @@ public class RobotTeleOp extends LinearOpMode {
 
     private boolean leftTriggerPressed = false;
     private boolean retractionInProgress = false;
-    private final double SLOWMODE  = 0.45;
+    private final double TRANSLATIONAL_SLOWMODE_SPEED  = 0.35;
+    private final double TURNING_SLOW_MODE = 0.25;
+    private double REGULAR_TURNING_SPEED = 0.5;
     private boolean CAP_MODE = false;
 
     Constants constants = new Constants();
@@ -67,8 +69,9 @@ public class RobotTeleOp extends LinearOpMode {
     private ElapsedTime grabberCycleTime = new ElapsedTime();
     private boolean grabberCycleInProgress = false;
     private boolean grabberyCapCycleInProgress = false;
+    private ElapsedTime putDownFast = new ElapsedTime();
+    private boolean fastDown = false;
 
-    private double k_regularTurningSpeed = 0.6;
 
 
     Map<String, Boolean> toggleMap = new HashMap<String, Boolean>() {{
@@ -171,9 +174,12 @@ public class RobotTeleOp extends LinearOpMode {
                   telemetry.addData("time", elapsedTime);
                   if (((String) stateMap.get(robot.lift.LIFT_SYSTEM_NAME)).equalsIgnoreCase(robot.lift.LIFT_POLE_GROUND)) {
                       stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
+//                      fastDown = true;
+//                      putDownFast.reset();
+//                      putDownFast.startTime();
+                      robot.lift.liftPickup = 0;
                   }
               }
-
               if (retractionInProgress) {
                   if (elapsedTime.seconds() > 0.1) {
                       stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
@@ -272,9 +278,6 @@ public class RobotTeleOp extends LinearOpMode {
               if (gamepad2.left_bumper) {
                   robot.arm.adjustmentPosition += extensionAddition;
               }
-              if (gamepad2.dpad_up){
-                  robot.arm.alignDown();
-              }
 //              if (stateMap.get(DRIVE_MODE).equalsIgnoreCase(MANUAL_DRIVE_MODE)) {
 //                  if (gamepad1.dpad_down) {
 //                      stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
@@ -307,9 +310,9 @@ public class RobotTeleOp extends LinearOpMode {
                   if(robot.lift.liftMotor.getCurrentPosition() > 100){
                       drive.setWeightedDrivePower(
                               new Pose2d(
-                                      (SLOWMODE * -gamepad1.left_stick_y),
-                                      (SLOWMODE * -gamepad1.left_stick_x),
-                                      (SLOWMODE *-gamepad1.right_stick_x * 0.75)
+                                      (TRANSLATIONAL_SLOWMODE_SPEED * -gamepad1.left_stick_y),
+                                      (TRANSLATIONAL_SLOWMODE_SPEED * -gamepad1.left_stick_x),
+                                      (-gamepad1.right_stick_x * TURNING_SLOW_MODE)
                               )
                       );
                   } else {
@@ -317,7 +320,7 @@ public class RobotTeleOp extends LinearOpMode {
                               new Pose2d(
                                       -gamepad1.left_stick_y,
                                       -gamepad1.left_stick_x,
-                                      - k_regularTurningSpeed * gamepad1.right_stick_x * 0.75
+                                      - REGULAR_TURNING_SPEED * gamepad1.right_stick_x
                               )
                       );
                   }
