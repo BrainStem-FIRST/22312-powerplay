@@ -891,7 +891,7 @@ public class auto_uncontested_pole extends LinearOpMode {
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose = new Pose2d(XFORM_X * 36, XFORM_Y * 63, Math.toRadians(startingHeading));
         preloadPose = new Pose2d(XFORM_X * (16 + preloadDeltaX), XFORM_Y * (11.5 + preloadDeltaY), Math.toRadians(preloadHeading));
-        depositPose = new Pose2d(XFORM_X * (0 + depositDeltaX), XFORM_Y * (11.5 + depositDeltaY), Math.toRadians(depositHeading));
+        depositPose = new Pose2d(XFORM_X * (2 + depositDeltaX), XFORM_Y * (11.5 + depositDeltaY), Math.toRadians(depositHeading));
         pickupPose = new Pose2d(XFORM_X * (54 + pickupDeltaX), XFORM_Y * (11.5 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose = new Pose2d(); // to be defined after reading the signal cone
 
