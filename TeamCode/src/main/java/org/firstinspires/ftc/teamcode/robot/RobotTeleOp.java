@@ -272,7 +272,9 @@ public class RobotTeleOp extends LinearOpMode {
               if (gamepad2.left_bumper) {
                   robot.arm.adjustmentPosition += extensionAddition;
               }
-
+              if (gamepad2.dpad_up){
+                  robot.arm.alignDown();
+              }
 //              if (stateMap.get(DRIVE_MODE).equalsIgnoreCase(MANUAL_DRIVE_MODE)) {
 //                  if (gamepad1.dpad_down) {
 //                      stateMap.put(DRIVE_MODE, AUTO_DRIVE_MODE);
