@@ -680,7 +680,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 })
 
                 .UNSTABLE_addTemporalMarkerOffset(0.5, () -> {
-                    robot.turret.goToDepositPosition();
+                    robot.turret.gotoPreloadPosition();
                 })
 
                 // This drivetrain move will start after the .waitsecond that marks the end of the pickup cycle.
@@ -688,8 +688,8 @@ public class auto_uncontested_pole extends LinearOpMode {
                 // Note that the robot will stop before the subsystem moves are complete. Need to add an idle time
                 // after the drivetrain command to mark the start of the deposit cone cycle.
 
-                .setTangent(depositTangent)
-                .splineToSplineHeading(depositPose, Math.toRadians(depositTangent))
+                .setTangent(preloadTangent)
+                .splineToSplineHeading(preloadPose, Math.toRadians(preloadTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(95))
 
@@ -803,14 +803,14 @@ public class auto_uncontested_pole extends LinearOpMode {
 
             robot.arm.EXTENSION_POSITION_PICKUP = 0;
             robot.arm.EXTENSION_POSITION_PRELOAD = 0.4;  // it was 0.49; extending a little more to hit the pole
-            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.4; //0.64
+            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.45; //0.64
 
             ///////////////////////////////////////////
             //      MAKE ADJUSTMENTS ON POSES        //
             //           DURING TOURNAMENT           //
             ///////////////////////////////////////////
 
-            preloadDeltaX = 0;
+            preloadDeltaX = 2;
             preloadDeltaY = 0;
 
             pickupDeltaX = 0;
@@ -850,7 +850,7 @@ public class auto_uncontested_pole extends LinearOpMode {
 
             robot.arm.EXTENSION_POSITION_PICKUP = 0;
             robot.arm.EXTENSION_POSITION_PRELOAD = 0.40;
-            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.55;
+            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.40;
 
             ///////////////////////////////////////////
             //      MAKE ADJUSTMENTS ON POSES        //
@@ -891,7 +891,7 @@ public class auto_uncontested_pole extends LinearOpMode {
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose = new Pose2d(XFORM_X * 36, XFORM_Y * 63, Math.toRadians(startingHeading));
         preloadPose = new Pose2d(XFORM_X * (16 + preloadDeltaX), XFORM_Y * (11.5 + preloadDeltaY), Math.toRadians(preloadHeading));
-        depositPose = new Pose2d(XFORM_X * (2 + depositDeltaX), XFORM_Y * (11.5 + depositDeltaY), Math.toRadians(depositHeading));
+        depositPose = new Pose2d(XFORM_X * (2.5 + depositDeltaX), XFORM_Y * (11.5 + depositDeltaY), Math.toRadians(depositHeading));
         pickupPose = new Pose2d(XFORM_X * (54 + pickupDeltaX), XFORM_Y * (11.5 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose = new Pose2d(); // to be defined after reading the signal cone
 
@@ -1042,7 +1042,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                     // TODO: Check if this passed value is still good. Note that the EXTENSION_POSITION_HOME value was changed in ExtensionA class
                     robot.arm.extendHome();
                     robot.alignment.alignUp();
-                    robot.grabber.grabberOpen();
+                    robot.grabber.grabberClose();
                     robot.turret.moveTo(robot.turret.CENTER_POSITION_VALUE);
 
                     trajectoryPark = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate())

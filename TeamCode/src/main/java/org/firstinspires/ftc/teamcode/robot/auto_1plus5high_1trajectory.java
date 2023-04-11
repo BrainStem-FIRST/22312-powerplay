@@ -801,8 +801,8 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
             robot.turret.turret_DEPOSIT_POSITION_VALUE = 290;  //270 //hitting hard stop
 
             robot.arm.EXTENSION_POSITION_PICKUP = 0;
-            robot.arm.EXTENSION_POSITION_PRELOAD = 0.4;  // it was 0.49; extending a little more to hit the pole
-            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.4; //0.64
+            robot.arm.EXTENSION_POSITION_PRELOAD = 0.40;  // it was 0.49; extending a little more to hit the pole
+            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.40; //0.64
 
             ///////////////////////////////////////////
             //      MAKE ADJUSTMENTS ON POSES        //
@@ -836,7 +836,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
             pickupTangent = 0;
 
             depositHeading = 0;
-            depositTangent = 179;
+            depositTangent = 180;
 
             ///////////////////////////////////////////
             //  CHANGE ONLY IF ABSOLUTELY NECESSARY  //
@@ -849,7 +849,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
             robot.arm.EXTENSION_POSITION_PICKUP = 0;
             robot.arm.EXTENSION_POSITION_PRELOAD = 0.40;
-            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.55;
+            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.40;
 
             ///////////////////////////////////////////
             //      MAKE ADJUSTMENTS ON POSES        //
@@ -862,7 +862,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
             pickupDeltaX = 0;
             pickupDeltaY = 0;
 
-            depositDeltaX = 2;
+            depositDeltaX = 0;
             depositDeltaY = 0;
         }
 
@@ -1041,7 +1041,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     // TODO: Check if this passed value is still good. Note that the EXTENSION_POSITION_HOME value was changed in ExtensionA class
                     robot.arm.extendHome();
                     robot.alignment.alignUp();
-                    robot.grabber.grabberOpen();
+                    robot.grabber.grabberClose();
                     robot.turret.moveTo(robot.turret.CENTER_POSITION_VALUE);
 
                     trajectoryPark = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate())
@@ -1049,7 +1049,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                             .build();
                     robot.drive.followTrajectory(trajectoryPark); // This is synchronous trajectory; code does not advance until the trajectory is complete
 
-//                    robot.lift.raiseHeightTo(robot.lift.LIFT_POSITION_RESET);
+                    robot.lift.raiseHeightTo(robot.lift.LIFT_POSITION_RESET);
 
                     currentTrajectoryState = TrajectoryState.TRAJECTORY_IDLE;
 
