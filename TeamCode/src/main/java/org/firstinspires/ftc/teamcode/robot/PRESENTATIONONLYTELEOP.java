@@ -27,8 +27,12 @@ public class PRESENTATIONONLYTELEOP extends LinearOpMode {
     public void runOpMode() {
         Map<String, String> stateMap = new HashMap<String, String>() {{ }};
         BrainStemRobot robot = new BrainStemRobot(hardwareMap, telemetry, stateMap);
-//        robot.turret.resetEncoders();
-//        robot.lift.resetEncoders();
+        robot.turret.resetEncoders();
+        robot.lift.resetEncoders();
+
+        robot.lift.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.lift.liftMotor2.setMode((DcMotor.RunMode.RUN_TO_POSITION);
+
         waitForStart();
         while (opModeIsActive()) {
             if(gamepad1.dpad_right){
@@ -48,23 +52,33 @@ public class PRESENTATIONONLYTELEOP extends LinearOpMode {
                 robot.lift.liftMotor2.setTargetPosition(robot.lift.LIFT_POSITION_LOWPOLE);
                 robot.lift.liftMotor.setPower(1.0);
                 robot.lift.liftMotor2.setPower(1.0);
+
+                telemetry.addData("Target: ", robot.lift.LIFT_POSITION_LOWPOLE);
             }
             if(gamepad1.b){
                 robot.lift.liftMotor.setTargetPosition(robot.lift.LIFT_POSITION_MIDPOLE);
                 robot.lift.liftMotor2.setTargetPosition(robot.lift.LIFT_POSITION_MIDPOLE);
                 robot.lift.liftMotor.setPower(1.0);
                 robot.lift.liftMotor2.setPower(1.0);
+
+                telemetry.addData("Target: ", robot.lift.LIFT_POSITION_MIDPOLE);
             }
             if(gamepad1.y){
                 robot.lift.liftMotor.setTargetPosition(robot.lift.LIFT_POSITION_HIGHPOLE);
                 robot.lift.liftMotor2.setTargetPosition(robot.lift.LIFT_POSITION_HIGHPOLE);
                 robot.lift.liftMotor.setPower(1.0);
                 robot.lift.liftMotor2.setPower(1.0);
+
+                telemetry.addData("Target: ", robot.lift.LIFT_POSITION_HIGHPOLE);
             }
+            telemetry.addData("LiftMotor encoder:  ", robot.lift.liftMotor.getCurrentPosition());
+            telemetry.addData("LiftMotor2 encoder: ", robot.lift.liftMotor2.getCurrentPosition());
+            telemetry.update();
+
             if(gamepad1.right_trigger > 0.2){
                 robot.grabber.grabberClose();
             }
-            if(gamepad1.b){
+            if(gamepad1.x){ // it was gamepad1.b before which is reserved for lift position midpole; changed to .x
                 robot.arm.extendMax();
             }
             }
