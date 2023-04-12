@@ -33,9 +33,9 @@ public class Lift {
     // Empirical numbers are for holding the cone above the pole prior to coneCycle drop
     public int LIFT_POSITION_GROUND = 0;
     public final int GROUND_ORIGINAL_POSITION = 0;
-    public final int LIFT_POSITION_LOWPOLE = 420;
-    public final int LIFT_POSITION_MIDPOLE = 670;   //685;
-    public final int LIFT_POSITION_HIGHPOLE = 870;
+    public int LIFT_POSITION_LOWPOLE = 420;
+    public int LIFT_POSITION_MIDPOLE = 670;   //685;
+    public int LIFT_POSITION_HIGHPOLE = 880;
     public final int LIFT_POSITION_MOVING = 100;
 
     public final int LIFT_POSITION_CONE_5 = 200;
@@ -119,7 +119,6 @@ public class Lift {
         String level = (String) stateMap.get(LIFT_SYSTEM_NAME);
 
         stateMap.put(LIFT_CURRENT_STATE, currentState);
-
         updateConeCycleState();
 
         if (shouldLiftMove(level, currentState) ) {
