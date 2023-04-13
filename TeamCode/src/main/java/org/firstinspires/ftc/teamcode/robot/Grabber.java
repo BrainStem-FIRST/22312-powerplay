@@ -1,24 +1,13 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-
-import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.PwmControl;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -50,7 +39,7 @@ public class Grabber {
 
         grabber = (ServoImplEx) hwMap.servo.get("Grabber");
 
-        grabber.setPwmRange(new PwmControl.PwmRange(1200, 2000));
+        grabber.setPwmRange(new PwmControl.PwmRange(1200, 2100));
         //grabberOpen();
     }
 
@@ -94,12 +83,12 @@ public class Grabber {
     }
 
     public boolean shouldGrab(Lift lift) {
-        return lift.getPosition() < lift.LIFT_POSITION_MIDPOLE &&
+        return lift.getAvgPosition() < lift.LIFT_POSITION_MIDPOLE &&
                 ((String) stateMap.get(constants.CONE_CYCLE)).equalsIgnoreCase(constants.STATE_IN_PROGRESS);
     }
 
     public boolean shouldGrabberFullyClose(Lift lift){
-        return lift.getPosition() > 100;
+        return lift.getAvgPosition() > 100;
     }
 
     /************************* GRABBER UTILITIES **************************/
@@ -114,7 +103,7 @@ public class Grabber {
     }
 
     public static boolean shouldGrabberFullyOpen(Lift lift) {
-        if (lift.getPosition() > 300) {
+        if (lift.getAvgPosition() > 300) {
             return true;
         }
         return false;

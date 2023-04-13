@@ -86,18 +86,12 @@ public class BrainStemRobot {
 //        telemetry.addData("CYCLE_LIFT_DOWN:", stateMap.get(constants.CYCLE_LIFT_DOWN));
 //        telemetry.addData("CYCLE_GRABBER:", stateMap.get(constants.CYCLE_GRABBER));
 //        telemetry.addData("CYCLE_LIFT_UP:", stateMap.get(constants.CYCLE_LIFT_UP));
-
-
-        if (((String) stateMap.get(constants.CONE_CYCLE)).equalsIgnoreCase(constants.STATE_IN_PROGRESS)) {
-            ConeCycleVersion2();
-        } else {
             lift.setState();
             turret.setState((String) stateMap.get(turret.SYSTEM_NAME), lift, arm);
             arm.setState((String) stateMap.get(arm.SYSTEM_NAME));
             grabber.setState((String) stateMap.get(grabber.SYSTEM_NAME), lift);
             flippers.setState((String)stateMap.get(flippers.SYSTEM_NAME));
 
-        }
     }
 
 //    public void coneCycle() {

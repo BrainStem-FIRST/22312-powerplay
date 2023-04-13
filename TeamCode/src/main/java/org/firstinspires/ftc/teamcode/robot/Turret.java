@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import android.drm.DrmUtils;
-
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -66,7 +64,7 @@ public class Turret {
     }
 
     public boolean isLiftTooLow(Lift lift, Extension extension) {
-        boolean tooLow = lift.getPosition() < LIFT_MIN_HEIGHT_TO_MOVE_TURRET;
+        boolean tooLow = lift.getAvgPosition() < LIFT_MIN_HEIGHT_TO_MOVE_TURRET;
         return tooLow;
     }
 
