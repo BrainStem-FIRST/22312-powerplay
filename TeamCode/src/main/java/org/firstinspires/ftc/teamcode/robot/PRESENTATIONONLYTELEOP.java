@@ -31,7 +31,7 @@ public class PRESENTATIONONLYTELEOP extends LinearOpMode {
         robot.lift.resetEncoders();
 
         robot.lift.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.lift.liftMotor2.setMode((DcMotor.RunMode.RUN_TO_POSITION);
+        robot.lift.liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         waitForStart();
         while (opModeIsActive()) {

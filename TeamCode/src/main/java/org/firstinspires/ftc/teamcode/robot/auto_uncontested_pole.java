@@ -67,7 +67,7 @@ public class auto_uncontested_pole extends LinearOpMode {
     public static int PARKING_NUMBER = 3; // Controlled by the dashboard for test purposes
     public static double SPEED = 60.0;    // Controlled by the dashboard for test purposes
     private ElapsedTime autoTime = new ElapsedTime();
-    private double TIME_TO_PARK = 28.5;  //27
+    private double TIME_TO_PARK = 29;  //27
 
     // used for trajectory state machine
     enum    TrajectoryState {
@@ -181,7 +181,6 @@ public class auto_uncontested_pole extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
                     robot.alignment.alignUp();
                 })
-
                 // lower the lift after the turret repositioned and before the robot reached its target
                 // offset is relative to when robot reached its destination
                 .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
@@ -261,15 +260,15 @@ public class auto_uncontested_pole extends LinearOpMode {
                 })
 
                 // Drop Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.3, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 150);
                 })
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.4, ()-> {
                     robot.grabber.grabberOpen();
                 })
 
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
-                .UNSTABLE_addTemporalMarkerOffset(0.6, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
                     robot.arm.extendHome();
                 })
 
@@ -277,7 +276,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 // the start of the robot moving for the next pickup cycle.
 
                 // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
-                .waitSeconds(0.65)   // TODO: Fine tune this duration to adjust start of the robot's move
+                .waitSeconds(0.6)   // TODO: Fine tune this duration to adjust start of the robot's move
 
                 /********* PICKUP CYCLE 2 *********/
 
@@ -371,15 +370,15 @@ public class auto_uncontested_pole extends LinearOpMode {
                 })
 
                 // Drop Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.3, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 150);
                 })
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.4, ()-> {
                     robot.grabber.grabberOpen();
                 })
 
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
-                .UNSTABLE_addTemporalMarkerOffset(0.6, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
                     robot.arm.extendHome();
                 })
 
@@ -387,7 +386,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 // the start of the robot moving for the next pickup cycle.
 
                 // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
-                .waitSeconds(0.65)   // TODO: Fine tune this duration to adjust start of the robot's move
+                .waitSeconds(0.6)   // TODO: Fine tune this duration to adjust start of the robot's move
 
 
                 /********* PICKUP CYCLE 3 *********/
