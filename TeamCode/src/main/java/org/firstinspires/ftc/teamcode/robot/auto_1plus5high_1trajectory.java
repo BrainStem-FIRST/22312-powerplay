@@ -856,7 +856,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
             //           DURING TOURNAMENT           //
             ///////////////////////////////////////////
 
-            preloadDeltaX = 0;
+            preloadDeltaX = 2;
             preloadDeltaY = 0;
 
             pickupDeltaX = 0;
