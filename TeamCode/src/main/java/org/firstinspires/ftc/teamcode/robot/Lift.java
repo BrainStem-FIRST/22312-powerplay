@@ -293,6 +293,39 @@ public class Lift {
 
     }
 
+    public void raiseHeightToPID(int heightInTicks){
+        int position = getAvgPosition();
+        if (position < (heightInTicks - 200)) {
+            setRawPower(1.0);
+        } else if (position > (heightInTicks + 150)) {
+            setRawPower(-0.7);
+        } else if (heightInTicks == 0 && (position < heightInTicks + 15)) {
+            setRawPower(0.0);
+        }else if (position <= heightInTicks - 7 || position >= heightInTicks + 7) { // THIS IS THE RANGE THAT IT SITS IN WHEN ITS SET TO A PLACE TO GO
+            if (stateMap.get(LIFT_SYSTEM_NAME) == LIFT_POLE_GROUND &&
+                    heightInTicks > 0 &&
+                    position < 30) {
+                runAllMotorsToPosition(heightInTicks, 1);
+            } else if (heightInTicks > 300){
+                runAllMotorsToPosition(heightInTicks, 0.5);
+            } else {
+                runAllMotorsToPosition(heightInTicks, 0.3);
+            }
+        }  else {
+            setRawPower(0.15);
+        }
+    }
+
+    public void runAllMotorsToPosition(int heightInTicks, double power){
+        liftMotor.setTargetPosition(heightInTicks);
+        liftMotor2.setTargetPosition(heightInTicks);
+        liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        liftMotor.setTargetPositionTolerance(2);
+//        liftMotor2.setTargetPositionTolerance(2);
+        liftMotor.setPower(1.0);
+        liftMotor2.setPower(1.0);
+    }
     // Not used -> DELETE
     public  boolean isClear () {
         //true means turret can turn and lift is raised to minimum clearance; false is the opposite
