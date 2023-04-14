@@ -96,10 +96,10 @@ public class Lift {
         liftMotor = hwMap.get(DcMotorEx.class, "Lift");
         liftMotor2 = hwMap.get(DcMotorEx.class, "LiftMotor2");
 
-        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        liftMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        liftMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftMotor.setDirection(DcMotor.Direction.REVERSE);
 
@@ -137,8 +137,8 @@ public class Lift {
         } else {
             liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftMotor.setPower(0);
-            liftMotor2.setPower(0);
+            liftMotor.setPower(0.15);
+            liftMotor2.setPower(0.15);
             telemetry.addData("Lift Motor 1 Power", liftMotor.getPower());
             telemetry.addData("Lift Motor 2 Power", liftMotor2.getPower());
             telemetry.addData("Lift Motor 1 is busy", liftMotor.isBusy());

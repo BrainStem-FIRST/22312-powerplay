@@ -156,7 +156,7 @@ public class RobotTeleOp extends LinearOpMode {
               }
 
               if(extensionDelay){
-                  if(liftUp.seconds() > 0.3 && !CAP_MODE){
+                  if(liftUp.seconds() > 0.5 && !CAP_MODE){
                       toggleMap.put(GAMEPAD_1_B_STATE, true);
                   }
               }
@@ -214,23 +214,25 @@ public class RobotTeleOp extends LinearOpMode {
                   if(stateMap.get(robot.lift.LIFT_SYSTEM_NAME).equals(robot.lift.LIFT_POLE_GROUND)) {
                       telemetry.addLine("in the lift ground fine adjustment");
                       telemetry.update();
-                      robot.lift.LIFT_POSITION_GROUND += 50;
+                      robot.lift.LIFT_POSITION_GROUND += 1;
                   } else if(stateMap.get(robot.lift.LIFT_SYSTEM_NAME).equals(robot.lift.LIFT_POLE_LOW)){
                       telemetry.addLine("in the lift pole low fine adjustment");
                       telemetry.update();
-                      robot.lift.LIFT_POSITION_LOWPOLE += 50;
+                      robot.lift.LIFT_POSITION_LOWPOLE += 1;
                   } else if(stateMap.get(robot.lift.LIFT_SYSTEM_NAME).equals(robot.lift.LIFT_POLE_MEDIUM)){
                       telemetry.addLine("in the lift pole medium fine adjustment");
                       telemetry.update();
-                      robot.lift.LIFT_POSITION_MIDPOLE += 50;
+                      robot.lift.LIFT_POSITION_MIDPOLE += 1;
                   } else {
                       telemetry.addLine("in the lift pole high fine adjustment");
                       telemetry.update();
-                      robot.lift.LIFT_POSITION_HIGHPOLE += 50;
+                      robot.lift.LIFT_POSITION_HIGHPOLE += 1;
                   }
               }
               if (stateMap.get(robot.lift.LIFT_SYSTEM_NAME) != robot.lift.LIFT_POLE_GROUND) {
                   if (gamepad1.right_trigger > 0.05 && gamepad1.right_trigger < 0.9) {
+                      robot.lift.liftMotor.setPower(0);
+                      robot.lift.liftMotor2.setPower(0);
                       robot.lift.setAdjustmentHeight(gamepad1.right_trigger);
               } else if (gamepad1.right_trigger >= 0.9) {
                       elapsedTime.reset();
@@ -257,7 +259,7 @@ public class RobotTeleOp extends LinearOpMode {
 //          telemetry.addData("grabberCycleInProgress", grabberCycleInProgress);
 
               if (grabberCycleInProgress) {
-                  if(grabberCycleTime.seconds() >= 5 && grabberCycleTime.milliseconds() <= 6){
+                  if(grabberCycleTime.milliseconds() >= 150 && grabberCycleTime.milliseconds() <= 350){
                       robot.lift.setRawPower(1.0);
                       telemetry.addData("Giving jump", true);
                   }
@@ -272,7 +274,7 @@ public class RobotTeleOp extends LinearOpMode {
 
               if(grabberyCapCycleInProgress){
                   if(grabberCapCycleTime.milliseconds() > 200){
-                      robot.lift.liftPickup = 60;
+                      robot.lift.liftPickup = 30;
                       grabberyCapCycleInProgress = false;
                   }
               }
@@ -326,7 +328,7 @@ public class RobotTeleOp extends LinearOpMode {
 //              }
 
               if (stateMap.get(DRIVE_MODE).equals(MANUAL_DRIVE_MODE)) {
-                  if(robot.lift.liftMotor.getCurrentPosition() > 420){
+                  if(!stateMap.get(robot.lift.LIFT_SYSTEM_NAME).equals(robot.lift.LIFT_POLE_GROUND)){
                       drive.setWeightedDrivePower(
                               new Pose2d(
                                       (TRANSLATIONAL_SLOWMODE_SPEED * -gamepad1.left_stick_y),
