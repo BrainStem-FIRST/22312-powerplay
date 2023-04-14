@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
  */
 @Config
 @Autonomous(group = "drive")
-//@Disabled
+@Disabled
 public class StraightTest extends LinearOpMode {
     public static double DISTANCE = 72; // in
 
