@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import static java.lang.Thread.currentThread;
-import static java.lang.Thread.sleep;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -26,9 +23,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Config
-@Autonomous(name="Robot: Auto Uncontested Pole", group="Robot")
+@Autonomous(name="Robot: Auto Uncontested BETA", group="Robot")
 
-public class auto_uncontested_pole extends LinearOpMode {
+public class auto_uncontested_BETA extends LinearOpMode {
     //camera
     public OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -192,6 +189,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(75))
+                .forward(5, SampleMecanumDrive.getVelocityConstraint(40,Math.toRadians(180),13.59),SampleMecanumDrive.getAccelerationConstraint(75))
 
 
                 // Reach arm to touch the cone after the robot stopped
@@ -213,7 +211,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 })
 
                 // This is the duration the robot waits at the pickup station (while its subsystems are picking the cone up)
-                .waitSeconds(0.25)
+                .waitSeconds(0.2)
 
                 /********** DEPOSIT CYCLE 1 ***********/
 
@@ -301,6 +299,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(75))
+                .forward(5, SampleMecanumDrive.getVelocityConstraint(40,Math.toRadians(180),13.59),SampleMecanumDrive.getAccelerationConstraint(75))
 
 
                 // Reach arm to touch the cone after the robot stopped
@@ -413,6 +412,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(75))
+                .forward(5, SampleMecanumDrive.getVelocityConstraint(40,Math.toRadians(180),13.59),SampleMecanumDrive.getAccelerationConstraint(75))
 
 
                 // Reach arm to touch the cone after the robot stopped
@@ -498,7 +498,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 // the start of the robot moving for the next pickup cycle.
 
                 // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
-                .waitSeconds(0.65)   // TODO: Fine tune this duration to adjust start of the robot's move
+                .waitSeconds(0.6)   // TODO: Fine tune this duration to adjust start of the robot's move
 
 
                 /********* PICKUP CYCLE 4 *********/
@@ -524,6 +524,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(75))
+                .forward(5, SampleMecanumDrive.getVelocityConstraint(40,Math.toRadians(180),13.59),SampleMecanumDrive.getAccelerationConstraint(75))
 
 
                 // Reach arm to touch the cone after the robot stopped
@@ -609,7 +610,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 // the start of the robot moving for the next pickup cycle.
 
                 // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
-                .waitSeconds(0.65)   // TODO: Fine tune this duration to adjust start of the robot's move
+                .waitSeconds(0.6)   // TODO: Fine tune this duration to adjust start of the robot's move
 
 
                 /********* PICKUP CYCLE 5 *********/
@@ -635,6 +636,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(75))
+                .forward(5, SampleMecanumDrive.getVelocityConstraint(40,Math.toRadians(180),13.59),SampleMecanumDrive.getAccelerationConstraint(75))
 
                 // Reach arm to touch the cone after the robot stopped
                 .UNSTABLE_addTemporalMarkerOffset(-0.2,()-> {
@@ -719,7 +721,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 // the start of the robot moving for the next pickup cycle.
 
                 // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
-                .waitSeconds(0.65)   // TODO: Fine tune this duration to adjust start of the robot's move
+                .waitSeconds(0.6)   // TODO: Fine tune this duration to adjust start of the robot's move
 
 
                 .build();
@@ -782,13 +784,13 @@ public class auto_uncontested_pole extends LinearOpMode {
             startingHeading = -90;
             startingTangent = 90;
 
-            preloadHeading = 180;   //matching 1trajectory's values. Previously was 185;
+            preloadHeading = 180;
             preloadTangent = 0;
 
             pickupHeading = 180;
-            pickupTangent = 180;    //matching 1trajectory's values. Previously was 179;
+            pickupTangent = 180;
 
-            depositHeading = 180;
+            depositHeading = 225;   // TODO: For BETA: Robot is angled 45deg so that the turret can reach uncontested high pole
             depositTangent = 0;
 
             ///////////////////////////////////////////
@@ -809,15 +811,15 @@ public class auto_uncontested_pole extends LinearOpMode {
             //           DURING TOURNAMENT           //
             ///////////////////////////////////////////
 
-            preloadDeltaX = 0;  // matching 1trajectory's values. Previously was 2;
+            preloadDeltaX = 0;
             preloadDeltaY = 0;
 
-            pickupDeltaX = -1;  // matching 1trajectory's values. Previously was 0;
+            pickupDeltaX = -1;
             pickupDeltaY = 0;
 
             depositDeltaX = 0;
             depositDeltaY = 0;
-        } else {                  // RIGHT TODO: adjust for different quadrant
+        } else {                  // RIGHT
 
             ///////////////////////////////////////////
             //             DO NOT CHANGE             //
@@ -835,8 +837,8 @@ public class auto_uncontested_pole extends LinearOpMode {
             pickupHeading = 0;
             pickupTangent = 0;
 
-            depositHeading = 0;
-            depositTangent = 179;
+            depositHeading = -45;   // TODO: For BETA: Robot is angled 45deg so that the turret can reach uncontested high pole
+            depositTangent = 180;
 
             ///////////////////////////////////////////
             //  CHANGE ONLY IF ABSOLUTELY NECESSARY  //
@@ -856,7 +858,7 @@ public class auto_uncontested_pole extends LinearOpMode {
             //           DURING TOURNAMENT           //
             ///////////////////////////////////////////
 
-            preloadDeltaX = 2;  // matching 1trajectory's values. Previously was 0;
+            preloadDeltaX = 2;
             preloadDeltaY = 0;
 
             pickupDeltaX = 0;
@@ -890,8 +892,12 @@ public class auto_uncontested_pole extends LinearOpMode {
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose = new Pose2d(XFORM_X * 36, XFORM_Y * 63, Math.toRadians(startingHeading));
         preloadPose = new Pose2d(XFORM_X * (16 + preloadDeltaX), XFORM_Y * (11.5 + preloadDeltaY), Math.toRadians(preloadHeading));
-        depositPose = new Pose2d(XFORM_X * (2.5 + depositDeltaX), XFORM_Y * (11.5 + depositDeltaY), Math.toRadians(depositHeading));
-        pickupPose = new Pose2d(XFORM_X * (54 + pickupDeltaX), XFORM_Y * (11.5 + pickupDeltaY), Math.toRadians(pickupHeading));
+
+        // TODO: For BETA: Deposit position is middle of tile before uncontested high pole with robot angled 45deg.
+        depositPose = new Pose2d(XFORM_X * (12 + depositDeltaX), XFORM_Y * (11.5 + depositDeltaY), Math.toRadians(depositHeading));
+
+        // TODO: For BETA: Pickup stop position reduced by 5in which was transferred to .forward() function with reduced speed.
+        pickupPose = new Pose2d(XFORM_X * (54-5 + pickupDeltaX), XFORM_Y * (11.5 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose = new Pose2d(); // to be defined after reading the signal cone
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory

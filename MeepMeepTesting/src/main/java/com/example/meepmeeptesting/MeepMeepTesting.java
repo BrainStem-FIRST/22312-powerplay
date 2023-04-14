@@ -44,13 +44,13 @@ public class MeepMeepTesting {
         pickupHeading = 180;
         pickupTangent = 180;    //180;
 
-        depositHeading = 180;
+        depositHeading = 225;
         depositTangent = 0;
 
         preloadDeltaX = 0;
         preloadDeltaY = 0;
 
-        pickupDeltaX = 1;   //0;
+        pickupDeltaX = 0;   //0;
         pickupDeltaY = 0;
 
         depositDeltaX = 0;
@@ -59,8 +59,8 @@ public class MeepMeepTesting {
         // Poses
         startingPose = new Pose2d(XFORM_X * 36, XFORM_Y * 63, Math.toRadians(startingHeading));
         preloadPose = new Pose2d(XFORM_X * (16 + preloadDeltaX), XFORM_Y * (11.5 + preloadDeltaY), Math.toRadians(preloadHeading));
-        depositPose = new Pose2d(XFORM_X * (26 + depositDeltaX), XFORM_Y * (11.5 + depositDeltaY), Math.toRadians(depositHeading));
-        pickupPose = new Pose2d(XFORM_X * (54 + pickupDeltaX), XFORM_Y * (11.5 + pickupDeltaY), Math.toRadians(pickupHeading));
+        depositPose = new Pose2d(XFORM_X * (11.5 + depositDeltaX), XFORM_Y * (11.5 + depositDeltaY), Math.toRadians(depositHeading));
+        pickupPose = new Pose2d(XFORM_X * (54-5 + pickupDeltaX), XFORM_Y * (11.5 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 
 
@@ -73,44 +73,79 @@ public class MeepMeepTesting {
 
                                 // Preload
                                 .setTangent(Math.toRadians(startingTangent))
-
-                                // 2.55 sec to reach destination
                                 .splineToSplineHeading(preloadPose, Math.toRadians(preloadTangent))
 
                                 .waitSeconds(2)
 
                                 // Pickup 1
                                 .setTangent(Math.toRadians(pickupTangent))
-
-                                // Move to the cone stack head first, stop at arm's reach
                                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent))
+                                .forward(5)
 
-                                .waitSeconds(2)
+                                .waitSeconds(1)
 
                                 // Deposit 1
                                 .setTangent(Math.toRadians(depositTangent))
                                 .splineToSplineHeading(depositPose, Math.toRadians(depositTangent))
 
-                                .waitSeconds(2)
+                                .waitSeconds(1)
 
                                 // Pickup 2
                                 .setTangent(Math.toRadians(pickupTangent))
-
-                                // Move to the cone stack head first, stop at arm's reach
                                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent))
+                                .forward(5)
 
-                                .waitSeconds(2)
+                                .waitSeconds(1)
 
                                 // Deposit 2
                                 .setTangent(Math.toRadians(depositTangent))
                                 .splineToSplineHeading(depositPose, Math.toRadians(depositTangent))
 
-                                .waitSeconds(2)
+                                .waitSeconds(1)
+
+                                // Pickup 3
+                                .setTangent(Math.toRadians(pickupTangent))
+                                .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent))
+                                .forward(5)
+
+                                .waitSeconds(1)
+
+                                // Deposit 3
+                                .setTangent(Math.toRadians(depositTangent))
+                                .splineToSplineHeading(depositPose, Math.toRadians(depositTangent))
+
+                                .waitSeconds(1)
+
+                                // Pickup 4
+                                .setTangent(Math.toRadians(pickupTangent))
+                                .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent))
+                                .forward(5)
+
+                                .waitSeconds(1)
+
+                                // Deposit 4
+                                .setTangent(Math.toRadians(depositTangent))
+                                .splineToSplineHeading(depositPose, Math.toRadians(depositTangent))
+
+                                .waitSeconds(1)
+
+                                // Pickup 5
+                                .setTangent(Math.toRadians(pickupTangent))
+                                .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent))
+                                .forward(5)
+
+                                .waitSeconds(1)
+
+                                // Deposit 5
+                                .setTangent(Math.toRadians(depositTangent))
+                                .splineToSplineHeading(depositPose, Math.toRadians(depositTangent))
+
+                                .waitSeconds(1)
 
                                 .build()
                 );
 
-        meepMeep.setBackground(MeepMeep.Background.FIELD_POWERPLAY_OFFICIAL)
+        meepMeep.setBackground(MeepMeep.Background.FIELD_POWERPLAY_KAI_LIGHT) //.FIELD_POWERPLAY_OFFICIAL)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 .addEntity(myBot)
