@@ -135,10 +135,10 @@ public class Lift {
             telemetry.addLine("In lift should move true");
 
         } else {
-            liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftMotor.setPower(0.15);
-            liftMotor2.setPower(0.15);
+//            liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//            liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//            liftMotor.setPower(0.15);
+//            liftMotor2.setPower(0.15);
             telemetry.addData("Lift Motor 1 Power", liftMotor.getPower());
             telemetry.addData("Lift Motor 2 Power", liftMotor2.getPower());
             telemetry.addData("Lift Motor 1 is busy", liftMotor.isBusy());
@@ -148,7 +148,7 @@ public class Lift {
     }
 
     public void setAdjustmentHeight(double driverInput) {
-        adjustmentHeight = (int) (250 * driverInput);
+        adjustmentHeight = (int) (400 * driverInput);
     }
 
     private boolean shouldLiftMove(String level, String currentState) {
@@ -198,7 +198,49 @@ public class Lift {
     private boolean isCycleInProgress(String cycleName) {
         return ((String)stateMap.get(cycleName)).equalsIgnoreCase(constants.STATE_IN_PROGRESS);
     }
+    public void raiseHeightPID(int heightInTicks){
+        int position = getAvgPosition();
+        if (position < (heightInTicks - 200)) {
+            setRawPower(1.0);
+        } else if (position > (heightInTicks + 150)) {
+            setRawPower(-0.7);
+        } else if (heightInTicks == 0 && (position < heightInTicks + 15)) {
+            setRawPower(0.0);
+        }else if (position <= heightInTicks - HEIGHT_TOLERANCE || position >= heightInTicks + HEIGHT_TOLERANCE) { // THIS IS THE RANGE THAT IT SITS IN WHEN ITS SET TO A PLACE TO GO
+//            if (stateMap.get(LIFT_SYSTEM_NAME) == LIFT_POLE_GROUND &&  heightInTicks > 0 && position < 30) {
+//                runAllMotorsToPosition(heightInTicks, 1);
+//            } else {
+//                runAllMotorsToPosition(heightInTicks, 0.6);
+//            }
+            if(stateMap.get(LIFT_SYSTEM_NAME).equals(LIFT_POLE_GROUND)){
+                if(position >= 300){
+                    runAllMotorsToPosition(heightInTicks, 1.0);
+                } else if(position < 300 && position >= 150) {
+                    runAllMotorsToPosition(heightInTicks, 0.5);
+                }
+            } else {
+                if(position >= 300 && position <= heightInTicks - 20){
+                    runAllMotorsToPosition(heightInTicks, 1.0);
+                } else if(position > heightInTicks - 20 && position <= heightInTicks -5){
+                    runAllMotorsToPosition(heightInTicks, 0.7);
+                }
+            }
+        }  else {
+            setRawPower(0.15);
+        }
+    }
 
+    public void runAllMotorsToPosition(int ticks, double power){
+        //raising heights to reach different junctions, so four values
+        liftMotor.setTargetPosition(ticks);
+        liftMotor2.setTargetPosition(ticks);
+        liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        liftMotor.setTargetPositionTolerance(2);
+//        liftMotor2.setTargetPositionTolerance(2);
+        liftMotor.setPower(power);
+        liftMotor2.setPower(power);
+    }
     private boolean isSubheightPlacement(){
         return ((String)stateMap.get(LIFT_SUBHEIGHT)).equalsIgnoreCase(PLACEMENT_HEIGHT);
     }
@@ -250,7 +292,7 @@ public class Lift {
     }
     private void transitionToLiftPosition(int ticks){
         telemetry.addData("target heights", ticks);
-        raiseHeightTo(ticks);
+        raiseHeightPID(ticks);
     }
 
     public String getCurrentState(String subheight) {

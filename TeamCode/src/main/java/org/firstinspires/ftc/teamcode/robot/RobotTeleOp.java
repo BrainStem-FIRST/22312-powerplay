@@ -43,7 +43,7 @@ public class RobotTeleOp extends LinearOpMode {
     private final String AUTO_DRIVE_MODE = "AUTO";
     private final String DRIVE_MODE = "DRIVE_MODE";
     private final int checkTicks = 10;
-    private final double extensionAddition = 0.02;
+    private final double extensionAddition = 0.035;
 
     private int CONE_COUNT = 1;
     public boolean extensionDelay = false;
@@ -53,8 +53,8 @@ public class RobotTeleOp extends LinearOpMode {
     private boolean leftTriggerPressed = false;
     private boolean retractionInProgress = false;
     private final double TRANSLATIONAL_SLOWMODE_SPEED  = 0.35;
-    private final double TURNING_SLOW_MODE = 0.25;
-    private double REGULAR_TURNING_SPEED = 0.5;
+    private final double TURNING_SLOW_MODE = 0.4;
+    private double REGULAR_TURNING_SPEED = 0.7;
     private boolean CAP_MODE = false;
 
     Constants constants = new Constants();
