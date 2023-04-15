@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import android.util.Log;
+
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,8 +11,8 @@ import java.util.Map;
 
 public class Lift {
     private Telemetry telemetry;
-    public DcMotor liftMotor;
-    public DcMotor liftMotor2;
+    public DcMotorEx liftMotor;
+    public DcMotorEx liftMotor2;
     static final double MM_TO_INCHES = 0.0393700787;
 
     static final double COUNTS_PER_MOTOR_REV = 28;     // ticks at the motor shaft
@@ -31,11 +33,17 @@ public class Lift {
     public final int LIFT_ADJUSTMENT = -70;
 
     // Empirical numbers are for holding the cone above the pole prior to coneCycle drop
-    public final int LIFT_POSITION_GROUND = 0;
-    public final int LIFT_POSITION_LOWPOLE = 450;
-    public final int LIFT_POSITION_MIDPOLE = 700;   //685;
-    public final int LIFT_POSITION_HIGHPOLE = 960;
+    public int LIFT_POSITION_GROUND = 0;
+    public final int GROUND_ORIGINAL_POSITION = 0;
+    public int LIFT_POSITION_LOWPOLE = 420;
+    public int LIFT_POSITION_MIDPOLE = 640;   //685;
+    public int LIFT_POSITION_HIGHPOLE = 850;
     public final int LIFT_POSITION_MOVING = 100;
+
+    public final int LIFT_POSITION_CONE_5 = 200;
+    public final int LIFT_POSITION_CONE_4 = 155;
+    public final int LIFT_POSITION_CONE_3 = 100;
+    public final int LIFT_POSITION_CONE_2 = 60;
 
     // Lift pick up position is only 4 cone bases higher than the starting position,
     // which is reset to 0 ticks at the start of Auto when lift is positioned on top of a single cone
@@ -61,6 +69,10 @@ public class Lift {
     public final String LIFT_SUBHEIGHT = "SUB_HEIGHT";
     public final String LIFT_CHECK_STATE = "LIFT_CHECK";
     public final String LIFT_UP_MOVING_STATE = "LIFT_UP_MOVING_STATE";
+    public final String LIFT_CONE_5_STATE = "LIFT_CONE_5_STATE";
+    public final String LIFT_CONE_4_STATE = "LIFT_CONE_4_STATE";
+    public final String LIFT_CONE_3_STATE = "LIFT_CONE_3_STATE";
+    public final String LIFT_CONE_2_STATE = "LIFT_CONE_2_STATE";
 
     // Used in Auto to determine the lift's position high enough to unstack the cones during pickup
     public final String LIFT_POSITION_CLEAR = "LIFT_CLEAR_HEIGHT";
@@ -70,63 +82,88 @@ public class Lift {
 
     public final String TRANSITION_STATE = "TRANSITION";
     public final int DELIVERY_ADJUSTMENT = -3;
-    public final int HEIGHT_TOLERANCE = 10;
+    public final int HEIGHT_TOLERANCE = 5;
     public final int CYCLE_TOLERANCE = 5;
     public final String LIFT_CURRENT_STATE = "LIFT CURRENT STATE";
 
     public static double currentLiftHeight;
     private Map stateMap;
     private int adjustmentHeight;
+    public int liftPickup;
 
 
     public Lift(HardwareMap hwMap, Telemetry telemetry, Map stateMap) {
         this.telemetry = telemetry;
         this.stateMap = stateMap;
-        liftMotor = hwMap.dcMotor.get("Lift");
-        liftMotor2 = hwMap.dcMotor.get("LiftMotor2");
+        liftMotor = hwMap.get(DcMotorEx.class, "Lift");
+        liftMotor2 = hwMap.get(DcMotorEx.class, "LiftMotor2");
 
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         liftMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        liftMotor2.setDirection(DcMotor.Direction.REVERSE);
+        liftMotor.setDirection(DcMotor.Direction.REVERSE);
+
     }
 
     public boolean isCollectionHeight() {
-        return getPosition() < (LIFT_POSITION_GROUND + CYCLE_TOLERANCE);
+        return getAvgPosition() < (LIFT_POSITION_GROUND + CYCLE_TOLERANCE);
     }
 
-    public int getPosition() {
-        return liftMotor.getCurrentPosition();
+    public int getAvgPosition() {
+        telemetry.addData("Lift motor average", (liftMotor.getCurrentPosition() + liftMotor2.getCurrentPosition()) / 2 );
+        return (liftMotor.getCurrentPosition() + liftMotor2.getCurrentPosition()) / 2;
     }
 
     public void setState() {
         String subheight = (String) stateMap.get(LIFT_SUBHEIGHT);
+        telemetry.addData("Subheight in lift class", subheight);
         String currentState = getCurrentState(subheight);
+
+        telemetry.addData("Current state", currentState);
+
         String level = (String) stateMap.get(LIFT_SYSTEM_NAME);
-
+        telemetry.addData("Desired Level", level);
         stateMap.put(LIFT_CURRENT_STATE, currentState);
-
-        updateConeCycleState();
-
-        if (shouldLiftMove(level, currentState) ) {
+        telemetry.addData("stateMap call to lift current state", stateMap.get(LIFT_CURRENT_STATE));
+        telemetry.addData("shouldLifMove", shouldLiftMove(level,currentState));
+        if(shouldLiftMove(level, currentState)) {
             selectTransition(level, subheight, currentState);
+            telemetry.addData("Lift Motor 1 Power", liftMotor.getPower());
+            telemetry.addData("Lift Motor 2 Power", liftMotor2.getPower());
+            telemetry.addData("Lift Motor 1 is busy", liftMotor.isBusy());
+            telemetry.addData("Lift Motor 2 is busy", liftMotor2.isBusy());
+            telemetry.addLine("In lift should move true");
+
         } else {
-            liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftMotor.setPower(0);
-            liftMotor2.setPower(0);
+            if(stateMap.get(LIFT_SYSTEM_NAME).equals(LIFT_POLE_GROUND)){
+                liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                liftMotor.setPower(0);
+                liftMotor2.setPower(0);
+            } else{
+                liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                liftMotor.setPower(0.15);
+                liftMotor2.setPower(0.15);
+            }
+            telemetry.addData("Lift Motor 1 Power", liftMotor.getPower());
+            telemetry.addData("Lift Motor 2 Power", liftMotor2.getPower());
+            telemetry.addData("Lift Motor 1 is busy", liftMotor.isBusy());
+            telemetry.addData("Lift Motor 2 is busy", liftMotor2.isBusy());
+            telemetry.addLine("In lift should move else");
         }
     }
 
     public void setAdjustmentHeight(double driverInput) {
-        adjustmentHeight = (int) (250 * driverInput);
+        adjustmentHeight = (int) (600 * driverInput);
+        telemetry.addData("adjustment height", adjustmentHeight);
+        telemetry.addData("high pole ticks", LIFT_POSITION_HIGHPOLE);
     }
 
     private boolean shouldLiftMove(String level, String currentState) {
-        return (((String)stateMap.get(constants.CYCLE_LIFT_UP)).equalsIgnoreCase(constants.STATE_IN_PROGRESS) ||
-                !level.equalsIgnoreCase(currentState));
+        return (!level.equalsIgnoreCase(currentState));
     }
 
     private void updateConeCycleState() {
@@ -142,11 +179,18 @@ public class Lift {
 //        } else if (isCycleInProgress(constants.CYCLE_LIFT_DOWN) && coneCycleStepTimeExpired(constants.GRABBER_CYCLE_TIME + constants.LIFT_DOWN_CYCLE_TIME)) {
 //            stateMap.put(constants.CYCLE_LIFT_DOWN, constants.STATE_COMPLETE);
 //        }
-        if(isCycleInProgress(constants.CYCLE_LIFT_UP) && inHeightTolerance(getPosition(), position) ){
+        if(isCycleInProgress(constants.CYCLE_LIFT_UP) && inHeightTolerance(getAvgPosition(), position) ){
             stateMap.put(constants.CYCLE_LIFT_UP, constants.STATE_COMPLETE);
         } else if(isCycleInProgress(constants.CYCLE_LIFT_UP) && !stateMap.get(LIFT_SYSTEM_NAME).equals(LIFT_UP_MOVING_STATE)){
             stateMap.put(LIFT_SYSTEM_NAME, LIFT_UP_MOVING_STATE);
         }
+    }
+
+    public void setRawPower(double power) {
+        liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftMotor2.setPower(power);
+        liftMotor.setPower(power);
     }
 
     private long coneCycleStartTime() {
@@ -165,7 +209,73 @@ public class Lift {
     private boolean isCycleInProgress(String cycleName) {
         return ((String)stateMap.get(cycleName)).equalsIgnoreCase(constants.STATE_IN_PROGRESS);
     }
+    public void raiseHeightPID(int heightInTicks){
+        int position = getAvgPosition();
+//        if (position < (heightInTicks - 200)) {
+//            setRawPower(1.0);
+//        } else if (position > (heightInTicks + 150)) {
+//            setRawPower(-0.7);
+//        } else if (heightInTicks == 0 && (position < heightInTicks + 15)) {
+//            setRawPower(0.0);
+//        }else if (position <= heightInTicks - HEIGHT_TOLERANCE || position >= heightInTicks + HEIGHT_TOLERANCE) { // THIS IS THE RANGE THAT IT SITS IN WHEN ITS SET TO A PLACE TO GO
+////            if (stateMap.get(LIFT_SYSTEM_NAME) == LIFT_POLE_GROUND &&  heightInTicks > 0 && position < 30) {
+////                runAllMotorsToPosition(heightInTicks, 1);
+////            } else {
+////                runAllMotorsToPosition(heightInTicks, 0.6);
+////            }
+//            if(stateMap.get(LIFT_SYSTEM_NAME).equals(LIFT_POLE_GROUND)){
+//                if(position >= 300){
+//                    runAllMotorsToPosition(heightInTicks, 1.0);
+//                } else if(position < 300 && position >= 150) {
+//                    runAllMotorsToPosition(heightInTicks, 0.5);
+//                }
+//            } else {
+//                if(position >= 300 && position <= heightInTicks - 20){
+//                    runAllMotorsToPosition(heightInTicks, 1.0);
+//                    Log.d("BrainSTEM 22312 RC ", "raiseHeightPID: ");
+//                } else if(position > heightInTicks - 20 && position <= heightInTicks - 10){
+//                    runAllMotorsToPosition(heightInTicks, 0.85);
+//                    telemetry.addLine("0.85 power");
+//                } else {
+//                    runAllMotorsToPosition(heightInTicks, 0.15);
+//                }
+//            }
+//        }  else {
+//            setRawPower(0.15);
+//            Log.d("BRAINSTEM 22312 RC", "" + liftMotor.getPower());
+//        }
+        if (position < (heightInTicks - 200)) {
+            setRawPower(1.0);
+        } else if (position > (heightInTicks + 150)) {
+            setRawPower(-0.7);
+        } else if (heightInTicks == 0 && (position < heightInTicks + 15)) {
+            setRawPower(0.0);
+        }else if (position <= heightInTicks - 7 || position >= heightInTicks + 7) { // THIS IS THE RANGE THAT IT SITS IN WHEN ITS SET TO A PLACE TO GO
+            if (stateMap.get(LIFT_SYSTEM_NAME) == LIFT_POLE_GROUND &&
+                    heightInTicks > 0 &&
+                    position < 30) {
+                runAllMotorsToPosition(heightInTicks, 1);
+            } else if (heightInTicks > 300){
+                runAllMotorsToPosition(heightInTicks, 0.5);
+            } else {
+                runAllMotorsToPosition(heightInTicks, 0.3);
+            }
+        }  else {
+            setRawPower(0.15);
+        }
+    }
 
+    public void runAllMotorsToPosition(int ticks, double power){
+        //raising heights to reach different junctions, so four values
+        liftMotor.setTargetPosition(ticks);
+        liftMotor2.setTargetPosition(ticks);
+        liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        liftMotor.setTargetPositionTolerance(2);
+//        liftMotor2.setTargetPositionTolerance(2);
+        liftMotor.setPower(power);
+        liftMotor2.setPower(power);
+    }
     private boolean isSubheightPlacement(){
         return ((String)stateMap.get(LIFT_SUBHEIGHT)).equalsIgnoreCase(PLACEMENT_HEIGHT);
     }
@@ -185,35 +295,18 @@ public class Lift {
                 break;
             }
             case LIFT_POLE_GROUND:{
-                position = LIFT_POSITION_GROUND;
-                break;
-            }
-            case LIFT_POSITION_CLEAR:{
-                position = LIFT_CLEAR_HEIGHT;
-                break;
-            }
-            case LIFT_PICKUP:{
-                // accounts for stacked cone height
-                position = liftPositionPickup;
-                break;
-            }
-            case LIFT_UP_MOVING_STATE:{
-                position = LIFT_POSITION_MOVING;
+                position = LIFT_POSITION_GROUND + liftPickup;
                 break;
             }
         }
         // this function can return position 0 if lift is in transition between heights (as reported by getCurrentState() function)
-//        telemetry.addData("Lift State Position =", position);
+        telemetry.addData("Lift State Position =", position);
         return position;
     }
 
 
     private void selectTransition(String desiredLevel, String subheight, String currentState){
         switch(desiredLevel){
-            case LIFT_PICKUP:{
-                transitionToLiftPosition(liftPositionPickup + deliveryHeight(subheight));
-                break;
-            }
             case LIFT_POLE_LOW:{
                 transitionToLiftPosition(LIFT_POSITION_LOWPOLE - adjustmentHeight);
                 break;
@@ -227,48 +320,30 @@ public class Lift {
                 break;
             }
             case LIFT_POLE_GROUND:{
-                transitionToLiftPosition(LIFT_POSITION_GROUND + deliveryHeight(subheight));
-                break;
-            }
-            case LIFT_POSITION_CLEAR:{
-                transitionToLiftPosition(LIFT_CLEAR_HEIGHT);
-                break;
-            }
-            case LIFT_CHECK_STATE:{
-                checkLift();
-                break;
-            }
-            case LIFT_UP_MOVING_STATE:{
-                transitionToLiftPosition(LIFT_POSITION_MOVING);
+                transitionToLiftPosition(LIFT_POSITION_GROUND + liftPickup);
                 break;
             }
         }
-
     }
     private void transitionToLiftPosition(int ticks){
-        raiseHeightTo(ticks);
+        telemetry.addData("target heights", ticks);
+        raiseHeightPID(ticks);
     }
 
     public String getCurrentState(String subheight) {
         String state = TRANSITION_STATE;
-        double currentPosition = getPosition();
+        double currentPosition = getAvgPosition();
         telemetry.addData("currentPosition", currentPosition);
         telemetry.addData("liftPositionPickup", liftPositionPickup);
-        telemetry.addData("deliveryHeight(subheight)", deliveryHeight(subheight));
-        if(inHeightTolerance(currentPosition, LIFT_POSITION_GROUND + deliveryHeight(subheight))){
+//        telemetry.addData("deliveryHeight(subheight)", deliveryHeight(subheight));
+        if(inHeightTolerance(currentPosition, LIFT_POSITION_GROUND + liftPickup)){
             state = LIFT_POLE_GROUND;
-        } else if (inHeightTolerance(currentPosition, LIFT_POSITION_LOWPOLE + deliveryHeight(subheight))) {
+        } else if (inHeightTolerance(currentPosition, LIFT_POSITION_LOWPOLE)) {
             state = LIFT_POLE_LOW;
-        } else if (inHeightTolerance(currentPosition, LIFT_POSITION_MIDPOLE + deliveryHeight(subheight))) {
+        } else if (inHeightTolerance(currentPosition, LIFT_POSITION_MIDPOLE)) {
             state = LIFT_POLE_MEDIUM;
-        } else if (inHeightTolerance(currentPosition, LIFT_POSITION_HIGHPOLE + deliveryHeight(subheight))) {
+        } else if (inHeightTolerance(currentPosition, LIFT_POSITION_HIGHPOLE)) {
             state = LIFT_POLE_HIGH;
-        } else if (inHeightTolerance(currentPosition, LIFT_CLEAR_HEIGHT)) {
-            state = LIFT_POSITION_CLEAR;
-        } else if (inHeightTolerance(currentPosition, liftPositionPickup + deliveryHeight(subheight))) {
-            state = LIFT_PICKUP; //accounted for pickup
-        } else if(inHeightTolerance(currentPosition, LIFT_POSITION_MOVING)){
-            state = LIFT_UP_MOVING_STATE;
         }
         return state;
     }
@@ -288,6 +363,8 @@ public class Lift {
         liftMotor2.setTargetPosition(heightInTicks);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        liftMotor.setTargetPositionTolerance(2);
+//        liftMotor2.setTargetPositionTolerance(2);
         liftMotor.setPower(1.0);
         liftMotor2.setPower(1.0);
 
@@ -323,10 +400,10 @@ public class Lift {
     }
 
     private boolean inHeightTolerance(double heightPosition, double targetHeight) {
-        return (heightPosition > targetHeight - HEIGHT_TOLERANCE) && (heightPosition < targetHeight + HEIGHT_TOLERANCE);
+        return (heightPosition >= (targetHeight - HEIGHT_TOLERANCE)) && (heightPosition <= (targetHeight + HEIGHT_TOLERANCE));
     }
     public boolean isLiftUp(){
-        return (getPosition() > LIFT_POSITION_GROUND);
+        return (getAvgPosition() > LIFT_POSITION_GROUND);
     }
 
     // Used by Auto to reduce lift pickup position each time the number of cones in the stack were removed
@@ -371,8 +448,8 @@ public class Lift {
     public void checkLift(){
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        liftMotor.setTargetPosition(getPosition() - 20);
-        liftMotor2.setTargetPosition(getPosition() - 20);
+        liftMotor.setTargetPosition(getAvgPosition() - 20);
+        liftMotor2.setTargetPosition(getAvgPosition() - 20);
         liftMotor.setPower(1.0);
         liftMotor2.setPower(1.0);
     }
