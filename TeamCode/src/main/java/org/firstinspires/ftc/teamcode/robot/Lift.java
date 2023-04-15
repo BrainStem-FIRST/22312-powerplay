@@ -137,10 +137,17 @@ public class Lift {
             telemetry.addLine("In lift should move true");
 
         } else {
-//            liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//            liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//            liftMotor.setPower(0.15);
-//            liftMotor2.setPower(0.15);
+            if(stateMap.get(LIFT_SYSTEM_NAME).equals(LIFT_POLE_GROUND)){
+                liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                liftMotor.setPower(0);
+                liftMotor2.setPower(0);
+            } else{
+                liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                liftMotor.setPower(0.15);
+                liftMotor2.setPower(0.15);
+            }
             telemetry.addData("Lift Motor 1 Power", liftMotor.getPower());
             telemetry.addData("Lift Motor 2 Power", liftMotor2.getPower());
             telemetry.addData("Lift Motor 1 is busy", liftMotor.isBusy());
@@ -318,7 +325,7 @@ public class Lift {
     }
     private void transitionToLiftPosition(int ticks){
         telemetry.addData("target heights", ticks);
-        raiseHeightPID(ticks);
+        raiseHeightTo(ticks);
     }
 
     public String getCurrentState(String subheight) {
