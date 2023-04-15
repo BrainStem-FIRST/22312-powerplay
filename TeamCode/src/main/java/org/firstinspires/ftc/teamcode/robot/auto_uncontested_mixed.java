@@ -212,7 +212,7 @@ public class auto_uncontested_mixed extends LinearOpMode {
                 })
 
                 // This is the duration the robot waits at the pickup station (while its subsystems are picking the cone up)
-                .waitSeconds(0.2)
+                .waitSeconds(0.3)
 
                 /********** DEPOSIT CYCLE 1 ***********/
 

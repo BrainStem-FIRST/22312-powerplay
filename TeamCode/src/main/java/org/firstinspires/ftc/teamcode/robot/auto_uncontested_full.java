@@ -212,7 +212,7 @@ public class auto_uncontested_full extends LinearOpMode {
                 })
 
                 // This is the duration the robot waits at the pickup station (while its subsystems are picking the cone up)
-                .waitSeconds(0.2)
+                .waitSeconds(0.3)
 
                 /********** DEPOSIT CYCLE 1 ***********/
 
@@ -698,7 +698,8 @@ public class auto_uncontested_full extends LinearOpMode {
 
                 // Extend arm only after the lift completed its rise
                 .UNSTABLE_addTemporalMarkerOffset(0.0, () -> {
-                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT);
+                    // Adjust the extension for medium last pole by extending it further.
+                    robot.arm.extendTo(robot.arm.EXTENSION_POSITION_DEPOSIT - 0.10);
                 })
 
                 // Drop Cone
@@ -797,7 +798,7 @@ public class auto_uncontested_full extends LinearOpMode {
             //           DURING TOURNAMENT           //
             ///////////////////////////////////////////
 
-            robot.turret.turret_PRELOAD_POSITION_VALUE = -290;  // towards medium pole
+            robot.turret.turret_PRELOAD_POSITION_VALUE = -170;  // towards medium pole
             robot.turret.turret_PICKUP_POSITION_VALUE = 0;
             robot.turret.turret_DEPOSIT_POSITION_VALUE = -290;  // towards high pole
             robot.turret.turret_LASTPOLE_POSITION_VALUE = -290; // towards medium pole
