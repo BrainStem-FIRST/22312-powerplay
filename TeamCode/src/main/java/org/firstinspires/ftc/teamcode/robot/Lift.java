@@ -98,19 +98,19 @@ public class Lift {
     public Lift(HardwareMap hwMap, Telemetry telemetry, Map stateMap) {
         this.telemetry = telemetry;
         this.stateMap = stateMap;
-        liftController = new PIDController(1,0,0);
+        liftController = new PIDController(0.01,0,0);
         liftMotor = hwMap.get(DcMotorEx.class, "Lift");
         liftMotor2 = hwMap.get(DcMotorEx.class, "LiftMotor2");
 
-        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        liftMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftMotor.setDirection(DcMotor.Direction.REVERSE);
 
         liftController.setInputBounds(0, 850);
-        liftController.setOutputBounds(-0.2, 0.75);
+        liftController.setOutputBounds(-0.2, 1.0);
 
     }
 
@@ -172,12 +172,12 @@ public class Lift {
         }
 
         double power = liftController.update(getAvgPosition());
-        setRawPower(power);
+        setRawPower(-power);
         telemetry.addData("raw power from pid:", power);
     }
 
     public void setAdjustmentHeight(double driverInput) {
-        adjustmentHeight = (int) (600 * driverInput);
+        adjustmentHeight = (int) (400 * driverInput);
         telemetry.addData("adjustment height", adjustmentHeight);
         telemetry.addData("high pole ticks", LIFT_POSITION_HIGHPOLE);
     }
