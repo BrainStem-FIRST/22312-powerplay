@@ -263,7 +263,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
                 robot.turret.turret_PICKUP_POSITION_VALUE   = 265;
                 robot.turret.turret_DEPOSIT_POSITION_VALUE  = -123; //-165
                 robot.arm.EXTENSION_POSITION_DEPOSIT = 0.55;
-                robot.arm.EXTENSION_POSITION_PICKUP = 0.8;
+                robot.arm.EXTENSION_POSITION_PICKUP = 0.55;
 
                 cornerDeltaX = 0;
                 cornerDeltaY = 0;
@@ -294,52 +294,6 @@ public class Auto_1plus5atLow extends LinearOpMode {
 
                 pickupDeltaX = 0; //1
                 pickupDeltaY = 0;
-            }
-        }
-        else {
-            if (isOrientationLEFT) { // BLUE-LEFT
-                XFORM_X = 1;
-                XFORM_Y = 1;
-
-                startingHeading = 90;
-                startingTangent = (180 - startingTangent) * -1; //-60
-
-                cornerHeading = 90;
-                cornerTangent = -90;
-
-                pickupHeading = 90;
-                pickupTangent = -90;
-
-                robot.turret.turret_PICKUP_POSITION_VALUE   = 245;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -105;
-
-                cornerDeltaX = 0;
-                cornerDeltaY = 0;
-
-                pickupDeltaX = 0;
-                pickupDeltaY = -0.5;
-            }
-            else {                  // BLUE-RIGHT
-                XFORM_X = -1;
-                XFORM_Y = 1;
-
-                startingHeading = 90;
-                startingTangent = startingTangent * -1; //240
-
-                cornerHeading = 90;
-                cornerTangent = -90;
-
-                pickupHeading = 90;
-                pickupTangent = -90;
-
-                robot.turret.turret_PICKUP_POSITION_VALUE   = -255;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 87;
-
-                cornerDeltaX = 2;
-                cornerDeltaY = 0;
-
-                pickupDeltaX = 0.5;
-                pickupDeltaY = -1;
             }
         }
 
@@ -650,34 +604,7 @@ public class Auto_1plus5atLow extends LinearOpMode {
     }//camera
 
     private void setProgram() {
-        allianceIsSet = false;
         orientationIsSet = false;
-
-        telemetry.clearAll();
-        telemetry.addLine("Set Alliance: Driver 1-> X=Blue or B=Red.");
-        telemetry.update();
-        while (!allianceIsSet && !isStopRequested()) {
-            if (gamepad1.x) {
-                isAllianceRED = false;
-                allianceIsSet = true;
-            } else if (gamepad1.b) {
-                isAllianceRED = true;
-                allianceIsSet = true;
-            }
-        }
-
-        String allianceColor;
-        if (isAllianceRED) {
-            allianceColor = "RED";
-        } else {
-            allianceColor = "BLUE";
-        }
-
-        telemetry.clearAll();
-        telemetry.addData("Alliance Set: ", allianceColor);
-        telemetry.update();
-
-        sleep(500);
 
         telemetry.clearAll();
         telemetry.addLine("Set Orientation: Driver 1-> dpad left or right.");
@@ -700,13 +627,8 @@ public class Auto_1plus5atLow extends LinearOpMode {
             orientation = "RIGHT";
         }
 
-        telemetry.addData("Orientation Set: ", orientation);
-        telemetry.update();
-
-        sleep(500);
         telemetry.clearAll();
         telemetry.addLine("Confirm Program:");
-        telemetry.addData("Alliance   :", allianceColor);
         telemetry.addData("Orientation:", orientation);
         telemetry.addLine("Driver 2-> A To Confirm. B to Restart.");
         telemetry.update();
