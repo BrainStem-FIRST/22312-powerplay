@@ -71,6 +71,12 @@ public class PRESENTATIONONLYTELEOP extends LinearOpMode {
 
                 telemetry.addData("Target: ", robot.lift.LIFT_POSITION_HIGHPOLE);
             }
+            if(gamepad1.right_bumper){
+                robot.flippers.bothFlippersDown();
+            }
+            if(gamepad1.left_bumper){
+                robot.flippers.bothFlippersUp();
+            }
             telemetry.addData("LiftMotor encoder:  ", robot.lift.liftMotor.getCurrentPosition());
             telemetry.addData("LiftMotor2 encoder: ", robot.lift.liftMotor2.getCurrentPosition());
             telemetry.update();
