@@ -54,7 +54,8 @@ public class RobotTeleOp extends LinearOpMode {
     private boolean retractionInProgress = false;
     private final double TRANSLATIONAL_SLOWMODE_SPEED  = 0.35;
     private final double TURNING_SLOW_MODE = 0.4;
-    private double REGULAR_TURNING_SPEED = 0.7;
+    private double REGULAR_TURNING_SPEED = 0.6;
+    private double FLIPPERS_TURN_SPEED = 0.3;
     private boolean CAP_MODE = false;
 
     Constants constants = new Constants();
@@ -175,13 +176,7 @@ public class RobotTeleOp extends LinearOpMode {
               }
               if (gamepad1.right_bumper) {
                   telemetry.addData("time", elapsedTime);
-                  if (((String) stateMap.get(robot.lift.LIFT_SYSTEM_NAME)).equalsIgnoreCase(robot.lift.LIFT_POLE_GROUND)) {
-                      stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
-//                      fastDown = true;
-//                      putDownFast.reset();
-//                      putDownFast.startTime();
-                      robot.lift.liftPickup = 0;
-                  }
+                 robot.lift.liftPickup = 0;
               }
               if (retractionInProgress) {
                   if (elapsedTime.seconds() > 0.1) {
@@ -264,7 +259,7 @@ public class RobotTeleOp extends LinearOpMode {
                       telemetry.addData("Giving jump", true);
                   }
                   if (grabberCycleTime.milliseconds() > 300 && robot.lift.LIFT_POSITION_GROUND == 0) {
-                      robot.lift.liftPickup = 60;
+                      robot.lift.liftPickup = 100;
                       grabberCycleInProgress = false;
                   } else if(grabberCycleTime.milliseconds() > 300 && robot.lift.LIFT_POSITION_GROUND != 0){
                       robot.lift.liftPickup = 100;
@@ -334,6 +329,14 @@ public class RobotTeleOp extends LinearOpMode {
                                       (TRANSLATIONAL_SLOWMODE_SPEED * -gamepad1.left_stick_y),
                                       (TRANSLATIONAL_SLOWMODE_SPEED * -gamepad1.left_stick_x),
                                       (-gamepad1.right_stick_x * TURNING_SLOW_MODE)
+                              )
+                      );
+                  } else if(stateMap.get(robot.flippers.SYSTEM_NAME).equals(robot.flippers.FLIPPERS_DOWN)){
+                      drive.setWeightedDrivePower(
+                              new Pose2d(
+                                      (TRANSLATIONAL_SLOWMODE_SPEED * -gamepad1.left_stick_y),
+                                      (TRANSLATIONAL_SLOWMODE_SPEED * -gamepad1.left_stick_x),
+                                      (-gamepad1.right_stick_x * FLIPPERS_TURN_SPEED)
                               )
                       );
                   } else {

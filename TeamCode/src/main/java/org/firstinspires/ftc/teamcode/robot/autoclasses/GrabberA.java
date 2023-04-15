@@ -35,7 +35,7 @@ public class GrabberA {
         grabber = (ServoImplEx) hwMap.servo.get("Grabber");
 
         //Testing AXON Servo PWMs
-        grabber.setPwmRange(new PwmControl.PwmRange(1000, 1550)); //1355, 1800
+        grabber.setPwmRange(new PwmControl.PwmRange(1000, 1750)); //1355, 1800
         //grabberOpen();
     }
 

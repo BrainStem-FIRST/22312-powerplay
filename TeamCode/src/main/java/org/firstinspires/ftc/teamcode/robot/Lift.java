@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -221,12 +223,17 @@ public class Lift {
             } else {
                 if(position >= 300 && position <= heightInTicks - 20){
                     runAllMotorsToPosition(heightInTicks, 1.0);
-                } else if(position > heightInTicks - 20 && position <= heightInTicks -5){
-                    runAllMotorsToPosition(heightInTicks, 0.7);
+                    Log.d("BrainSTEM 22312 RC ", "raiseHeightPID: ");
+                } else if(position > heightInTicks - 20 && position <= heightInTicks - 10){
+                    runAllMotorsToPosition(heightInTicks, 0.85);
+                    telemetry.addLine("0.85 power");
+                } else {
+                    runAllMotorsToPosition(heightInTicks, 0.15);
                 }
             }
         }  else {
             setRawPower(0.15);
+            Log.d("BRAINSTEM 22312 RC", "" + liftMotor.getPower());
         }
     }
 
