@@ -158,7 +158,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 })
 
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
-                .UNSTABLE_addTemporalMarkerOffset(0.3, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.25, ()-> {
                     robot.arm.extendHome();
                 })
 
@@ -679,7 +679,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 })
 
                 .UNSTABLE_addTemporalMarkerOffset(0.5, () -> {
-                    robot.turret.gotoPreloadPosition();
+                    robot.turret.goToLastPolePosition();
                 })
 
                 // This drivetrain move will start after the .waitsecond that marks the end of the pickup cycle.
@@ -687,7 +687,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 // Note that the robot will stop before the subsystem moves are complete. Need to add an idle time
                 // after the drivetrain command to mark the start of the deposit cone cycle.
 
-                .setTangent(lastTangent)
+                .setTangent(Math.toRadians(lastTangent))
                 .splineToSplineHeading(lastPose, Math.toRadians(lastTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(95))
@@ -844,6 +844,9 @@ public class auto_uncontested_pole extends LinearOpMode {
             depositHeading = 0;
             depositTangent = 180;
 
+            lastHeading = 0;
+            lastTangent = 180;
+
             ///////////////////////////////////////////
             //  CHANGE ONLY IF ABSOLUTELY NECESSARY  //
             //           DURING TOURNAMENT           //
@@ -862,14 +865,17 @@ public class auto_uncontested_pole extends LinearOpMode {
             //           DURING TOURNAMENT           //
             ///////////////////////////////////////////
 
-            preloadDeltaX = 2;  // matching 1trajectory's values. Previously was 0;
+            preloadDeltaX = 3;
             preloadDeltaY = 0;
 
-            pickupDeltaX = 0;
+            pickupDeltaX = -0.5;
             pickupDeltaY = 0;
 
-            depositDeltaX = 0;
+            depositDeltaX = 1;
             depositDeltaY = 0;
+
+            lastDeltaX = 0;
+            lastDeltaY = 0;
         }
 
         // Load the initial cone
@@ -895,7 +901,7 @@ public class auto_uncontested_pole extends LinearOpMode {
 
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose = new Pose2d(XFORM_X * 36, XFORM_Y * 63, Math.toRadians(startingHeading));
-        preloadPose = new Pose2d(XFORM_X * (26 + preloadDeltaX), XFORM_Y * (11.5 + preloadDeltaY), Math.toRadians(preloadHeading)); //16, 11.5
+        preloadPose = new Pose2d(XFORM_X * (16 + preloadDeltaX), XFORM_Y * (11.5 + preloadDeltaY), Math.toRadians(preloadHeading)); //16, 11.5
         depositPose = new Pose2d(XFORM_X * (2.5 + depositDeltaX), XFORM_Y * (11.5 + depositDeltaY), Math.toRadians(depositHeading));
         pickupPose = new Pose2d(XFORM_X * (54 + pickupDeltaX), XFORM_Y * (11.5 + pickupDeltaY), Math.toRadians(pickupHeading));
         lastPose = new Pose2d(XFORM_X * (26 + lastDeltaX), XFORM_Y * (11.5 + lastDeltaY), Math.toRadians(lastHeading));
@@ -1048,7 +1054,6 @@ public class auto_uncontested_pole extends LinearOpMode {
                     // TODO: Check if this passed value is still good. Note that the EXTENSION_POSITION_HOME value was changed in ExtensionA class
                     robot.arm.extendHome();
                     robot.alignment.alignUp();
-                    robot.grabber.grabberClose();
                     robot.turret.moveTo(robot.turret.CENTER_POSITION_VALUE);
 
                     trajectoryPark = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate())
@@ -1056,6 +1061,8 @@ public class auto_uncontested_pole extends LinearOpMode {
                             .build();
                     robot.drive.followTrajectory(trajectoryPark); // This is synchronous trajectory; code does not advance until the trajectory is complete
 
+                    // Moved grabberClose to after robot moved to its position, otherwise it risks closing at the high pole
+                    robot.grabber.grabberClose();
                     robot.lift.raiseHeightTo(robot.lift.LIFT_POSITION_RESET);
 
                     currentTrajectoryState = TrajectoryState.TRAJECTORY_IDLE;

@@ -38,28 +38,28 @@ public class MeepMeepTesting {
         startingHeading = -90;
         startingTangent = 90;
 
-        preloadHeading = 180;   //180;
+        preloadHeading = 180;   //matching 1trajectory's values. Previously was 185;
         preloadTangent = 0;
 
         pickupHeading = 180;
-        pickupTangent = 180;    //180;
+        pickupTangent = 180;    //matching 1trajectory's values. Previously was 179;
 
-        depositHeading = 225;
+        depositHeading = 180;
         depositTangent = 0;
 
-        preloadDeltaX = 0;
+        preloadDeltaX = 1.5;  // matching 1trajectory's values. Previously was 2;
         preloadDeltaY = 0;
 
-        pickupDeltaX = 0;   //0;
+        pickupDeltaX = -2;  // matching 1trajectory's values. Previously was 0;
         pickupDeltaY = 0;
 
-        depositDeltaX = 0;
+        depositDeltaX = -0.5;
         depositDeltaY = 0;
 
         // Poses
         startingPose = new Pose2d(XFORM_X * 36, XFORM_Y * 63, Math.toRadians(startingHeading));
-        preloadPose = new Pose2d(XFORM_X * (16 + preloadDeltaX), XFORM_Y * (11.5 + preloadDeltaY), Math.toRadians(preloadHeading));
-        depositPose = new Pose2d(XFORM_X * (11.5 + depositDeltaX), XFORM_Y * (11.5 + depositDeltaY), Math.toRadians(depositHeading));
+        preloadPose = new Pose2d(XFORM_X * (26 + preloadDeltaX), XFORM_Y * (11.5 + preloadDeltaY), Math.toRadians(preloadHeading)); //16, 11.5
+        depositPose = new Pose2d(XFORM_X * (2.5 + depositDeltaX), XFORM_Y * (11.5 + depositDeltaY), Math.toRadians(depositHeading));
         pickupPose = new Pose2d(XFORM_X * (54-5 + pickupDeltaX), XFORM_Y * (11.5 + pickupDeltaY), Math.toRadians(pickupHeading));
         parkingPose     = new Pose2d(); // to be defined after reading the signal cone
 

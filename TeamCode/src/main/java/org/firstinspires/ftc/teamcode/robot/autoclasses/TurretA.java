@@ -110,6 +110,9 @@ public class TurretA {
     public void goToPickupPosition() {
         currentTargetPosition = turret_PICKUP_POSITION_VALUE;
     }
+    public void goToLastPolePosition() {
+        currentTargetPosition = turret_LASTPOLE_POSITION_VALUE;
+    }
 
     public void setTurretPower(double desiredPower) {
         targetTurretPower = desiredPower;
