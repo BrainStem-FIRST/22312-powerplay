@@ -110,7 +110,7 @@ public class Lift {
         liftMotor.setDirection(DcMotor.Direction.REVERSE);
 
         liftController.setInputBounds(0, 850);
-        liftController.setOutputBounds(-0.2, 0.4);
+        liftController.setOutputBounds(-0.2, 0.75);
 
     }
 
@@ -171,7 +171,9 @@ public class Lift {
             liftController.setTarget(ticks);
         }
 
-        setRawPower(liftController.update(ticks - getAvgPosition()));
+        double power = liftController.update(ticks - getAvgPosition());
+        setRawPower(power);
+        telemetry.addData("raw power from pid:", power);
     }
 
     public void setAdjustmentHeight(double driverInput) {
