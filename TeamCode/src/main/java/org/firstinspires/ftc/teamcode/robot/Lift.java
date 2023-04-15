@@ -171,7 +171,7 @@ public class Lift {
             liftController.setTarget(ticks);
         }
 
-        double power = liftController.update(ticks - getAvgPosition());
+        double power = liftController.update(getAvgPosition());
         setRawPower(power);
         telemetry.addData("raw power from pid:", power);
     }
