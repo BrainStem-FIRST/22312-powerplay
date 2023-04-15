@@ -246,57 +246,55 @@ public class Auto_1plus5atLow extends LinearOpMode {
         startingTangent = 135;
 
         // Determine trajectory headings for all alliance combinations
-        if (isAllianceRED) {
-            if (isOrientationLEFT) { // RED-LEFT
-                XFORM_X = -1;
-                XFORM_Y = -1;
+        if (isOrientationLEFT) { // RED-LEFT
+            XFORM_X = -1;
+            XFORM_Y = -1;
 
-                startingHeading = -90;
-                startingTangent = startingTangent; //120
+            startingHeading = -90;
+            startingTangent = startingTangent; //120
 
-                cornerHeading = -90;
-                cornerTangent = 90;
+            cornerHeading = -90;
+            cornerTangent = 90;
 
-                pickupHeading = -90;
-                pickupTangent = 90;
+            pickupHeading = -90;
+            pickupTangent = 90;
 
-                robot.turret.turret_PICKUP_POSITION_VALUE   = 265;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = -123; //-165
-                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.55;
-                robot.arm.EXTENSION_POSITION_PICKUP = 0.55;
+            robot.turret.turret_PICKUP_POSITION_VALUE   = 265;
+            robot.turret.turret_DEPOSIT_POSITION_VALUE  = -123; //-165
+            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.55;
+            robot.arm.EXTENSION_POSITION_PICKUP = 0.55;
 
-                cornerDeltaX = 0;
-                cornerDeltaY = 0;
+            cornerDeltaX = 0;
+            cornerDeltaY = 0;
 
-                pickupDeltaX = 0; // previously 0
-                pickupDeltaY = 0;  // previously 0
-            }
-            else {                  // RED-RIGHT
-                XFORM_X = 1;
-                XFORM_Y = -1;
-
-                startingHeading = -90;
-                startingTangent = 180 - startingTangent; //60
-
-                cornerHeading = -90;
-                cornerTangent = 90;
-
-                pickupHeading = -90;
-                pickupTangent = 90;
-
-                robot.turret.turret_PICKUP_POSITION_VALUE   = -245;
-                robot.turret.turret_DEPOSIT_POSITION_VALUE  = 115;
-                robot.arm.EXTENSION_POSITION_DEPOSIT = 0.55;
-                robot.arm.EXTENSION_POSITION_PICKUP = 0.55;
-
-                cornerDeltaX = 0;
-                cornerDeltaY = 0;
-
-                pickupDeltaX = 0; //1
-                pickupDeltaY = 0;
-            }
+            pickupDeltaX = 0; // previously 0
+            pickupDeltaY = 0;  // previously 0
         }
+        else {                  // RED-RIGHT
+            XFORM_X = 1;
+            XFORM_Y = -1;
 
+            startingHeading = -90;
+            startingTangent = 180 - startingTangent; //60
+
+            cornerHeading = -90;
+            cornerTangent = 90;
+
+            pickupHeading = -90;
+            pickupTangent = 90;
+
+            robot.turret.turret_PICKUP_POSITION_VALUE   = -245;
+            robot.turret.turret_DEPOSIT_POSITION_VALUE  = 115;
+            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.55;
+            robot.arm.EXTENSION_POSITION_PICKUP = 0.55;
+
+            cornerDeltaX = 0;
+            cornerDeltaY = 0;
+
+            pickupDeltaX = 0; //1
+            pickupDeltaY = 0;
+        }
+    
         telemetry.clearAll();
         telemetry.addLine("Load Cone.  Driver 1 Hit A.");
         telemetry.update();
