@@ -177,7 +177,7 @@ public class Lift {
     }
 
     public void setAdjustmentHeight(double driverInput) {
-        adjustmentHeight = (int) (400 * driverInput);
+        adjustmentHeight = (int) (250 * driverInput);
         telemetry.addData("adjustment height", adjustmentHeight);
         telemetry.addData("high pole ticks", LIFT_POSITION_HIGHPOLE);
     }

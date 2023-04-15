@@ -64,7 +64,7 @@ public class auto_uncontested_pole extends LinearOpMode {
     public static int PARKING_NUMBER = 3; // Controlled by the dashboard for test purposes
     public static double SPEED = 60.0;    // Controlled by the dashboard for test purposes
     private ElapsedTime autoTime = new ElapsedTime();
-    private double TIME_TO_PARK = 29;  //27
+    private double TIME_TO_PARK = 28.8;  //27
 
     // used for trajectory state machine
     enum    TrajectoryState {
@@ -798,7 +798,7 @@ public class auto_uncontested_pole extends LinearOpMode {
             //           DURING TOURNAMENT           //
             ///////////////////////////////////////////
 
-            robot.turret.turret_PRELOAD_POSITION_VALUE = 290; //170;
+            robot.turret.turret_PRELOAD_POSITION_VALUE = 170;
             robot.turret.turret_PICKUP_POSITION_VALUE = 0;
             robot.turret.turret_DEPOSIT_POSITION_VALUE = -290;  //270 //hitting hard stop
             robot.turret.turret_LASTPOLE_POSITION_VALUE = 290;
@@ -818,7 +818,7 @@ public class auto_uncontested_pole extends LinearOpMode {
             pickupDeltaX = -2;  // matching 1trajectory's values. Previously was 0;
             pickupDeltaY = 0;
 
-            depositDeltaX = -0.5;
+            depositDeltaX = 0;
             depositDeltaY = 0;
 
             lastDeltaX = 0;
@@ -855,6 +855,7 @@ public class auto_uncontested_pole extends LinearOpMode {
             robot.turret.turret_PRELOAD_POSITION_VALUE  = -170;
             robot.turret.turret_PICKUP_POSITION_VALUE   = 0;
             robot.turret.turret_DEPOSIT_POSITION_VALUE  = 290;  //hitting hard stop
+            robot.turret.turret_LASTPOLE_POSITION_VALUE = -290;
 
             robot.arm.EXTENSION_POSITION_PICKUP = 0;
             robot.arm.EXTENSION_POSITION_PRELOAD = 0.40;
@@ -871,7 +872,7 @@ public class auto_uncontested_pole extends LinearOpMode {
             pickupDeltaX = -0.5;
             pickupDeltaY = 0;
 
-            depositDeltaX = 1;
+            depositDeltaX = -2.5;
             depositDeltaY = 0;
 
             lastDeltaX = 0;
@@ -902,7 +903,7 @@ public class auto_uncontested_pole extends LinearOpMode {
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose = new Pose2d(XFORM_X * 36, XFORM_Y * 63, Math.toRadians(startingHeading));
         preloadPose = new Pose2d(XFORM_X * (16 + preloadDeltaX), XFORM_Y * (11.5 + preloadDeltaY), Math.toRadians(preloadHeading)); //16, 11.5
-        depositPose = new Pose2d(XFORM_X * (2.5 + depositDeltaX), XFORM_Y * (11.5 + depositDeltaY), Math.toRadians(depositHeading));
+        depositPose = new Pose2d(XFORM_X * (4 + depositDeltaX), XFORM_Y * (11.5 + depositDeltaY), Math.toRadians(depositHeading));
         pickupPose = new Pose2d(XFORM_X * (54 + pickupDeltaX), XFORM_Y * (11.5 + pickupDeltaY), Math.toRadians(pickupHeading));
         lastPose = new Pose2d(XFORM_X * (26 + lastDeltaX), XFORM_Y * (11.5 + lastDeltaY), Math.toRadians(lastHeading));
         parkingPose = new Pose2d(); // to be defined after reading the signal cone

@@ -53,7 +53,7 @@ public class RobotTeleOp extends LinearOpMode {
     private boolean leftTriggerPressed = false;
     private boolean retractionInProgress = false;
     private final double TRANSLATIONAL_SLOWMODE_SPEED  = 0.35;
-    private final double TURNING_SLOW_MODE = 0.4;
+    private final double TURNING_SLOW_MODE = 0.3;
     private double REGULAR_TURNING_SPEED = 0.6;
     private double FLIPPERS_TURN_SPEED = 0.3;
     private boolean CAP_MODE = false;
