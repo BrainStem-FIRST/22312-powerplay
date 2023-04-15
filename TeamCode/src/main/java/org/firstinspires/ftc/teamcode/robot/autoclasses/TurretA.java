@@ -35,8 +35,9 @@ public class TurretA {
     public int              turret_PICKUP_POSITION_VALUE = 245;  // These initial values are overwritten by Auto
     public int              turret_PRELOAD_POSITION_VALUE = 152;
     public int              turret_DEPOSIT_POSITION_VALUE = -107;
+    public int              turret_DEPOSIT_POSITION_VALUE = -107;
 
-    public int              turret_RIGHT_POSITION_VALUE = 290;
+    public int              turret_LASTPOLE_POSITION_VALUE = 290;
 
     public final int        ANGLE_TOLERANCE = 5;
     public final int        LIFT_MIN_HEIGHT_TO_MOVE_TURRET = 60;
