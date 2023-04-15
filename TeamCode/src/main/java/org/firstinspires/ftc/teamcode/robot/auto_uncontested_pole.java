@@ -85,17 +85,19 @@ public class auto_uncontested_pole extends LinearOpMode {
     //            Variable used for trajectories
     //------------------------------------------------------
 
-    Pose2d startingPose, preloadPose, depositPose, pickupPose, parkingPose;
+    Pose2d startingPose, preloadPose, depositPose, pickupPose, lastPose, parkingPose;
 
     // Determine waypoints based on Alliance and Orientation
     double  XFORM_X, XFORM_Y;
     double  preloadDeltaX, preloadDeltaY,
             pickupDeltaX, pickupDeltaY,
-            depositDeltaX, depositDeltaY;
+            depositDeltaX, depositDeltaY,
+            lastDeltaX, lastDeltaY;
     double  startingHeading, startingTangent,
             preloadHeading, preloadTangent,
             depositHeading, depositTangent,
-            pickupHeading, pickupTangent;
+            pickupHeading, pickupTangent,
+            lastHeading, lastTangent;
 
 
     //------------------------------------------------------
@@ -181,6 +183,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
                     robot.alignment.alignUp();
                 })
+
                 // lower the lift after the turret repositioned and before the robot reached its target
                 // offset is relative to when robot reached its destination
                 .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
@@ -188,7 +191,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 })
 
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
-                .setTangent(pickupTangent)
+                .setTangent(Math.toRadians(pickupTangent))
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(75))
@@ -213,7 +216,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 })
 
                 // This is the duration the robot waits at the pickup station (while its subsystems are picking the cone up)
-                .waitSeconds(0.25)
+                .waitSeconds(0.2)
 
                 /********** DEPOSIT CYCLE 1 ***********/
 
@@ -244,7 +247,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 // Note that the robot will stop before the subsystem moves are complete. Need to add an idle time
                 // after the drivetrain command to mark the start of the deposit cone cycle.
 
-                .setTangent(depositTangent)
+                .setTangent(Math.toRadians(depositTangent))
                 .splineToSplineHeading(depositPose, Math.toRadians(depositTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(95))
@@ -297,7 +300,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 })
 
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
-                .setTangent(pickupTangent)
+                .setTangent(Math.toRadians(pickupTangent))
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(75))
@@ -354,7 +357,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 // Note that the robot will stop before the subsystem moves are complete. Need to add an idle time
                 // after the drivetrain command to mark the start of the deposit cone cycle.
 
-                .setTangent(depositTangent)
+                .setTangent(Math.toRadians(depositTangent))
                 .splineToSplineHeading(depositPose, Math.toRadians(depositTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(95))
@@ -409,7 +412,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 })
 
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
-                .setTangent(pickupTangent)
+                .setTangent(Math.toRadians(pickupTangent))
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(75))
@@ -466,7 +469,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 // Note that the robot will stop before the subsystem moves are complete. Need to add an idle time
                 // after the drivetrain command to mark the start of the deposit cone cycle.
 
-                .setTangent(depositTangent)
+                .setTangent(Math.toRadians(depositTangent))
                 .splineToSplineHeading(depositPose, Math.toRadians(depositTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(95))
@@ -482,15 +485,15 @@ public class auto_uncontested_pole extends LinearOpMode {
                 })
 
                 // Drop Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.3, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 150);
                 })
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.4, ()-> {
                     robot.grabber.grabberOpen();
                 })
 
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
-                .UNSTABLE_addTemporalMarkerOffset(0.6, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
                     robot.arm.extendHome();
                 })
 
@@ -498,7 +501,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 // the start of the robot moving for the next pickup cycle.
 
                 // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
-                .waitSeconds(0.65)   // TODO: Fine tune this duration to adjust start of the robot's move
+                .waitSeconds(0.6)   // TODO: Fine tune this duration to adjust start of the robot's move
 
 
                 /********* PICKUP CYCLE 4 *********/
@@ -520,7 +523,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 })
 
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
-                .setTangent(pickupTangent)
+                .setTangent(Math.toRadians(pickupTangent))
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(75))
@@ -577,7 +580,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 // Note that the robot will stop before the subsystem moves are complete. Need to add an idle time
                 // after the drivetrain command to mark the start of the deposit cone cycle.
 
-                .setTangent(depositTangent)
+                .setTangent(Math.toRadians(depositTangent))
                 .splineToSplineHeading(depositPose, Math.toRadians(depositTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(95))
@@ -593,15 +596,15 @@ public class auto_uncontested_pole extends LinearOpMode {
                 })
 
                 // Drop Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.3, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 150);
                 })
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.4, ()-> {
                     robot.grabber.grabberOpen();
                 })
 
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
-                .UNSTABLE_addTemporalMarkerOffset(0.6, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
                     robot.arm.extendHome();
                 })
 
@@ -609,7 +612,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 // the start of the robot moving for the next pickup cycle.
 
                 // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
-                .waitSeconds(0.65)   // TODO: Fine tune this duration to adjust start of the robot's move
+                .waitSeconds(0.6)   // TODO: Fine tune this duration to adjust start of the robot's move
 
 
                 /********* PICKUP CYCLE 5 *********/
@@ -631,7 +634,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 })
 
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
-                .setTangent(pickupTangent)
+                .setTangent(Math.toRadians(pickupTangent))
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(75))
@@ -687,8 +690,8 @@ public class auto_uncontested_pole extends LinearOpMode {
                 // Note that the robot will stop before the subsystem moves are complete. Need to add an idle time
                 // after the drivetrain command to mark the start of the deposit cone cycle.
 
-                .setTangent(preloadTangent)
-                .splineToSplineHeading(preloadPose, Math.toRadians(preloadTangent))
+                .setTangent(lastTangent)
+                .splineToSplineHeading(lastPose, Math.toRadians(lastTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(95))
 
@@ -703,15 +706,15 @@ public class auto_uncontested_pole extends LinearOpMode {
                 })
 
                 // Drop Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.3, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 150);
                 })
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.4, ()-> {
                     robot.grabber.grabberOpen();
                 })
 
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
-                .UNSTABLE_addTemporalMarkerOffset(0.6, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
                     robot.arm.extendHome();
                 })
 
@@ -719,7 +722,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 // the start of the robot moving for the next pickup cycle.
 
                 // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
-                .waitSeconds(0.65)   // TODO: Fine tune this duration to adjust start of the robot's move
+                .waitSeconds(0.6)   // TODO: Fine tune this duration to adjust start of the robot's move
 
 
                 .build();
@@ -768,7 +771,6 @@ public class auto_uncontested_pole extends LinearOpMode {
 
         telemetry.setMsTransmissionInterval(50); //camera
 
-
         // Determine trajectory headings for all alliance combinations
         if (isOrientationLEFT) { // LEFT
 
@@ -791,6 +793,9 @@ public class auto_uncontested_pole extends LinearOpMode {
             depositHeading = 180;
             depositTangent = 0;
 
+            lastHeading = 180;
+            lastTangent = 0;
+
             ///////////////////////////////////////////
             //  CHANGE ONLY IF ABSOLUTELY NECESSARY  //
             //           DURING TOURNAMENT           //
@@ -802,21 +807,24 @@ public class auto_uncontested_pole extends LinearOpMode {
 
             robot.arm.EXTENSION_POSITION_PICKUP = 0;
             robot.arm.EXTENSION_POSITION_PRELOAD = 0.40;  // it was 0.49; extending a little more to hit the pole
-            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.40; //0.64
+            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.35; //0.64
 
             ///////////////////////////////////////////
             //      MAKE ADJUSTMENTS ON POSES        //
             //           DURING TOURNAMENT           //
             ///////////////////////////////////////////
 
-            preloadDeltaX = 0;  // matching 1trajectory's values. Previously was 2;
+            preloadDeltaX = 1.5;  // matching 1trajectory's values. Previously was 2;
             preloadDeltaY = 0;
 
-            pickupDeltaX = -1;  // matching 1trajectory's values. Previously was 0;
+            pickupDeltaX = -2;  // matching 1trajectory's values. Previously was 0;
             pickupDeltaY = 0;
 
-            depositDeltaX = 0;
+            depositDeltaX = -0.5;
             depositDeltaY = 0;
+
+            lastDeltaX = 0;
+            lastDeltaY = 0;
         } else {                  // RIGHT TODO: adjust for different quadrant
 
             ///////////////////////////////////////////
@@ -836,7 +844,7 @@ public class auto_uncontested_pole extends LinearOpMode {
             pickupTangent = 0;
 
             depositHeading = 0;
-            depositTangent = 179;
+            depositTangent = 180;
 
             ///////////////////////////////////////////
             //  CHANGE ONLY IF ABSOLUTELY NECESSARY  //
@@ -892,6 +900,7 @@ public class auto_uncontested_pole extends LinearOpMode {
         preloadPose = new Pose2d(XFORM_X * (16 + preloadDeltaX), XFORM_Y * (11.5 + preloadDeltaY), Math.toRadians(preloadHeading));
         depositPose = new Pose2d(XFORM_X * (2.5 + depositDeltaX), XFORM_Y * (11.5 + depositDeltaY), Math.toRadians(depositHeading));
         pickupPose = new Pose2d(XFORM_X * (54 + pickupDeltaX), XFORM_Y * (11.5 + pickupDeltaY), Math.toRadians(pickupHeading));
+        lastPose = new Pose2d(XFORM_X * (26 + lastDeltaX), XFORM_Y * (11.5 + lastDeltaY), Math.toRadians(lastHeading));
         parkingPose = new Pose2d(); // to be defined after reading the signal cone
 
         robot.drive.setPoseEstimate(startingPose);  // Needed to be called once before the first trajectory
@@ -1049,7 +1058,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                             .build();
                     robot.drive.followTrajectory(trajectoryPark); // This is synchronous trajectory; code does not advance until the trajectory is complete
 
-//                    robot.lift.raiseHeightTo(robot.lift.LIFT_POSITION_RESET);
+                    robot.lift.raiseHeightTo(robot.lift.LIFT_POSITION_RESET);
 
                     currentTrajectoryState = TrajectoryState.TRAJECTORY_IDLE;
 

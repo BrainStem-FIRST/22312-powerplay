@@ -159,7 +159,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
-                .UNSTABLE_addTemporalMarkerOffset(0.3, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.25, ()-> {
                     robot.arm.extendHome();
                 })
 
@@ -214,7 +214,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // This is the duration the robot waits at the pickup station (while its subsystems are picking the cone up)
-                .waitSeconds(0.25)
+                .waitSeconds(0.2)
 
                 /********** DEPOSIT CYCLE 1 ***********/
 
@@ -261,15 +261,15 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // Drop Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.3, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 150);
                 })
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.7, ()-> {
                     robot.grabber.grabberOpen();
                 })
 
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
-                .UNSTABLE_addTemporalMarkerOffset(0.6, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.75, ()-> {
                     robot.arm.extendHome();
                 })
 
@@ -277,7 +277,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // the start of the robot moving for the next pickup cycle.
 
                 // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
-                .waitSeconds(0.65)   // TODO: Fine tune this duration to adjust start of the robot's move
+                .waitSeconds(0.85)   // TODO: Fine tune this duration to adjust start of the robot's move
 
                 /********* PICKUP CYCLE 2 *********/
 
@@ -371,15 +371,15 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // Drop Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.3, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 150);
                 })
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.7, ()-> {
                     robot.grabber.grabberOpen();
                 })
 
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
-                .UNSTABLE_addTemporalMarkerOffset(0.6, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.8, ()-> {
                     robot.arm.extendHome();
                 })
 
@@ -387,7 +387,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // the start of the robot moving for the next pickup cycle.
 
                 // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
-                .waitSeconds(0.65)   // TODO: Fine tune this duration to adjust start of the robot's move
+                .waitSeconds(0.85)   // TODO: Fine tune this duration to adjust start of the robot's move
 
 
                 /********* PICKUP CYCLE 3 *********/
@@ -483,15 +483,15 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // Drop Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.3, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 150);
                 })
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.7, ()-> {
                     robot.grabber.grabberOpen();
                 })
 
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
-                .UNSTABLE_addTemporalMarkerOffset(0.6, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.8, ()-> {
                     robot.arm.extendHome();
                 })
 
@@ -499,7 +499,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // the start of the robot moving for the next pickup cycle.
 
                 // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
-                .waitSeconds(0.65)   // TODO: Fine tune this duration to adjust start of the robot's move
+                .waitSeconds(0.85)   // TODO: Fine tune this duration to adjust start of the robot's move
 
 
                 /********* PICKUP CYCLE 4 *********/
@@ -594,15 +594,15 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // Drop Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.3, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 150);
                 })
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.7, ()-> {
                     robot.grabber.grabberOpen();
                 })
 
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
-                .UNSTABLE_addTemporalMarkerOffset(0.6, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.8, ()-> {
                     robot.arm.extendHome();
                 })
 
@@ -610,7 +610,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // the start of the robot moving for the next pickup cycle.
 
                 // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
-                .waitSeconds(0.65)   // TODO: Fine tune this duration to adjust start of the robot's move
+                .waitSeconds(0.85)   // TODO: Fine tune this duration to adjust start of the robot's move
 
 
                 /********* PICKUP CYCLE 5 *********/
@@ -704,15 +704,15 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // Drop Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.3, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 150);
                 })
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.7, ()-> {
                     robot.grabber.grabberOpen();
                 })
 
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
-                .UNSTABLE_addTemporalMarkerOffset(0.6, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.8, ()-> {
                     robot.arm.extendHome();
                 })
 
@@ -720,7 +720,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 // the start of the robot moving for the next pickup cycle.
 
                 // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
-                .waitSeconds(0.65)   // TODO: Fine tune this duration to adjust start of the robot's move
+                .waitSeconds(0.85)   // TODO: Fine tune this duration to adjust start of the robot's move
 
 
                 .build();
@@ -802,20 +802,20 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
             robot.arm.EXTENSION_POSITION_PICKUP = 0;
             robot.arm.EXTENSION_POSITION_PRELOAD = 0.40;  // it was 0.49; extending a little more to hit the pole
-            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.40; //0.64
+            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.35; //0.64
 
             ///////////////////////////////////////////
             //      MAKE ADJUSTMENTS ON POSES        //
             //           DURING TOURNAMENT           //
             ///////////////////////////////////////////
 
-            preloadDeltaX = 0;
+            preloadDeltaX = 1.5;
             preloadDeltaY = 0;
 
-            pickupDeltaX = -1;
+            pickupDeltaX = -2;
             pickupDeltaY = 0;
 
-            depositDeltaX = 0;
+            depositDeltaX = -0.5;
             depositDeltaY = 0;
         } else {                  // RIGHT TODO: adjust for different quadrant
 

@@ -185,7 +185,7 @@ public class auto_uncontested_BETA extends LinearOpMode {
                 })
 
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
-                .setTangent(pickupTangent)
+                .setTangent(Math.toRadians(pickupTangent))
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(75))
@@ -242,7 +242,7 @@ public class auto_uncontested_BETA extends LinearOpMode {
                 // Note that the robot will stop before the subsystem moves are complete. Need to add an idle time
                 // after the drivetrain command to mark the start of the deposit cone cycle.
 
-                .setTangent(depositTangent)
+                .setTangent(Math.toRadians(depositTangent))
                 .splineToSplineHeading(depositPose, Math.toRadians(depositTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(95))
@@ -295,7 +295,7 @@ public class auto_uncontested_BETA extends LinearOpMode {
                 })
 
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
-                .setTangent(pickupTangent)
+                .setTangent(Math.toRadians(pickupTangent))
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(75))
@@ -353,7 +353,7 @@ public class auto_uncontested_BETA extends LinearOpMode {
                 // Note that the robot will stop before the subsystem moves are complete. Need to add an idle time
                 // after the drivetrain command to mark the start of the deposit cone cycle.
 
-                .setTangent(depositTangent)
+                .setTangent(Math.toRadians(depositTangent))
                 .splineToSplineHeading(depositPose, Math.toRadians(depositTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(95))
@@ -408,7 +408,7 @@ public class auto_uncontested_BETA extends LinearOpMode {
                 })
 
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
-                .setTangent(pickupTangent)
+                .setTangent(Math.toRadians(pickupTangent))
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(75))
@@ -466,7 +466,7 @@ public class auto_uncontested_BETA extends LinearOpMode {
                 // Note that the robot will stop before the subsystem moves are complete. Need to add an idle time
                 // after the drivetrain command to mark the start of the deposit cone cycle.
 
-                .setTangent(depositTangent)
+                .setTangent(Math.toRadians(depositTangent))
                 .splineToSplineHeading(depositPose, Math.toRadians(depositTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(95))
@@ -520,7 +520,7 @@ public class auto_uncontested_BETA extends LinearOpMode {
                 })
 
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
-                .setTangent(pickupTangent)
+                .setTangent(Math.toRadians(pickupTangent))
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(75))
@@ -578,7 +578,7 @@ public class auto_uncontested_BETA extends LinearOpMode {
                 // Note that the robot will stop before the subsystem moves are complete. Need to add an idle time
                 // after the drivetrain command to mark the start of the deposit cone cycle.
 
-                .setTangent(depositTangent)
+                .setTangent(Math.toRadians(depositTangent))
                 .splineToSplineHeading(depositPose, Math.toRadians(depositTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(95))
@@ -632,7 +632,7 @@ public class auto_uncontested_BETA extends LinearOpMode {
                 })
 
                 // note that his movement starts at offset 0 following the last .waitseconds (i.e. not after alignUp)
-                .setTangent(pickupTangent)
+                .setTangent(Math.toRadians(pickupTangent))
                 .splineToSplineHeading(pickupPose, Math.toRadians(pickupTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(75))
@@ -689,7 +689,7 @@ public class auto_uncontested_BETA extends LinearOpMode {
                 // Note that the robot will stop before the subsystem moves are complete. Need to add an idle time
                 // after the drivetrain command to mark the start of the deposit cone cycle.
 
-                .setTangent(preloadTangent)
+                .setTangent(Math.toRadians(preloadTangent))
                 .splineToSplineHeading(preloadPose, Math.toRadians(preloadTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 9.75),
 //                        SampleMecanumDrive.getAccelerationConstraint(95))

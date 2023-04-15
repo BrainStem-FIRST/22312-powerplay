@@ -21,9 +21,9 @@ public class GrabberA {
     public final String CLOSED_STATE = "CLOSED";
     ConstantsA constants = new ConstantsA();
 
-    public final double WIDE_OPEN_VALUE = 0.25;
-    public final double OPEN_VALUE      = 0.4; //1550
-    public final double CLOSED_VALUE    = 0.9;
+    public final double WIDE_OPEN_VALUE = 0.0;
+    public final double OPEN_VALUE      = 0.5; //1275
+    public final double CLOSED_VALUE    = 1.0;
 
     private Map stateMap;
 
@@ -35,7 +35,7 @@ public class GrabberA {
         grabber = (ServoImplEx) hwMap.servo.get("Grabber");
 
         //Testing AXON Servo PWMs
-        grabber.setPwmRange(new PwmControl.PwmRange(1355, 1800)); //1150, 1800
+        grabber.setPwmRange(new PwmControl.PwmRange(1000, 1550)); //1355, 1800
         //grabberOpen();
     }
 
