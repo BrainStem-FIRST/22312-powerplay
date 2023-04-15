@@ -177,6 +177,8 @@ public class RobotTeleOp extends LinearOpMode {
               if (gamepad1.right_bumper) {
                   telemetry.addData("time", elapsedTime);
                  robot.lift.liftPickup = 0;
+                 stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_GROUND);
+                 stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
               }
               if (retractionInProgress) {
                   if (elapsedTime.seconds() > 0.1) {

@@ -37,7 +37,7 @@ public class Lift {
     public final int GROUND_ORIGINAL_POSITION = 0;
     public int LIFT_POSITION_LOWPOLE = 420;
     public int LIFT_POSITION_MIDPOLE = 640;   //685;
-    public int LIFT_POSITION_HIGHPOLE = 840;
+    public int LIFT_POSITION_HIGHPOLE = 850;
     public final int LIFT_POSITION_MOVING = 100;
 
     public final int LIFT_POSITION_CONE_5 = 200;
@@ -202,38 +202,57 @@ public class Lift {
     }
     public void raiseHeightPID(int heightInTicks){
         int position = getAvgPosition();
+//        if (position < (heightInTicks - 200)) {
+//            setRawPower(1.0);
+//        } else if (position > (heightInTicks + 150)) {
+//            setRawPower(-0.7);
+//        } else if (heightInTicks == 0 && (position < heightInTicks + 15)) {
+//            setRawPower(0.0);
+//        }else if (position <= heightInTicks - HEIGHT_TOLERANCE || position >= heightInTicks + HEIGHT_TOLERANCE) { // THIS IS THE RANGE THAT IT SITS IN WHEN ITS SET TO A PLACE TO GO
+////            if (stateMap.get(LIFT_SYSTEM_NAME) == LIFT_POLE_GROUND &&  heightInTicks > 0 && position < 30) {
+////                runAllMotorsToPosition(heightInTicks, 1);
+////            } else {
+////                runAllMotorsToPosition(heightInTicks, 0.6);
+////            }
+//            if(stateMap.get(LIFT_SYSTEM_NAME).equals(LIFT_POLE_GROUND)){
+//                if(position >= 300){
+//                    runAllMotorsToPosition(heightInTicks, 1.0);
+//                } else if(position < 300 && position >= 150) {
+//                    runAllMotorsToPosition(heightInTicks, 0.5);
+//                }
+//            } else {
+//                if(position >= 300 && position <= heightInTicks - 20){
+//                    runAllMotorsToPosition(heightInTicks, 1.0);
+//                    Log.d("BrainSTEM 22312 RC ", "raiseHeightPID: ");
+//                } else if(position > heightInTicks - 20 && position <= heightInTicks - 10){
+//                    runAllMotorsToPosition(heightInTicks, 0.85);
+//                    telemetry.addLine("0.85 power");
+//                } else {
+//                    runAllMotorsToPosition(heightInTicks, 0.15);
+//                }
+//            }
+//        }  else {
+//            setRawPower(0.15);
+//            Log.d("BRAINSTEM 22312 RC", "" + liftMotor.getPower());
+//        }
         if (position < (heightInTicks - 200)) {
             setRawPower(1.0);
         } else if (position > (heightInTicks + 150)) {
             setRawPower(-0.7);
         } else if (heightInTicks == 0 && (position < heightInTicks + 15)) {
             setRawPower(0.0);
-        }else if (position <= heightInTicks - HEIGHT_TOLERANCE || position >= heightInTicks + HEIGHT_TOLERANCE) { // THIS IS THE RANGE THAT IT SITS IN WHEN ITS SET TO A PLACE TO GO
-//            if (stateMap.get(LIFT_SYSTEM_NAME) == LIFT_POLE_GROUND &&  heightInTicks > 0 && position < 30) {
-//                runAllMotorsToPosition(heightInTicks, 1);
-//            } else {
-//                runAllMotorsToPosition(heightInTicks, 0.6);
-//            }
-            if(stateMap.get(LIFT_SYSTEM_NAME).equals(LIFT_POLE_GROUND)){
-                if(position >= 300){
-                    runAllMotorsToPosition(heightInTicks, 1.0);
-                } else if(position < 300 && position >= 150) {
-                    runAllMotorsToPosition(heightInTicks, 0.5);
-                }
+        }else if (position <= heightInTicks - 7 || position >= heightInTicks + 7) { // THIS IS THE RANGE THAT IT SITS IN WHEN ITS SET TO A PLACE TO GO
+            if (stateMap.get(LIFT_SYSTEM_NAME) == LIFT_POLE_GROUND &&
+                    heightInTicks > 0 &&
+                    position < 30) {
+                runAllMotorsToPosition(heightInTicks, 1);
+            } else if (heightInTicks > 300){
+                runAllMotorsToPosition(heightInTicks, 0.5);
             } else {
-                if(position >= 300 && position <= heightInTicks - 20){
-                    runAllMotorsToPosition(heightInTicks, 1.0);
-                    Log.d("BrainSTEM 22312 RC ", "raiseHeightPID: ");
-                } else if(position > heightInTicks - 20 && position <= heightInTicks - 10){
-                    runAllMotorsToPosition(heightInTicks, 0.85);
-                    telemetry.addLine("0.85 power");
-                } else {
-                    runAllMotorsToPosition(heightInTicks, 0.15);
-                }
+                runAllMotorsToPosition(heightInTicks, 0.3);
             }
         }  else {
             setRawPower(0.15);
-            Log.d("BRAINSTEM 22312 RC", "" + liftMotor.getPower());
         }
     }
 
