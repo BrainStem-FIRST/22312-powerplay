@@ -1041,7 +1041,6 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                     // TODO: Check if this passed value is still good. Note that the EXTENSION_POSITION_HOME value was changed in ExtensionA class
                     robot.arm.extendHome();
                     robot.alignment.alignUp();
-                    robot.grabber.grabberClose();
                     robot.turret.moveTo(robot.turret.CENTER_POSITION_VALUE);
 
                     trajectoryPark = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate())
@@ -1049,6 +1048,8 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                             .build();
                     robot.drive.followTrajectory(trajectoryPark); // This is synchronous trajectory; code does not advance until the trajectory is complete
 
+                    // Moved grabberClose to after robot moved to its position, otherwise it risks closing at the high pole
+                    robot.grabber.grabberClose();
                     robot.lift.raiseHeightTo(robot.lift.LIFT_POSITION_RESET);
 
                     currentTrajectoryState = TrajectoryState.TRAJECTORY_IDLE;
