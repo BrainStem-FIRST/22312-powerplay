@@ -82,7 +82,7 @@ public class Lift {
 
     public final String TRANSITION_STATE = "TRANSITION";
     public final int DELIVERY_ADJUSTMENT = -3;
-    public final int HEIGHT_TOLERANCE = 10;
+    public final int HEIGHT_TOLERANCE = 5;
     public final int CYCLE_TOLERANCE = 5;
     public final String LIFT_CURRENT_STATE = "LIFT CURRENT STATE";
 
@@ -157,7 +157,9 @@ public class Lift {
     }
 
     public void setAdjustmentHeight(double driverInput) {
-        adjustmentHeight = (int) (400 * driverInput);
+        adjustmentHeight = (int) (600 * driverInput);
+        telemetry.addData("adjustment height", adjustmentHeight);
+        telemetry.addData("high pole ticks", LIFT_POSITION_HIGHPOLE);
     }
 
     private boolean shouldLiftMove(String level, String currentState) {
@@ -325,7 +327,7 @@ public class Lift {
     }
     private void transitionToLiftPosition(int ticks){
         telemetry.addData("target heights", ticks);
-        raiseHeightTo(ticks);
+        raiseHeightPID(ticks);
     }
 
     public String getCurrentState(String subheight) {
