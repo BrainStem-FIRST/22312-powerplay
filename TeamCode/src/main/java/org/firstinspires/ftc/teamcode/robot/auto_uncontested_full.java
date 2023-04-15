@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.robot.Vision.imagecv.AprilTagDetectionPipeline;
 import org.firstinspires.ftc.teamcode.robot.autoclasses.BrainStemRobotA;
 import org.firstinspires.ftc.teamcode.robot.autoclasses.ConstantsA;
@@ -23,9 +22,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Config
-@Autonomous(name="Robot: Auto Uncontested Pole", group="Robot")
+@Autonomous(name="Robot: Auto UNCONTESTED FULL", group="Robot")
 
-public class auto_uncontested_pole extends LinearOpMode {
+public class auto_uncontested_full extends LinearOpMode {
     //camera
     public OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -129,7 +128,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 // Timer is from start of the trajectory; it is not an offset
                 .addTemporalMarker(1.0, () -> {
                     robot.arm.extendHome();
-                    robot.lift.goToHighPoleHeight();
+                    robot.lift.goToMediumPoleHeight();
                 })
 
                 .addTemporalMarker(1.7, () -> {
@@ -671,7 +670,7 @@ public class auto_uncontested_pole extends LinearOpMode {
 
                 // Timer is from start of the trajectory; it is not an offset
                 .UNSTABLE_addTemporalMarkerOffset(0.15, () -> {
-                    robot.lift.goToHighPoleHeight();
+                    robot.lift.goToMediumPoleHeight();
                 })
 
                 .UNSTABLE_addTemporalMarkerOffset(0.4, () ->{
@@ -798,10 +797,10 @@ public class auto_uncontested_pole extends LinearOpMode {
             //           DURING TOURNAMENT           //
             ///////////////////////////////////////////
 
-            robot.turret.turret_PRELOAD_POSITION_VALUE = 170;
+            robot.turret.turret_PRELOAD_POSITION_VALUE = -290;  // towards medium pole
             robot.turret.turret_PICKUP_POSITION_VALUE = 0;
-            robot.turret.turret_DEPOSIT_POSITION_VALUE = -290;  //270 //hitting hard stop
-            robot.turret.turret_LASTPOLE_POSITION_VALUE = 290;
+            robot.turret.turret_DEPOSIT_POSITION_VALUE = -290;  // towards high pole
+            robot.turret.turret_LASTPOLE_POSITION_VALUE = -290; // towards medium pole
 
             robot.arm.EXTENSION_POSITION_PICKUP = 0;
             robot.arm.EXTENSION_POSITION_PRELOAD = 0.40;  // it was 0.49; extending a little more to hit the pole
@@ -852,10 +851,10 @@ public class auto_uncontested_pole extends LinearOpMode {
             //           DURING TOURNAMENT           //
             ///////////////////////////////////////////
 
-            robot.turret.turret_PRELOAD_POSITION_VALUE  = -170;
+            robot.turret.turret_PRELOAD_POSITION_VALUE  = 290;  // towards medium pole
             robot.turret.turret_PICKUP_POSITION_VALUE   = 0;
-            robot.turret.turret_DEPOSIT_POSITION_VALUE  = 290;  //hitting hard stop
-            robot.turret.turret_LASTPOLE_POSITION_VALUE = -290;
+            robot.turret.turret_DEPOSIT_POSITION_VALUE  = 290;  // towards high pole
+            robot.turret.turret_LASTPOLE_POSITION_VALUE = 290;  // towards medium pole
 
             robot.arm.EXTENSION_POSITION_PICKUP = 0;
             robot.arm.EXTENSION_POSITION_PRELOAD = 0.40;
