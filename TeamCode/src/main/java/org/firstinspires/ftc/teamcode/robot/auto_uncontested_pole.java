@@ -804,8 +804,9 @@ public class auto_uncontested_pole extends LinearOpMode {
             robot.turret.turret_PRELOAD_POSITION_VALUE = 170;
             robot.turret.turret_PICKUP_POSITION_VALUE = 0;
             robot.turret.turret_DEPOSIT_POSITION_VALUE = -290;  //270 //hitting hard stop
+            robot.turret.turret_RIGHT_POSITION_VALUE = 290;
 
-            robot.arm.EXTENSION_POSITION_PICKUP = 0;
+                    robot.arm.EXTENSION_POSITION_PICKUP = 0;
             robot.arm.EXTENSION_POSITION_PRELOAD = 0.40;  // it was 0.49; extending a little more to hit the pole
             robot.arm.EXTENSION_POSITION_DEPOSIT = 0.35; //0.64
 
