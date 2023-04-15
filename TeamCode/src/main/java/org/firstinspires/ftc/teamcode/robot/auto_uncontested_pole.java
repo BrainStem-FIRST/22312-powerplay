@@ -276,7 +276,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 // the start of the robot moving for the next pickup cycle.
 
                 // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
-                .waitSeconds(0.6)   // TODO: Fine tune this duration to adjust start of the robot's move
+                .waitSeconds(0.5)   // TODO: Fine tune this duration to adjust start of the robot's move
 
                 /********* PICKUP CYCLE 2 *********/
 
@@ -386,7 +386,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 // the start of the robot moving for the next pickup cycle.
 
                 // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
-                .waitSeconds(0.6)   // TODO: Fine tune this duration to adjust start of the robot's move
+                .waitSeconds(0.5)   // TODO: Fine tune this duration to adjust start of the robot's move
 
 
                 /********* PICKUP CYCLE 3 *********/
@@ -498,7 +498,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 // the start of the robot moving for the next pickup cycle.
 
                 // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
-                .waitSeconds(0.6)   // TODO: Fine tune this duration to adjust start of the robot's move
+                .waitSeconds(0.5)   // TODO: Fine tune this duration to adjust start of the robot's move
 
 
                 /********* PICKUP CYCLE 4 *********/
@@ -609,7 +609,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 // the start of the robot moving for the next pickup cycle.
 
                 // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
-                .waitSeconds(0.6)   // TODO: Fine tune this duration to adjust start of the robot's move
+                .waitSeconds(0.5)   // TODO: Fine tune this duration to adjust start of the robot's move
 
 
                 /********* PICKUP CYCLE 5 *********/
@@ -719,7 +719,7 @@ public class auto_uncontested_pole extends LinearOpMode {
                 // the start of the robot moving for the next pickup cycle.
 
                 // This should account for duration of drop cone cycle and the time necessary to wait for extendHome
-                .waitSeconds(0.6)   // TODO: Fine tune this duration to adjust start of the robot's move
+                .waitSeconds(0.5)   // TODO: Fine tune this duration to adjust start of the robot's move
 
 
                 .build();
@@ -798,7 +798,7 @@ public class auto_uncontested_pole extends LinearOpMode {
             //           DURING TOURNAMENT           //
             ///////////////////////////////////////////
 
-            robot.turret.turret_PRELOAD_POSITION_VALUE = 170;
+            robot.turret.turret_PRELOAD_POSITION_VALUE = 290; //170;
             robot.turret.turret_PICKUP_POSITION_VALUE = 0;
             robot.turret.turret_DEPOSIT_POSITION_VALUE = -290;  //270 //hitting hard stop
             robot.turret.turret_LASTPOLE_POSITION_VALUE = 290;
@@ -895,7 +895,7 @@ public class auto_uncontested_pole extends LinearOpMode {
 
         // Determine trajectory segment positions based on Alliance and Orientation
         startingPose = new Pose2d(XFORM_X * 36, XFORM_Y * 63, Math.toRadians(startingHeading));
-        preloadPose = new Pose2d(XFORM_X * (16 + preloadDeltaX), XFORM_Y * (11.5 + preloadDeltaY), Math.toRadians(preloadHeading));
+        preloadPose = new Pose2d(XFORM_X * (26 + preloadDeltaX), XFORM_Y * (11.5 + preloadDeltaY), Math.toRadians(preloadHeading)); //16, 11.5
         depositPose = new Pose2d(XFORM_X * (2.5 + depositDeltaX), XFORM_Y * (11.5 + depositDeltaY), Math.toRadians(depositHeading));
         pickupPose = new Pose2d(XFORM_X * (54 + pickupDeltaX), XFORM_Y * (11.5 + pickupDeltaY), Math.toRadians(pickupHeading));
         lastPose = new Pose2d(XFORM_X * (26 + lastDeltaX), XFORM_Y * (11.5 + lastDeltaY), Math.toRadians(lastHeading));
