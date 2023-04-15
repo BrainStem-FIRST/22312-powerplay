@@ -98,7 +98,7 @@ public class Lift {
     public Lift(HardwareMap hwMap, Telemetry telemetry, Map stateMap) {
         this.telemetry = telemetry;
         this.stateMap = stateMap;
-        liftController = new PIDController(0.01,0,0);
+        liftController = new PIDController(0.015,0,0);
         liftMotor = hwMap.get(DcMotorEx.class, "Lift");
         liftMotor2 = hwMap.get(DcMotorEx.class, "LiftMotor2");
 
