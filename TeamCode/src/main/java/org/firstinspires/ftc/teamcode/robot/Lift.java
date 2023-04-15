@@ -5,6 +5,8 @@ import android.util.Log;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.robot.autoclasses.PIDController;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import java.util.Map;
 
@@ -90,11 +92,13 @@ public class Lift {
     private Map stateMap;
     private int adjustmentHeight;
     public int liftPickup;
+    private PIDController liftController;
 
 
     public Lift(HardwareMap hwMap, Telemetry telemetry, Map stateMap) {
         this.telemetry = telemetry;
         this.stateMap = stateMap;
+        liftController = new PIDController(1,0,0);
         liftMotor = hwMap.get(DcMotorEx.class, "Lift");
         liftMotor2 = hwMap.get(DcMotorEx.class, "LiftMotor2");
 
@@ -104,6 +108,9 @@ public class Lift {
         liftMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftMotor.setDirection(DcMotor.Direction.REVERSE);
+
+        liftController.setInputBounds(0, 850);
+        liftController.setOutputBounds(-0.2, 0.4);
 
     }
 
@@ -128,32 +135,43 @@ public class Lift {
         stateMap.put(LIFT_CURRENT_STATE, currentState);
         telemetry.addData("stateMap call to lift current state", stateMap.get(LIFT_CURRENT_STATE));
         telemetry.addData("shouldLifMove", shouldLiftMove(level,currentState));
-        if(shouldLiftMove(level, currentState)) {
-            selectTransition(level, subheight, currentState);
-            telemetry.addData("Lift Motor 1 Power", liftMotor.getPower());
-            telemetry.addData("Lift Motor 2 Power", liftMotor2.getPower());
-            telemetry.addData("Lift Motor 1 is busy", liftMotor.isBusy());
-            telemetry.addData("Lift Motor 2 is busy", liftMotor2.isBusy());
-            telemetry.addLine("In lift should move true");
 
-        } else {
-            if(stateMap.get(LIFT_SYSTEM_NAME).equals(LIFT_POLE_GROUND)){
-                liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                liftMotor.setPower(0);
-                liftMotor2.setPower(0);
-            } else {
-                liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                liftMotor.setPower(0.15);
-                liftMotor2.setPower(0.15);
-            }
-            telemetry.addData("Lift Motor 1 Power", liftMotor.getPower());
-            telemetry.addData("Lift Motor 2 Power", liftMotor2.getPower());
-            telemetry.addData("Lift Motor 1 is busy", liftMotor.isBusy());
-            telemetry.addData("Lift Motor 2 is busy", liftMotor2.isBusy());
-            telemetry.addLine("In lift should move else");
+        setMotorPidPower(selectTransition(level, subheight, currentState));
+//        if(shouldLiftMove(level, currentState)) {
+//            selectTransition(level, subheight, currentState);
+//            telemetry.addData("Lift Motor 1 Power", liftMotor.getPower());
+//            telemetry.addData("Lift Motor 2 Power", liftMotor2.getPower());
+//            telemetry.addData("Lift Motor 1 is busy", liftMotor.isBusy());
+//            telemetry.addData("Lift Motor 2 is busy", liftMotor2.isBusy());
+//            telemetry.addLine("In lift should move true");
+//
+//        } else {
+//            if(stateMap.get(LIFT_SYSTEM_NAME).equals(LIFT_POLE_GROUND)){
+//                liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//                liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//                liftMotor.setPower(0);
+//                liftMotor2.setPower(0);
+//            } else {
+//                liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//                liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//                liftMotor.setPower(0.15);
+//                liftMotor2.setPower(0.15);
+//            }
+//            telemetry.addData("Lift Motor 1 Power", liftMotor.getPower());
+//            telemetry.addData("Lift Motor 2 Power", liftMotor2.getPower());
+//            telemetry.addData("Lift Motor 1 is busy", liftMotor.isBusy());
+//            telemetry.addData("Lift Motor 2 is busy", liftMotor2.isBusy());
+//            telemetry.addLine("In lift should move else");
+//        }
+    }
+
+    private void setMotorPidPower(int ticks) {
+        if (ticks != liftController.getTarget()) {
+            liftController.reset();
+            liftController.setTarget(ticks);
         }
+
+        setRawPower(liftController.update(ticks - getAvgPosition()));
     }
 
     public void setAdjustmentHeight(double driverInput) {
@@ -305,26 +323,29 @@ public class Lift {
     }
 
 
-    private void selectTransition(String desiredLevel, String subheight, String currentState){
+    private int selectTransition(String desiredLevel, String subheight, String currentState){
+        int targetHeight = 0;
         switch(desiredLevel){
             case LIFT_POLE_LOW:{
-                transitionToLiftPosition(LIFT_POSITION_LOWPOLE - adjustmentHeight);
+                targetHeight = LIFT_POSITION_LOWPOLE - adjustmentHeight;
                 break;
             }
             case LIFT_POLE_MEDIUM:{
-                transitionToLiftPosition(LIFT_POSITION_MIDPOLE - adjustmentHeight);
+                targetHeight = LIFT_POSITION_MIDPOLE - adjustmentHeight;
                 break;
             }
             case LIFT_POLE_HIGH:{
-                transitionToLiftPosition(LIFT_POSITION_HIGHPOLE - adjustmentHeight);
+                targetHeight = LIFT_POSITION_HIGHPOLE - adjustmentHeight;
                 break;
             }
             case LIFT_POLE_GROUND:{
-                transitionToLiftPosition(LIFT_POSITION_GROUND + liftPickup);
+                targetHeight = LIFT_POSITION_GROUND + liftPickup;
                 break;
             }
         }
+        return targetHeight;
     }
+
     private void transitionToLiftPosition(int ticks){
         telemetry.addData("target heights", ticks);
         raiseHeightPID(ticks);
