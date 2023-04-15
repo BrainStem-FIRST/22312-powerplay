@@ -142,7 +142,7 @@ public class Lift {
                 liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 liftMotor.setPower(0);
                 liftMotor2.setPower(0);
-            } else{
+            } else {
                 liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 liftMotor.setPower(0.15);
