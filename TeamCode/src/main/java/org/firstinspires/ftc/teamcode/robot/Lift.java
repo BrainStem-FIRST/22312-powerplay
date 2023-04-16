@@ -75,6 +75,7 @@ public class Lift {
     public final String LIFT_CONE_4_STATE = "LIFT_CONE_4_STATE";
     public final String LIFT_CONE_3_STATE = "LIFT_CONE_3_STATE";
     public final String LIFT_CONE_2_STATE = "LIFT_CONE_2_STATE";
+    public final String LIFT_INIT_STATE = "LIFT_INIT_STATE";
 
     // Used in Auto to determine the lift's position high enough to unstack the cones during pickup
     public final String LIFT_POSITION_CLEAR = "LIFT_CLEAR_HEIGHT";
@@ -94,10 +95,13 @@ public class Lift {
     public int liftPickup;
     private PIDController liftController;
 
+    Turret turret;
 
-    public Lift(HardwareMap hwMap, Telemetry telemetry, Map stateMap) {
+
+    public Lift(HardwareMap hwMap, Telemetry telemetry, Map stateMap, Turret turret) {
         this.telemetry = telemetry;
         this.stateMap = stateMap;
+        this.turret = turret;
         liftController = new PIDController(0.0125,0.,0);
         liftMotor = hwMap.get(DcMotorEx.class, "Lift");
         liftMotor2 = hwMap.get(DcMotorEx.class, "LiftMotor2");
@@ -343,6 +347,13 @@ public class Lift {
             case LIFT_POLE_GROUND:{
                 targetHeight = LIFT_POSITION_GROUND + liftPickup;
                 break;
+            }
+            case LIFT_INIT_STATE:{
+                if(!turret.getCurrentState().equals(turret.CENTER_POSITION)){
+                    targetHeight = LIFT_POSITION_LOWPOLE;
+                } else {
+                    targetHeight = LIFT_POSITION_GROUND;
+                }
             }
         }
         return targetHeight;

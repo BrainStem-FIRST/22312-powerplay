@@ -50,7 +50,7 @@ public class BrainStemRobot {
 
         // instantiate components turret, lift, arm, grabber
         turret = new Turret(hwMap, telemetry);
-        lift = new Lift(hwMap, telemetry, stateMap);
+        lift = new Lift(hwMap, telemetry, stateMap, turret);
         arm = new Extension(hwMap, telemetry, stateMap);
         drive = new SampleMecanumDrive(hwMap);
         grabber = new Grabber(hwMap, telemetry, stateMap);
