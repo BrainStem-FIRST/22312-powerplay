@@ -98,7 +98,7 @@ public class Lift {
     public Lift(HardwareMap hwMap, Telemetry telemetry, Map stateMap) {
         this.telemetry = telemetry;
         this.stateMap = stateMap;
-        liftController = new PIDController(0.015,0,0);
+        liftController = new PIDController(0.0125,0.,0);
         liftMotor = hwMap.get(DcMotorEx.class, "Lift");
         liftMotor2 = hwMap.get(DcMotorEx.class, "LiftMotor2");
 
@@ -177,7 +177,7 @@ public class Lift {
     }
 
     public void setAdjustmentHeight(double driverInput) {
-        adjustmentHeight = (int) (250 * driverInput);
+        adjustmentHeight = (int) (400 * driverInput);
         telemetry.addData("adjustment height", adjustmentHeight);
         telemetry.addData("high pole ticks", LIFT_POSITION_HIGHPOLE);
     }

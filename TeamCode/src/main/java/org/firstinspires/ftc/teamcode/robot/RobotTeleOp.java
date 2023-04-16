@@ -211,19 +211,19 @@ public class RobotTeleOp extends LinearOpMode {
                   if(stateMap.get(robot.lift.LIFT_SYSTEM_NAME).equals(robot.lift.LIFT_POLE_GROUND)) {
                       telemetry.addLine("in the lift ground fine adjustment");
                       telemetry.update();
-                      robot.lift.LIFT_POSITION_GROUND += 1;
+                      robot.lift.LIFT_POSITION_GROUND += 5;
                   } else if(stateMap.get(robot.lift.LIFT_SYSTEM_NAME).equals(robot.lift.LIFT_POLE_LOW)){
                       telemetry.addLine("in the lift pole low fine adjustment");
                       telemetry.update();
-                      robot.lift.LIFT_POSITION_LOWPOLE += 1;
+                      robot.lift.LIFT_POSITION_LOWPOLE += 5;
                   } else if(stateMap.get(robot.lift.LIFT_SYSTEM_NAME).equals(robot.lift.LIFT_POLE_MEDIUM)){
                       telemetry.addLine("in the lift pole medium fine adjustment");
                       telemetry.update();
-                      robot.lift.LIFT_POSITION_MIDPOLE += 1;
+                      robot.lift.LIFT_POSITION_MIDPOLE += 5;
                   } else {
                       telemetry.addLine("in the lift pole high fine adjustment");
                       telemetry.update();
-                      robot.lift.LIFT_POSITION_HIGHPOLE += 1;
+                      robot.lift.LIFT_POSITION_HIGHPOLE += 5;
                   }
               }
               if (stateMap.get(robot.lift.LIFT_SYSTEM_NAME) != robot.lift.LIFT_POLE_GROUND) {
