@@ -107,6 +107,16 @@ public class RobotTeleOp extends LinearOpMode {
 
         stateMap.put(DRIVE_MODE, MANUAL_DRIVE_MODE);
 
+//        while (!opModeIsActive()) {
+//            // this kinda works but need to take some thigns out to make a little better
+//            stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
+//            robot.updateSystems();
+//            sleep(500); // PLEASE REPLACE WITH AN ACTUAL WAY - THIS WAS JUST A QUICK WAY TO TEST
+//            stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_GROUND);
+//            robot.updateSystems();
+//
+//
+//        }
 
         waitForStart();
       while (opModeIsActive()) {
