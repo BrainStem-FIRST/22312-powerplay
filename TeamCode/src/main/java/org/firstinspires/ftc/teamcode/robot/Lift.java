@@ -175,10 +175,15 @@ public class Lift {
             liftController.setTarget(ticks);
         }
 
-        double power = liftController.update(getAvgPosition());
+        double power = (liftController.update(getAvgPosition()));
         setRawPower(-power);
         telemetry.addData("raw power from pid:", power);
     }
+
+    public static double clamp(double val, double min, double max) {
+        return Math.max(min, Math.min(max, val));
+    }
+
 
     public void setAdjustmentHeight(double driverInput) {
         adjustmentHeight = (int) (400 * driverInput);
@@ -345,15 +350,12 @@ public class Lift {
                 break;
             }
             case LIFT_POLE_GROUND:{
-                targetHeight = LIFT_POSITION_GROUND + liftPickup;
-                break;
-            }
-            case LIFT_INIT_STATE:{
                 if(!turret.getCurrentState().equals(turret.CENTER_POSITION)){
                     targetHeight = LIFT_POSITION_LOWPOLE;
                 } else {
                     targetHeight = LIFT_POSITION_GROUND;
                 }
+                break;
             }
         }
         return targetHeight;
