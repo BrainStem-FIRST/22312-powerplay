@@ -865,13 +865,13 @@ public class auto_uncontested_mixed extends LinearOpMode {
             //           DURING TOURNAMENT           //
             ///////////////////////////////////////////
 
-            preloadDeltaX = 3;
+            preloadDeltaX = 2;
             preloadDeltaY = 0;
 
             pickupDeltaX = -0.5;
             pickupDeltaY = 0;
 
-            depositDeltaX = -2.5;
+            depositDeltaX = -1.5;
             depositDeltaY = 0;
 
             lastDeltaX = 0;

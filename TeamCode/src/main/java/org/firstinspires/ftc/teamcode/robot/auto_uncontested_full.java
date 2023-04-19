@@ -176,7 +176,7 @@ public class auto_uncontested_full extends LinearOpMode {
                     robot.turret.goToPickupPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.1, () ->{
                     robot.alignment.alignUp();
                 })
 
@@ -267,7 +267,7 @@ public class auto_uncontested_full extends LinearOpMode {
                 })
 
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.45, ()-> {
                     robot.arm.extendHome();
                 })
 
@@ -285,7 +285,7 @@ public class auto_uncontested_full extends LinearOpMode {
                     robot.turret.goToPickupPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.1, () ->{
                     robot.alignment.alignUp();
                 })
 
@@ -377,7 +377,7 @@ public class auto_uncontested_full extends LinearOpMode {
                 })
 
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.45, ()-> {
                     robot.arm.extendHome();
                 })
 
@@ -397,7 +397,7 @@ public class auto_uncontested_full extends LinearOpMode {
                     robot.turret.goToPickupPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () ->{
                     robot.alignment.alignUp();
                 })
 
@@ -489,7 +489,7 @@ public class auto_uncontested_full extends LinearOpMode {
                 })
 
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.45, ()-> {
                     robot.arm.extendHome();
                 })
 
@@ -508,7 +508,7 @@ public class auto_uncontested_full extends LinearOpMode {
                     robot.turret.goToPickupPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () ->{
                     robot.alignment.alignUp();
                 })
 
@@ -600,7 +600,7 @@ public class auto_uncontested_full extends LinearOpMode {
                 })
 
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.45, ()-> {
                     robot.arm.extendHome();
                 })
 
@@ -619,7 +619,7 @@ public class auto_uncontested_full extends LinearOpMode {
                     robot.turret.goToPickupPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () ->{
                     robot.alignment.alignUp();
                 })
 
@@ -711,7 +711,7 @@ public class auto_uncontested_full extends LinearOpMode {
                 })
 
                 // Pull extension immediately, and turn turret afterwards when the robot started moving
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.45, ()-> {
                     robot.arm.extendHome();
                 })
 
@@ -866,13 +866,13 @@ public class auto_uncontested_full extends LinearOpMode {
             //           DURING TOURNAMENT           //
             ///////////////////////////////////////////
 
-            preloadDeltaX = 3;
+            preloadDeltaX = 6;
             preloadDeltaY = 0;
 
             pickupDeltaX = -0.5;
             pickupDeltaY = 0;
 
-            depositDeltaX = -2.5;
+            depositDeltaX = -1.5;
             depositDeltaY = 0;
 
             lastDeltaX = 0;
