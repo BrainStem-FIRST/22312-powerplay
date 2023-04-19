@@ -102,7 +102,7 @@ public class Lift {
         this.telemetry = telemetry;
         this.stateMap = stateMap;
         this.turret = turret;
-        liftController = new PIDController(0.0125,0.,0);
+        liftController = new PIDController(0.0125,0.005,0);
         liftMotor = hwMap.get(DcMotorEx.class, "Lift");
         liftMotor2 = hwMap.get(DcMotorEx.class, "LiftMotor2");
 
@@ -350,10 +350,10 @@ public class Lift {
                 break;
             }
             case LIFT_POLE_GROUND:{
-                if(!turret.getCurrentState().equals(turret.CENTER_POSITION)){
-                    targetHeight = LIFT_POSITION_LOWPOLE;
+                if(!turret.getCurrentState().equals(turret.CENTER_POSITION) && getAvgPosition() > 25){
+                    targetHeight = Math.min(LIFT_POSITION_LOWPOLE, getAvgPosition());
                 } else {
-                    targetHeight = LIFT_POSITION_GROUND;
+                    targetHeight = LIFT_POSITION_GROUND + liftPickup;
                 }
                 break;
             }

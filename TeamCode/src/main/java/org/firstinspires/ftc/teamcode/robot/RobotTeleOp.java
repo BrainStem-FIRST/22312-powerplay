@@ -186,9 +186,11 @@ public class RobotTeleOp extends LinearOpMode {
               }
               if (gamepad1.right_bumper) {
                   telemetry.addData("time", elapsedTime);
-                 robot.lift.liftPickup = 0;
-                 stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_GROUND);
-                 stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
+                  robot.lift.liftPickup = 0;
+                  robot.lift.LIFT_POSITION_GROUND = 0;
+                  telemetry.addData("Robot Pickup", robot.lift.liftPickup);
+                  stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_GROUND);
+                  stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
               }
               if (retractionInProgress) {
                   if (elapsedTime.seconds() > 0.1) {
@@ -271,10 +273,10 @@ public class RobotTeleOp extends LinearOpMode {
                       telemetry.addData("Giving jump", true);
                   }
                   if (grabberCycleTime.milliseconds() > 300 && robot.lift.LIFT_POSITION_GROUND == 0) {
-                      robot.lift.liftPickup = 100;
+                      robot.lift.liftPickup = 150;
                       grabberCycleInProgress = false;
                   } else if(grabberCycleTime.milliseconds() > 300 && robot.lift.LIFT_POSITION_GROUND != 0){
-                      robot.lift.liftPickup = 100;
+                      robot.lift.liftPickup = 200;
                       grabberCycleInProgress = false;
                   }
               }
@@ -371,6 +373,7 @@ public class RobotTeleOp extends LinearOpMode {
               telemetry.addData("Lift Motor 1 ticks", robot.lift.liftMotor.getCurrentPosition());
               telemetry.addData("Lift Motor 2", robot.lift.liftMotor2.getCurrentPosition());
               telemetry.addData("Toggle map", toggleMap);
+              telemetry.addData("Robot Pickup at end of class", robot.lift.liftPickup);
               telemetry.update();
           }
         }
