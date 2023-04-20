@@ -351,7 +351,7 @@ public class Lift {
             }
             case LIFT_POLE_GROUND:{
                 if(!turret.getCurrentState().equals(turret.CENTER_POSITION) && getAvgPosition() > 25){
-                    targetHeight = Math.min(LIFT_POSITION_LOWPOLE, getAvgPosition());
+                    targetHeight = LIFT_POSITION_LOWPOLE;
                 } else {
                     targetHeight = LIFT_POSITION_GROUND + liftPickup;
                 }
