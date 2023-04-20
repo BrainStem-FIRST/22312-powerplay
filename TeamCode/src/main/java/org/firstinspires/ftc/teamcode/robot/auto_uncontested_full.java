@@ -852,7 +852,7 @@ public class auto_uncontested_full extends LinearOpMode {
             //           DURING TOURNAMENT           //
             ///////////////////////////////////////////
 
-            robot.turret.turret_PRELOAD_POSITION_VALUE  = 290;  // towards medium pole
+            robot.turret.turret_PRELOAD_POSITION_VALUE  = 170;  // towards medium pole
             robot.turret.turret_PICKUP_POSITION_VALUE   = 0;
             robot.turret.turret_DEPOSIT_POSITION_VALUE  = 290;  // towards high pole
             robot.turret.turret_LASTPOLE_POSITION_VALUE = 290;  // towards medium pole
