@@ -202,8 +202,10 @@ public class RobotTeleOp extends LinearOpMode {
 //                stateMap.put(robot.turret.SYSTEM_NAME, robot.turret.CENTER_POSITION);
                       toggleMap.put(GAMEPAD_1_A_STATE, false);
                       telemetry.addData("timer in ", true);
+                  }
+                  if(elapsedTime.seconds() > 1.5){
+                      stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
                       retractionInProgress = false;
-                      elapsedTime.reset();
                   }
               }
 
