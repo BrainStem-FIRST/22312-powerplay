@@ -48,7 +48,7 @@ public class Turret {
         turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //PID SETUP
-        turretPIDController = new PIDController(0.02,0.01,0);
+        turretPIDController = new PIDController(0.025, 0.0, 0);
         turretPIDController.setInputBounds(0, 512);
         turretPIDController.setOutputBounds(0, 1);
     }
