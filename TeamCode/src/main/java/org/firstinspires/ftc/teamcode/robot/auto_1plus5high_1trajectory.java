@@ -97,7 +97,6 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
             depositHeading, depositTangent,
             pickupHeading, pickupTangent;
 
-
     //------------------------------------------------------
     //            Define trajectories
     //------------------------------------------------------
@@ -174,7 +173,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 // Move turret at the same time as robot start moving away from high pole,
                 // which is the end of previous .waitseconds
-                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2,()-> { //0
                     robot.turret.goToPickupPosition();
                 })
 
@@ -184,7 +183,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 // lower the lift after the turret repositioned and before the robot reached its target
                 // offset is relative to when robot reached its destination
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.6, ()-> {
                     robot.lift.goToPickupHeight(0);
                 })
 
@@ -214,7 +213,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // This is the duration the robot waits at the pickup station (while its subsystems are picking the cone up)
-                .waitSeconds(0.2)
+                .waitSeconds(0.3)
 
                 /********** DEPOSIT CYCLE 1 ***********/
 
@@ -283,7 +282,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 // Move turret at the same time as robot start moving away from high pole,
                 // which is the end of previous .waitseconds
-                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2,()-> { //0
                     robot.turret.goToPickupPosition();
                 })
 
@@ -293,7 +292,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 // lower the lift after the turret repositioned and before the robot reached its target
                 // offset is relative to when robot reached its destination
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.6, ()-> {
                     robot.lift.goToPickupHeight(1);
                 })
 
@@ -323,7 +322,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // This is the duration the robot waits at the pickup station (while its subsystems are picking the cone up)
-                .waitSeconds(0.2)
+                .waitSeconds(0.3)
 
 
                 /********* DEPOSIT CYCLE 2 *********/
@@ -395,7 +394,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 // Move turret at the same time as robot start moving away from high pole,
                 // which is the end of previous .waitseconds
-                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2,()-> { //0
                     robot.turret.goToPickupPosition();
                 })
 
@@ -405,7 +404,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 // lower the lift after the turret repositioned and before the robot reached its target
                 // offset is relative to when robot reached its destination
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.6, ()-> {
                     robot.lift.goToPickupHeight(2);
                 })
 
@@ -435,7 +434,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // This is the duration the robot waits at the pickup station (while its subsystems are picking the cone up)
-                .waitSeconds(0.2)
+                .waitSeconds(0.3)
 
 
                 /********* DEPOSIT CYCLE 3 *********/
@@ -506,7 +505,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 // Move turret at the same time as robot start moving away from high pole,
                 // which is the end of previous .waitseconds
-                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2,()-> { //0
                     robot.turret.goToPickupPosition();
                 })
 
@@ -516,7 +515,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 // lower the lift after the turret repositioned and before the robot reached its target
                 // offset is relative to when robot reached its destination
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.6, ()-> {
                     robot.lift.goToPickupHeight(3);
                 })
 
@@ -546,7 +545,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // This is the duration the robot waits at the pickup station (while its subsystems are picking the cone up)
-                .waitSeconds(0.2)
+                .waitSeconds(0.3)
 
 
                 /********* DEPOSIT CYCLE 4 *********/
@@ -617,7 +616,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 // Move turret at the same time as robot start moving away from high pole,
                 // which is the end of previous .waitseconds
-                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.1,()-> { //0
                     robot.turret.goToPickupPosition();
                 })
 
@@ -627,7 +626,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
                 // lower the lift after the turret repositioned and before the robot reached its target
                 // offset is relative to when robot reached its destination
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.6, ()-> {
                     robot.lift.goToPickupHeight(4);
                 })
 
@@ -656,7 +655,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
                 })
 
                 // This is the duration the robot waits at the pickup station (while its subsystems are picking the cone up)
-                .waitSeconds(0.2)
+                .waitSeconds(0.3)
 
 
                 /********* DEPOSIT CYCLE 5 *********/
@@ -802,7 +801,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
             robot.arm.EXTENSION_POSITION_PICKUP = 0;
             robot.arm.EXTENSION_POSITION_PRELOAD = 0.40;  // it was 0.49; extending a little more to hit the pole
-            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.35; //0.64
+            robot.arm.EXTENSION_POSITION_DEPOSIT = 0.43; //0.64
 
             ///////////////////////////////////////////
             //      MAKE ADJUSTMENTS ON POSES        //
