@@ -118,7 +118,6 @@ public class auto_uncontested_full extends LinearOpMode {
                 })
 
                 .setTangent(Math.toRadians(startingTangent))
-
                 // 2.55 sec to reach destination
                 .splineToSplineHeading(preloadPose, Math.toRadians(preloadTangent))
 //                        SampleMecanumDrive.getVelocityConstraint(50, Math.toRadians(180), 13.59),
@@ -812,13 +811,13 @@ public class auto_uncontested_full extends LinearOpMode {
             //           DURING TOURNAMENT           //
             ///////////////////////////////////////////
 
-            preloadDeltaX = 1.5;  // matching 1trajectory's values. Previously was 2;
+            preloadDeltaX = 0;  // matching 1trajectory's values. Previously was 2;
             preloadDeltaY = 0;
 
             pickupDeltaX = -2;  // matching 1trajectory's values. Previously was 0;
             pickupDeltaY = 0;
 
-            depositDeltaX = 0;
+            depositDeltaX = -0.5;
             depositDeltaY = 0;
 
             lastDeltaX = 0;
@@ -866,13 +865,13 @@ public class auto_uncontested_full extends LinearOpMode {
             //           DURING TOURNAMENT           //
             ///////////////////////////////////////////
 
-            preloadDeltaX = 6;
+            preloadDeltaX = 3;
             preloadDeltaY = 0;
 
             pickupDeltaX = -0.5;
             pickupDeltaY = 0;
 
-            depositDeltaX = -1.5;
+            depositDeltaX = 0;
             depositDeltaY = 0;
 
             lastDeltaX = 0;

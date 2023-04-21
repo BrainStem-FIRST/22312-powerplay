@@ -176,7 +176,7 @@ public class auto_uncontested_mixed extends LinearOpMode {
                     robot.turret.goToPickupPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.1, () ->{
                     robot.alignment.alignUp();
                 })
 
@@ -285,7 +285,7 @@ public class auto_uncontested_mixed extends LinearOpMode {
                     robot.turret.goToPickupPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.1, () ->{
                     robot.alignment.alignUp();
                 })
 
@@ -397,7 +397,7 @@ public class auto_uncontested_mixed extends LinearOpMode {
                     robot.turret.goToPickupPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () ->{
                     robot.alignment.alignUp();
                 })
 
@@ -508,7 +508,7 @@ public class auto_uncontested_mixed extends LinearOpMode {
                     robot.turret.goToPickupPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () ->{
                     robot.alignment.alignUp();
                 })
 
@@ -619,7 +619,7 @@ public class auto_uncontested_mixed extends LinearOpMode {
                     robot.turret.goToPickupPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.2, () ->{
                     robot.alignment.alignUp();
                 })
 
@@ -817,7 +817,7 @@ public class auto_uncontested_mixed extends LinearOpMode {
             pickupDeltaX = -2;  // matching 1trajectory's values. Previously was 0;
             pickupDeltaY = 0;
 
-            depositDeltaX = 0;
+            depositDeltaX = -2;
             depositDeltaY = 0;
 
             lastDeltaX = 0;
