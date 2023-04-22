@@ -514,7 +514,7 @@ public class auto_uncontested_mixed extends LinearOpMode {
 
                 // lower the lift after the turret repositioned and before the robot reached its target
                 // offset is relative to when robot reached its destination
-                .UNSTABLE_addTemporalMarkerOffset(0.6, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.7, ()-> { //0.6
                     robot.lift.goToPickupHeight(3);
                 })
 
@@ -625,7 +625,7 @@ public class auto_uncontested_mixed extends LinearOpMode {
 
                 // lower the lift after the turret repositioned and before the robot reached its target
                 // offset is relative to when robot reached its destination
-                .UNSTABLE_addTemporalMarkerOffset(0.6, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.7, ()-> { //0.6
                     robot.lift.goToPickupHeight(4);
                 })
 
@@ -871,7 +871,7 @@ public class auto_uncontested_mixed extends LinearOpMode {
             pickupDeltaX = -0.5;
             pickupDeltaY = 0;
 
-            depositDeltaX = -1.5;   // MSU: CHECK THIS DELTA. CONTESTED VALUE IS 1
+            depositDeltaX = -1;   // MSU: CHECK THIS DELTA. CONTESTED VALUE IS 1
             depositDeltaY = 0;
 
             lastDeltaX = 0;
