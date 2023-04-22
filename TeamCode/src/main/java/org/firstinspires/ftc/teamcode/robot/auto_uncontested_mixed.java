@@ -172,17 +172,17 @@ public class auto_uncontested_mixed extends LinearOpMode {
 
                 // Move turret at the same time as robot start moving away from high pole,
                 // which is the end of previous .waitseconds
-                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2,()-> { //0
                     robot.turret.goToPickupPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.1, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
                     robot.alignment.alignUp();
                 })
 
                 // lower the lift after the turret repositioned and before the robot reached its target
                 // offset is relative to when robot reached its destination
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.6, ()-> {
                     robot.lift.goToPickupHeight(0);
                 })
 
@@ -194,7 +194,7 @@ public class auto_uncontested_mixed extends LinearOpMode {
 
 
                 // Reach arm to touch the cone after the robot stopped
-                .UNSTABLE_addTemporalMarkerOffset(-0.2,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(-0.25,()-> {       // was -0.2; started earlier to reduce risk of grabber hitting motors when it opens
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
@@ -281,17 +281,17 @@ public class auto_uncontested_mixed extends LinearOpMode {
 
                 // Move turret at the same time as robot start moving away from high pole,
                 // which is the end of previous .waitseconds
-                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2,()-> { //0
                     robot.turret.goToPickupPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.1, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
                     robot.alignment.alignUp();
                 })
 
                 // lower the lift after the turret repositioned and before the robot reached its target
                 // offset is relative to when robot reached its destination
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.6, ()-> {
                     robot.lift.goToPickupHeight(1);
                 })
 
@@ -303,7 +303,7 @@ public class auto_uncontested_mixed extends LinearOpMode {
 
 
                 // Reach arm to touch the cone after the robot stopped
-                .UNSTABLE_addTemporalMarkerOffset(-0.2,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(-0.25,()-> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
@@ -393,17 +393,17 @@ public class auto_uncontested_mixed extends LinearOpMode {
 
                 // Move turret at the same time as robot start moving away from high pole,
                 // which is the end of previous .waitseconds
-                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2,()-> { //0
                     robot.turret.goToPickupPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.2, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
                     robot.alignment.alignUp();
                 })
 
                 // lower the lift after the turret repositioned and before the robot reached its target
                 // offset is relative to when robot reached its destination
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.6, ()-> {
                     robot.lift.goToPickupHeight(2);
                 })
 
@@ -415,7 +415,7 @@ public class auto_uncontested_mixed extends LinearOpMode {
 
 
                 // Reach arm to touch the cone after the robot stopped
-                .UNSTABLE_addTemporalMarkerOffset(-0.2,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(-0.25,()-> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
@@ -504,17 +504,17 @@ public class auto_uncontested_mixed extends LinearOpMode {
 
                 // Move turret at the same time as robot start moving away from high pole,
                 // which is the end of previous .waitseconds
-                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2,()-> { //0
                     robot.turret.goToPickupPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.2, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
                     robot.alignment.alignUp();
                 })
 
                 // lower the lift after the turret repositioned and before the robot reached its target
                 // offset is relative to when robot reached its destination
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.6, ()-> {
                     robot.lift.goToPickupHeight(3);
                 })
 
@@ -526,7 +526,7 @@ public class auto_uncontested_mixed extends LinearOpMode {
 
 
                 // Reach arm to touch the cone after the robot stopped
-                .UNSTABLE_addTemporalMarkerOffset(-0.2,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(-0.25,()-> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
@@ -615,17 +615,17 @@ public class auto_uncontested_mixed extends LinearOpMode {
 
                 // Move turret at the same time as robot start moving away from high pole,
                 // which is the end of previous .waitseconds
-                .UNSTABLE_addTemporalMarkerOffset(0,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.2,()-> { //0
                     robot.turret.goToPickupPosition();
                 })
 
-                .UNSTABLE_addTemporalMarkerOffset(0.2, () ->{
+                .UNSTABLE_addTemporalMarkerOffset(0.3, () ->{
                     robot.alignment.alignUp();
                 })
 
                 // lower the lift after the turret repositioned and before the robot reached its target
                 // offset is relative to when robot reached its destination
-                .UNSTABLE_addTemporalMarkerOffset(0.5, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.6, ()-> {
                     robot.lift.goToPickupHeight(4);
                 })
 
@@ -636,7 +636,7 @@ public class auto_uncontested_mixed extends LinearOpMode {
 //                        SampleMecanumDrive.getAccelerationConstraint(75))
 
                 // Reach arm to touch the cone after the robot stopped
-                .UNSTABLE_addTemporalMarkerOffset(-0.2,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(-0.25,()-> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
@@ -871,7 +871,7 @@ public class auto_uncontested_mixed extends LinearOpMode {
             pickupDeltaX = -0.5;
             pickupDeltaY = 0;
 
-            depositDeltaX = -1.5;
+            depositDeltaX = -1.5;   // MSU: CHECK THIS DELTA. CONTESTED VALUE IS 1
             depositDeltaY = 0;
 
             lastDeltaX = 0;
