@@ -67,6 +67,9 @@ public class RobotTeleOp extends LinearOpMode {
     private ElapsedTime putDownFast = new ElapsedTime();
     private boolean fastDown = false;
 
+    private boolean junction = false;
+    private ElapsedTime groundJunction = new ElapsedTime();
+
 
 
     Map<String, Boolean> toggleMap = new HashMap<String, Boolean>() {{
@@ -185,12 +188,18 @@ public class RobotTeleOp extends LinearOpMode {
                   stateMap.put(robot.flippers.SYSTEM_NAME, robot.flippers.FLIPPERS_UP);
               }
               if (gamepad1.right_bumper) {
-                  telemetry.addData("time", elapsedTime);
+                  groundJunction.reset();
+                  groundJunction.startTime();
+                  junction = true;
                   robot.lift.liftPickup = 0;
                   robot.lift.LIFT_POSITION_GROUND = 0;
-                  telemetry.addData("Robot Pickup", robot.lift.liftPickup);
                   stateMap.put(robot.lift.LIFT_SYSTEM_NAME, robot.lift.LIFT_POLE_GROUND);
-                  stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
+              }
+              if(junction){
+                  if(groundJunction.seconds() > 1 && groundJunction.seconds() < 2){
+                      stateMap.put(robot.grabber.SYSTEM_NAME, robot.grabber.OPEN_STATE);
+                      junction = false;
+                  }
               }
               if (retractionInProgress) {
                   if (elapsedTime.seconds() > 0.1) {
