@@ -195,7 +195,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
 
                 // Reach arm to touch the cone after the robot stopped
-                .UNSTABLE_addTemporalMarkerOffset(-0.2,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(-0.25,()-> {       // TODO: You may start this earlier so the extension would be out enough before the grabber opens wide. (this would likely reduce risk of grabber brushing on the motor)
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
@@ -304,7 +304,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
 
                 // Reach arm to touch the cone after the robot stopped
-                .UNSTABLE_addTemporalMarkerOffset(-0.2,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(-0.25,()-> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
@@ -416,7 +416,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
 
                 // Reach arm to touch the cone after the robot stopped
-                .UNSTABLE_addTemporalMarkerOffset(-0.2,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(-0.25,()-> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
@@ -527,7 +527,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 
 
                 // Reach arm to touch the cone after the robot stopped
-                .UNSTABLE_addTemporalMarkerOffset(-0.2,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(-0.25,()-> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
@@ -637,7 +637,7 @@ public class auto_1plus5high_1trajectory extends LinearOpMode {
 //                        SampleMecanumDrive.getAccelerationConstraint(75))
 
                 // Reach arm to touch the cone after the robot stopped
-                .UNSTABLE_addTemporalMarkerOffset(-0.2,()-> {
+                .UNSTABLE_addTemporalMarkerOffset(-0.25,()-> {
                     robot.arm.extendTo(robot.arm.EXTENSION_POSITION_PICKUP);
                 })
 
