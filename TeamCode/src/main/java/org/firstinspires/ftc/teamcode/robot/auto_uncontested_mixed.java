@@ -702,10 +702,10 @@ public class auto_uncontested_mixed extends LinearOpMode {
                 })
 
                 // Drop Cone
-                .UNSTABLE_addTemporalMarkerOffset(0.2, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.15, ()-> {
                     robot.lift.raiseHeightTo(robot.lift.getPosition() - 150);
                 })
-                .UNSTABLE_addTemporalMarkerOffset(0.4, ()-> {
+                .UNSTABLE_addTemporalMarkerOffset(0.3, ()-> {
                     robot.grabber.grabberOpen();
                 })
 
